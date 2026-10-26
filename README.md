@@ -2,7 +2,7 @@
 
 **Pure MoonBit 2D parametric sketch constraint solver.** 定义点、线和圆，添加几何与尺寸约束，求解草图；修改尺寸后再次求解。
 
-[![Mooncakes v0.2.1](https://img.shields.io/badge/Mooncakes-v0.2.1-blue)](https://mooncakes.io/docs/mik1e80/cad_sketch)
+[![Mooncakes v0.2.2](https://img.shields.io/badge/Mooncakes-v0.2.2-blue)](https://mooncakes.io/docs/mik1e80/cad_sketch)
 [![CI](https://github.com/mik1e80/moonbit-cad-sketch/actions/workflows/ci.yml/badge.svg)](https://github.com/mik1e80/moonbit-cad-sketch/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue)](LICENSE)
 
@@ -63,7 +63,7 @@ match sketch.solve_and_apply() {
 moon run examples/parametric_bracket --target js
 ```
 
-[安装板案例](examples/parametric_bracket/README.md)展示尺寸联动，以及冲突编辑后的几何保留与恢复。以上三份 SVG 由核心库的 `sketch.to_svg()` 直接返回，同一视野、同一比例。[SVG 导出说明](docs/SVG_EXPORT.md)包含接口与生成命令；此接口已包含在 Mooncakes 0.2.1 正式版本中。
+[安装板案例](examples/parametric_bracket/README.md)展示尺寸联动，以及冲突编辑后的几何保留与恢复。以上三份 SVG 由核心库的 `sketch.to_svg()` 直接返回，同一视野、同一比例。[SVG 导出说明](docs/SVG_EXPORT.md)包含接口与生成命令；此接口已包含在 Mooncakes 0.2.2 正式版本中。
 
 ## Features
 
@@ -154,7 +154,7 @@ if sketch.set_constraint(length, Distance(a, b, 7.0)) {
 | [SciPy 开发对照](docs/SCIPY_REFERENCE.md) | 500 个同输入配置，对比坐标、半径和残差 |
 | [Consumer Test](docs/CONSUMER_TEST.md) | 仓库外 `moon new → moon add → moon test → moon run`，三个消费测试、SVG XML 校验及程序运行通过 |
 
-**当前 Release `v0.2.1` 完整回归已通过**：[实际 Actions](https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/39787171206)固定到提交 `458d5f3`。四后端各 107 项测试、各 400 个生成配置，以及 JS 的 1000 个随机初值全部通过；解包后的完整检查四后端各 112 项通过。[版本验证摘要](docs/releases/0.2.1-full-regression.json)保留范围、源码指纹及原始产物地址。
+**核心实现最近一次完整回归对应 `v0.2.1`，结果通过**：[实际 Actions](https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/39787171206)固定到提交 `458d5f3`。四后端各 107 项测试、各 400 个生成配置，以及 JS 的 1000 个随机初值全部通过；解包后的完整检查四后端各 112 项通过。[版本验证摘要](docs/releases/0.2.1-full-regression.json)保留范围、源码指纹及原始产物地址。
 
 历史快照保留原始测量；本次完整结果单独保存，未重测 SciPy 对照或四档计时。日常仍只需运行七项公开接口示例：
 
@@ -201,7 +201,7 @@ moon test README.mbt.md --target js
 
 ## Installation
 
-[Mooncakes：mik1e80/cad_sketch@0.2.1](https://mooncakes.io/docs/mik1e80/cad_sketch)。需 `moonc >= 0.10.15`；已用 `moon 0.1.20261012` / `moonc 0.10.15+943464bfa` 验证。核心仅依赖 MoonBit core。Python、Node.js 和 SciPy 用于可选开发验证。
+[Mooncakes：mik1e80/cad_sketch@0.2.2](https://mooncakes.io/docs/mik1e80/cad_sketch)。需 `moonc >= 0.10.15`；本次使用 `moonc 0.10.17+d971670cd` 做轻量发布验证。[Windows 环境准备](docs/ENVIRONMENT.md)说明安装与标准库匹配检查。核心仅依赖 MoonBit core。Python、Node.js 和 SciPy 用于可选开发验证。
 
 ```sh
 moon add mik1e80/cad_sketch

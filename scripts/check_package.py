@@ -41,7 +41,7 @@ def main() -> None:
     consumer.mkdir()
     required = {
         "moon.mod", "moon.pkg", "LICENSE", "README.md", "README.mbt.md",
-        "CHANGELOG.md", "docs/PUBLISHING.md",
+        "CHANGELOG.md", "docs/PUBLISHING.md", "docs/ENVIRONMENT.md",
         "THIRD_PARTY_NOTICES.md", "docs/ARCHITECTURE.md", "docs/ACCEPTANCE.md",
         "svg.mbt", "svg_test.mbt", "docs/SVG_EXPORT.md", "scripts/export_svg.py",
         "docs/images/svg-export/before.svg", "docs/images/svg-export/after.svg", "docs/images/svg-export/conflict.svg",

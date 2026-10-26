@@ -1,6 +1,6 @@
 # 验收前核对记录
 
-初次核对日期：2026-10-16；交付状态更新：2026-10-23。本文件记录代码证据与待完成事项，不表示组委会已批准项目。
+初次核对日期：2026-10-16；交付状态更新：2026-10-26。本文件记录代码证据与待完成事项，不表示组委会已批准项目。
 
 ## 对照来源
 
@@ -22,7 +22,7 @@
 | 核心路径测试 | AD 差分、解析几何、机构运动、矛盾 / 冗余、启停、极端数值、跨草图误用、资源边界；已有失败反例先复现再修复 |
 | 开源和参考来源 | 完整 Apache-2.0 LICENSE；THIRD_PARTY_NOTICES.md 记录参考项目名称、链接、许可证和具体范围；没有第三方 CAD 样例或求解器代码进入源码包 |
 | AI 使用可解释 | docs/ARCHITECTURE.md 说明建模、数值步骤、质量边界及 AI 协作；参赛者仍需掌握并解释这些内容 |
-| Mooncakes 发布 | `mik1e80/cad_sketch@0.2.1` 通过 [Mooncakes](https://mooncakes.io/docs/mik1e80/cad_sketch) 分发；发布记录和独立安装验证见 [PUBLISHING](PUBLISHING.md) |
+| Mooncakes 发布 | `mik1e80/cad_sketch@0.2.2` 通过 [Mooncakes](https://mooncakes.io/docs/mik1e80/cad_sketch) 分发；发布记录和独立安装验证见 [PUBLISHING](PUBLISHING.md) |
 
 ## 代码行数与申报口径
 
@@ -185,3 +185,19 @@ Python / SciPy 位于可选开发目录，使用独立依赖文件，通过 `.mo
 完整摘要：[full-regression.json](releases/0.2.1-full-regression.json)；[逐模型原始数据 ZIP](https://github.com/mik1e80/moonbit-cad-sketch/releases/download/v0.2.1/full-regression-results.zip)；[完整任务日志](https://github.com/mik1e80/moonbit-cad-sketch/releases/download/v0.2.1/full-regression.log)。ZIP 的 SHA-256 为 `239725cd4cb3d3a92f4aa57bcad1cd06618a2ff9a16cffbcb6d197ab3be759c3`，已与 GitHub artifact 摘要核对一致。
 
 原 `verification.json` 保留首次发布时的轻量验证记录，本节是随后补充的全量结果。旧批量快照保持原始指纹，新运行证据单独保存；SciPy 开发对照及四档 Benchmark 未重测。日常 CI 仍默认轻量，未修改 tag、运行时代码或已发布的 Mooncakes 包。
+
+
+## 2026-10-26 环境恢复与 0.2.2 轻量发布准备
+
+默认 Windows 工具链已更新为 `moon 0.1.20261023` / `moonc 0.10.17+d971670cd`，编译器与 core 版本一致，标准库重新 bundle。旧工具链目录已备份，注册表缓存与现有登录凭据保留。新终端直接使用默认 `moon` 后，JS 零警告检查、7 项 README 测试和基础示例实际运行通过。
+
+本次发布准备另通过格式检查、JS 构建、9 项 SVG 测试及解包后的 5 项 JS 消费测试。归档检查要求包含新的 [Windows 环境准备](ENVIRONMENT.md)文档；MoonBit 官方技能仅安装在个人环境，不进入库依赖。
+
+0.2.2 的核心 MoonBit 实现、测试及生成接口与 0.2.1 相同；本次发布只更新环境与分发文档、模块版本和归档内容检查。完整四后端回归继续引用原 v0.2.1 tag 的实际记录，不将其改写为 0.2.2 的新全量测量。
+
+
+## 0.2.2 实际发布记录
+
+2026-10-26，正式发布返回 `200 OK`；仓库外全新项目从注册表安装 0.2.2，3 项 JS 消费测试与程序运行通过，SVG 经独立 XML 解析。上传归档的 114 个文件与下载文件逐字节一致。默认工具链的实际使用路径为个人 `.moon` 安装，编译器版本 `0.10.17+d971670cd`，旧安装已备份、登录凭据保留。
+
+[发布回执](releases/0.2.2.json)与[消费记录](releases/consumer-0.2.2.json)记录实际版本、归档 SHA-256 与轻量验证范围。GitHub 版本入口为 [v0.2.2](https://github.com/mik1e80/moonbit-cad-sketch/releases/tag/v0.2.2)。没有修改核心实现、测试或旧版全量回归产物。
