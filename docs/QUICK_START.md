@@ -1,6 +1,6 @@
 # 快速开始
 
-创建几何 → 添加约束 → 求解 → 编辑尺寸 → 查看诊断。以下命令均在仓库根目录执行。
+创建几何 → 添加约束 → 求解 → 读取结果 → 编辑尺寸 → 再求解。安装与第一个草图在使用方项目中执行；仓库内案例在源码仓库根目录执行。
 
 ## 安装与版本
 
@@ -14,7 +14,7 @@ moon add mik1e80/cad_sketch
 
 该命令从注册表下载模块，并写入当前项目的 `moon.mod` 依赖。然后按下文配置使用方的 `moon.pkg` 导入核心包。
 
-工具链要求：`moonc >= 0.10.15`，已在 `moon 0.1.20261012` / `moonc 0.10.15+943464bfa` 上验证。源码采用新版 `Int32` 与带默认值的标记参数语法；旧版 0.10.14 需要先更新工具链。
+工具链要求：`moonc >= 0.10.15`。`0.2.2` 的 Windows 轻量验证使用 `moon 0.1.20261023` / `moonc 0.10.17+d971670cd` 和匹配的 core；旧版 0.10.14 需要先更新工具链。标准库缺失或 Windows 路径问题见[环境排查](ENVIRONMENT.md)。
 
 如果希望修改源码或运行仓库内案例：
 
@@ -31,47 +31,68 @@ moon run examples/basic
 
 日常使用只需：创建几何 → 添加约束 → 求解 → 编辑尺寸 → 查看诊断。默认选项即可开始；[API 使用指南](API_GUIDE.md)按这五步介绍接口。
 
-在使用者的 `moon.pkg` 中导入：
+在使用方项目中创建 `cmd/main/moon.pkg`，内容如下；`pkgtype` 将这个包标记为可运行程序：
 
 ```moonbit
 import {
   "mik1e80/cad_sketch" @sketch,
 }
+
+pkgtype(kind: "executable")
 ```
 
-下面这段示例也作为公开接口测试运行，完整版本见 [README.mbt.md](../README.mbt.md)。
+在同一目录创建 `cmd/main/main.mbt`，写入下面的完整程序。对应的坐标与重复求解行为由 [README.mbt.md](../README.mbt.md) 的公开接口测试核对。
 
 ```moonbit
-let s = @sketch.Sketch::new()
-let a = s.add_point(0.0, 0.0)
-let b = s.add_point(3.0, 0.5)
-let line = s.add_line(a, b)
-s.constrain(Fix(a, 0.0, 0.0)) |> ignore
-s.constrain(Horizontal(line)) |> ignore
-let dimension = s.constrain(Distance(a, b, 5.0))
+fn main {
+  let s = @sketch.Sketch::new()
+  let a = s.add_point(0.0, 0.0)
+  let b = s.add_point(3.0, 0.5)
+  let line = s.add_line(a, b)
+  s.constrain(Fix(a, 0.0, 0.0)) |> ignore
+  s.constrain(Horizontal(line)) |> ignore
+  let dimension = s.constrain(Distance(a, b, 5.0))
 
-match s.solve_and_apply() {
-  Ok(solution) => {
-    if solution.report.is_satisfied() {
-      let p = s.point(b).unwrap()
-      println("B = (\{p.x}, \{p.y})") // 接近 (5, 0)
-    } else {
-      for finding in solution.report.likely_conflicts() {
-        println("约束 #\{finding.id.index()}：误差比 \{finding.tolerance_ratio}")
+  match s.solve_and_apply() {
+    Ok(solution) => {
+      println("initial satisfied: \{solution.report.is_satisfied()}")
+      if solution.report.is_satisfied() {
+        let p = s.point(b).unwrap()
+        println("B = (\{p.x}, \{p.y})")
+      } else {
+        for finding in solution.report.likely_conflicts() {
+          println("constraint #\{finding.id.index()}: ratio=\{finding.tolerance_ratio}")
+        }
       }
     }
-  }
-  Err(error) => println(error.message())
-}
-
-// 修改尺寸后，以已有坐标为初值继续求解。
-if s.set_constraint(dimension, Distance(a, b, 7.0)) {
-  match s.solve_and_apply() {
-    Ok(updated) => println("修改尺寸后达标：\{updated.report.is_satisfied()}")
     Err(error) => println(error.message())
+  }
+
+  // 只修改尺寸约束，以已有几何为初值重新求解。
+  if s.set_constraint(dimension, Distance(a, b, 7.0)) {
+    match s.solve_and_apply() {
+      Ok(updated) => {
+        println("edited satisfied: \{updated.report.is_satisfied()}")
+        if updated.report.is_satisfied() {
+          let p = s.point(b).unwrap()
+          println("B = (\{p.x}, \{p.y})")
+        }
+      }
+      Err(error) => println(error.message())
+    }
   }
 }
 ```
+
+在使用方项目根目录运行：
+
+```sh
+moon run cmd/main --target js
+```
+
+两次 `satisfied` 都应为 `true`，B 先接近 `(5,0)`，再接近 `(7,0)`，A 保持在原点附近。坐标按容差解释，浮点打印可能略有差异。长度沿用应用的统一单位；本例未指定毫米或米。
+
+`Ok(Solution)` 包含求解尝试的结果，不一定达标；应先检查 `report.is_satisfied()`。未达标时 `s.point()` 仍是原有保存几何，候选几何从 `solution.point()` 读取。`Err(SketchError)` 用于无效输入或数值错误。冲突后的启停和删除恢复见[冲突示例](../examples/conflict/README.md)。
 
 进行源码开发时，可使用 MoonBit 的[本地 workspace](https://docs.moonbitlang.com/en/latest/toolchain/moon/module.html#local-dependencies) 调用源码。在共同父目录创建 `moon.work`，例如 `members = ["moonbit-cad-sketch", "my_app"]`；在 `my_app/moon.mod` 添加 `import { "mik1e80/cad_sketch@0.2.2" }`，再按上面的 `moon.pkg` 导入。workspace 优先解析本地成员。普通使用者直接用上面的 `moon add` 安装即可。
 

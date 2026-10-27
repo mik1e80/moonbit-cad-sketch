@@ -25,7 +25,16 @@ import {
 
 默认选项即可开始；[API 使用指南](docs/API_GUIDE.md)按几何、约束、求解、编辑和诊断介绍接口。需要 `moonc >= 0.10.15`。
 
-下面的公开接口示例随 `moon test` 执行：
+## 输入、求解与尺寸编辑
+
+创建草图 → 添加几何 → 添加关系 → 求解 → 读取结果 → 修改尺寸 → 再次求解。下面的公开接口示例随 `moon test README.mbt.md --target js` 执行：
+
+| 输入或操作 | 达标后的输出（近似值） |
+| --- | --- |
+| A=(0,0)、B=(3,0.5)；固定 A、AB 水平、长度 5 | A=(0,0)、B=(5,0)，`Satisfied` |
+| 只将长度约束改为 7 | A=(0,0)、B=(7,0)，`Satisfied` |
+
+测试按 `1e-6` 核对坐标，不依赖浮点打印格式；修改尺寸时不直接设置终点坐标。
 
 ```mbt check
 ///|
@@ -39,11 +48,17 @@ test "dimensioned segment and repeated solve" {
   let first = s.solve_and_apply().unwrap()
   assert_true(first.report.is_satisfied())
   assert_eq(first.report.local_dof, 0)
+  assert_true(s.point(a).unwrap().x.abs() < 1.0e-6)
+  assert_true(s.point(a).unwrap().y.abs() < 1.0e-6)
   assert_true((s.point(b).unwrap().x - 5.0).abs() < 1.0e-6)
+  assert_true(s.point(b).unwrap().y.abs() < 1.0e-6)
   assert_true(s.set_constraint(dimension, Distance(a, b, 7.0)))
   let second = s.solve_and_apply().unwrap()
   assert_true(second.report.is_satisfied())
-  assert_true((second.point(b).unwrap().x - 7.0).abs() < 1.0e-6)
+  assert_true(s.point(a).unwrap().x.abs() < 1.0e-6)
+  assert_true(s.point(a).unwrap().y.abs() < 1.0e-6)
+  assert_true((s.point(b).unwrap().x - 7.0).abs() < 1.0e-6)
+  assert_true(s.point(b).unwrap().y.abs() < 1.0e-6)
 }
 ```
 
