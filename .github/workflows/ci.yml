@@ -47,6 +47,7 @@ jobs:
           mkdir -p "$MOON_HOME/lib"
           tar -xzf "$RUNNER_TEMP/moonbit.tar.gz" -C "$MOON_HOME"
           tar -xzf "$RUNNER_TEMP/core.tar.gz" -C "$MOON_HOME/lib"
+          chmod +x "$MOON_HOME"/bin/* "$MOON_HOME/bin/internal/tcc"
           export PATH="$MOON_HOME/bin:$PATH"
           "$MOON_HOME/bin/moon" -C "$MOON_HOME/lib/core" bundle --warn-list -a --all
           echo "$MOON_HOME/bin" >> "$GITHUB_PATH"
@@ -100,6 +101,7 @@ jobs:
           mkdir -p "$MOON_HOME/lib"
           tar -xzf "$RUNNER_TEMP/moonbit.tar.gz" -C "$MOON_HOME"
           tar -xzf "$RUNNER_TEMP/core.tar.gz" -C "$MOON_HOME/lib"
+          chmod +x "$MOON_HOME"/bin/* "$MOON_HOME/bin/internal/tcc"
           export PATH="$MOON_HOME/bin:$PATH"
           "$MOON_HOME/bin/moon" -C "$MOON_HOME/lib/core" bundle --warn-list -a --all
           echo "$MOON_HOME/bin" >> "$GITHUB_PATH"
