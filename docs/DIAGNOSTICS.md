@@ -54,6 +54,7 @@ pub fn SolveReport::likely_conflicts(
 | `DegenerateLine(LineId)` | 初始或求值时线长退化 |
 | `InvalidRadius(CircleId)` | 圆的初始或求值半径非法、相对尺度过小 |
 | `ResourceLimit` | 超过变量、线或现存约束上限 |
+| `IdentifierExhausted` | 源码 0.3.0 的 `try_constrain()` 无法分配更多不复用编号，失败不写入 |
 | `InvalidOptions(String)` | 容差、相对尺度或迭代预算非法 |
 | `NumericalFailure(String)` | 非有限求值或输出溢出 |
 
@@ -67,7 +68,7 @@ match sketch.solve_and_apply() {
 }
 ```
 
-禁用关系仍跳过关系校验，几何对象始终校验。多个问题同时存在时返回按校验顺序遇到的第一个错误，并不汇总所有错误。迭代搜索中的非法候选会被拒绝；最终未收敛使用 `Ok` 内的 `Stalled` / `IterationLimit`。`Err` 和未达标结果均不会由 `solve_and_apply()` 写回几何。JSON 示例工具仍将 `message()` 序列化为字符串，因此其数据格式保持一致。
+禁用关系仍跳过关系校验，几何对象始终校验。多个问题同时存在时返回按校验顺序遇到的第一个错误，并不汇总所有错误。迭代搜索中的非法候选会被拒绝；最终未收敛使用 `Ok` 内的 `Stalled` / `IterationLimit` / `BudgetLimit`（源码 0.3.0，总 QR 预算耗尽）。`Err` 和未达标结果均不会由 `solve_and_apply()` 写回几何。JSON 示例工具仍将 `message()` 序列化为字符串，因此其数据格式保持一致。
 
 
 ## 运行冲突案例

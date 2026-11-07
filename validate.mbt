@@ -121,48 +121,52 @@ fn Sketch::validate(self : Sketch) -> Result[Unit, SketchError] {
     if self.constraint_has_foreign_handle(c) {
       return Err(ForeignHandle)
     }
-    let ok = match c {
-      Fix(p, x, y) => self.valid_point(p) && bounded(x) && bounded(y)
-      Coincident(a, b) => self.valid_point(a) && self.valid_point(b)
-      Symmetric(a, b, center) =>
-        self.valid_point(a) && self.valid_point(b) && self.valid_point(center)
-      Mirror(a, b, axis) =>
-        self.valid_point(a) && self.valid_point(b) && self.valid_line(axis)
-      Horizontal(l) | Vertical(l) => self.valid_line(l)
-      Distance(a, b, d) =>
-        self.valid_point(a) && self.valid_point(b) && bounded(d) && d >= 0.0
-      DistanceX(a, b, d) | DistanceY(a, b, d) =>
-        self.valid_point(a) && self.valid_point(b) && bounded(d)
-      Parallel(a, b) | Perpendicular(a, b) | EqualLength(a, b) =>
-        self.valid_line(a) && self.valid_line(b)
-      LengthRatio(a, b, ratio) =>
-        self.valid_line(a) &&
-        self.valid_line(b) &&
-        finite(ratio) &&
-        ratio > 0.0 &&
-        ratio <= 1.0e12
-      Angle(a, b, t) =>
-        self.valid_line(a) &&
-        self.valid_line(b) &&
-        finite(t) &&
-        t.abs() <= 2.0 * @math.PI
-      Midpoint(p, l) | PointOnLine(p, l) =>
-        self.valid_point(p) && self.valid_line(l)
-      DistanceToLine(p, l, d) =>
-        self.valid_point(p) && self.valid_line(l) && bounded(d)
-      Radius(c, r) => self.valid_circle(c) && bounded(r) && r > 0.0
-      EqualRadius(a, b)
-      | Concentric(a, b)
-      | ExternalTangent(a, b)
-      | InternalTangent(a, b) => self.valid_circle(a) && self.valid_circle(b)
-      PointOnCircle(p, c) => self.valid_point(p) && self.valid_circle(c)
-      Tangent(l, c) => self.valid_line(l) && self.valid_circle(c)
-    }
-    if !ok {
+    if !self.constraint_valid(c) {
       return Err(InvalidConstraint(self.constraint_ids[i]))
     }
   }
   Ok(())
+}
+
+///|
+fn Sketch::constraint_valid(self : Sketch, c : Constraint) -> Bool {
+  match c {
+    Fix(p, x, y) => self.valid_point(p) && bounded(x) && bounded(y)
+    Coincident(a, b) => self.valid_point(a) && self.valid_point(b)
+    Symmetric(a, b, center) =>
+      self.valid_point(a) && self.valid_point(b) && self.valid_point(center)
+    Mirror(a, b, axis) =>
+      self.valid_point(a) && self.valid_point(b) && self.valid_line(axis)
+    Horizontal(l) | Vertical(l) => self.valid_line(l)
+    Distance(a, b, d) =>
+      self.valid_point(a) && self.valid_point(b) && bounded(d) && d >= 0.0
+    DistanceX(a, b, d) | DistanceY(a, b, d) =>
+      self.valid_point(a) && self.valid_point(b) && bounded(d)
+    Parallel(a, b) | Perpendicular(a, b) | EqualLength(a, b) =>
+      self.valid_line(a) && self.valid_line(b)
+    LengthRatio(a, b, ratio) =>
+      self.valid_line(a) &&
+      self.valid_line(b) &&
+      finite(ratio) &&
+      ratio > 0.0 &&
+      ratio <= 1.0e12
+    Angle(a, b, t) =>
+      self.valid_line(a) &&
+      self.valid_line(b) &&
+      finite(t) &&
+      t.abs() <= 2.0 * @math.PI
+    Midpoint(p, l) | PointOnLine(p, l) =>
+      self.valid_point(p) && self.valid_line(l)
+    DistanceToLine(p, l, d) =>
+      self.valid_point(p) && self.valid_line(l) && bounded(d)
+    Radius(c, r) => self.valid_circle(c) && bounded(r) && r > 0.0
+    EqualRadius(a, b)
+    | Concentric(a, b)
+    | ExternalTangent(a, b)
+    | InternalTangent(a, b) => self.valid_circle(a) && self.valid_circle(b)
+    PointOnCircle(p, c) => self.valid_point(p) && self.valid_circle(c)
+    Tangent(l, c) => self.valid_line(l) && self.valid_circle(c)
+  }
 }
 
 ///|

@@ -392,10 +392,10 @@ test "bad input and invalid options are errors" {
 ///|
 test "resource limits are explicit" {
   let s = Sketch::new()
-  for i = 0; i < 129; i = i + 1 {
+  for i = 0; i < 128; i = i + 1 {
     s.add_point(i.to_double(), 0.0) |> ignore
   }
-  assert_true(s.solve() is Err(_))
+  assert_true(s.try_add_point(0.0, 0.0) is Err(ResourceLimit))
 }
 
 ///|
@@ -424,15 +424,14 @@ test "constraint and line count limits reject oversized models" {
   let r = solved(s)
   assert_eq(r.report.equations, 1024)
   assert_eq(r.report.rank, 2)
-  s.constrain(Fix(a, 0.0, 0.0)) |> ignore
-  assert_true(s.solve() is Err(_))
+  assert_true(s.try_constrain(Fix(a, 0.0, 0.0)) is Err(ResourceLimit))
   let s = Sketch::new()
   let a = s.add_point(0.0, 0.0)
   let b = s.add_point(1.0, 0.0)
-  for i = 0; i < 513; i = i + 1 {
+  for i = 0; i < 512; i = i + 1 {
     s.add_line(a, b) |> ignore
   }
-  assert_true(s.solve() is Err(_))
+  assert_true(s.try_add_line(a, b) is Err(ResourceLimit))
 }
 
 ///|

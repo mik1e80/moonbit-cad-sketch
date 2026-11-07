@@ -14,6 +14,7 @@ fn report(
         Satisfied => "satisfied"
         Stalled => "stalled"
         IterationLimit => "iteration limit"
+        BudgetLimit => "linear solve budget limit"
       }
       println(
         "\{name}: \{status}; local DOF=\{r.local_dof}; iterations=\{r.iterations}; max tolerance ratio=\{r.max_tolerance_ratio}",

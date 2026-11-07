@@ -102,6 +102,7 @@ fn run_case(
           Satisfied => "Satisfied"
           Stalled => "Stalled"
           IterationLimit => "IterationLimit"
+          BudgetLimit => "BudgetLimit"
         }
     }
     warmup_statuses.push(status)
@@ -148,6 +149,7 @@ fn run_case(
             Satisfied => "Satisfied"
             Stalled => "Stalled"
             IterationLimit => "IterationLimit"
+            BudgetLimit => "BudgetLimit"
           },
           iterations: report.iterations,
           variables: report.variables,

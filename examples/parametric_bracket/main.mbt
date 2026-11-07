@@ -307,6 +307,7 @@ fn Bracket::emit(
     Satisfied => "Satisfied"
     Stalled => "Stalled"
     IterationLimit => "IterationLimit"
+    BudgetLimit => "BudgetLimit"
   }
   let mut holes = "["
   for i, id in self.holes {

@@ -22,21 +22,34 @@ jobs:
   smoke:
     if: ${{ !inputs.full_regression }}
     name: smoke (${{ matrix.target }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      MOON_HOME: ${{ runner.temp }}/moonbit
     strategy:
       fail-fast: false
       matrix:
         target: [wasm, wasm-gc, js, native]
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-python@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
         if: matrix.target == 'js'
         with:
-          python-version: '3.13'
+          python-version: '3.13.9'
       - name: Install MoonBit
         run: |
-          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
-          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+          curl --fail --location --retry 2 --max-time 180 https://cli.moonbitlang.com/binaries/0.10.17%2Bd971670cd/moonbit-linux-x86_64.tar.gz -o "$RUNNER_TEMP/moonbit.tar.gz"
+          echo "d0a96eaf91c77cfcdd7b7df75390c5a1a95d0b8a328b1a5ed6fee050cfbf8d50  $RUNNER_TEMP/moonbit.tar.gz" | sha256sum --check --strict
+          curl --fail --location --retry 2 --max-time 180 https://cli.moonbitlang.com/cores/core-0.10.17%2Bd971670cd.tar.gz -o "$RUNNER_TEMP/core.tar.gz"
+          echo "2d837ecbef5933c09726d63682a7695123d622e6aee13525fbc98c4b49433714  $RUNNER_TEMP/core.tar.gz" | sha256sum --check --strict
+          mkdir -p "$MOON_HOME/lib"
+          tar -xzf "$RUNNER_TEMP/moonbit.tar.gz" -C "$MOON_HOME"
+          tar -xzf "$RUNNER_TEMP/core.tar.gz" -C "$MOON_HOME/lib"
+          export PATH="$MOON_HOME/bin:$PATH"
+          "$MOON_HOME/bin/moon" -C "$MOON_HOME/lib/core" bundle --warn-list -a --all
+          echo "$MOON_HOME/bin" >> "$GITHUB_PATH"
       - name: Toolchain version
         run: moon version --all
       - name: Check formatting
@@ -45,9 +58,20 @@ jobs:
       - name: Check selected target
         run: moon check --target ${{ matrix.target }} --deny-warn
       - name: Test public API examples
-        run: moon test README.mbt.md --target ${{ matrix.target }} --deny-warn
+        run: moon test README.mbt.md model.mbt --target ${{ matrix.target }} --deny-warn
       - name: Test SVG export
         run: moon test svg_test.mbt --target ${{ matrix.target }} --deny-warn
+      - name: Test resource and input hardening
+        run: |
+          moon test hardening_test.mbt --target ${{ matrix.target }} --deny-warn
+          moon test hardening_wbtest.mbt --target ${{ matrix.target }} --deny-warn
+          moon test constraint_combinations_test.mbt --target ${{ matrix.target }} --deny-warn
+          moon test typed_errors_test.mbt --target ${{ matrix.target }} --deny-warn
+      - name: Check basic and bracket workflows
+        if: matrix.target == 'js'
+        run: |
+          moon run examples/basic --target js
+          node scripts/bracket_showcase.cjs --check --target js
       - name: Verify lightweight source archive consumer
         if: matrix.target == 'js'
         run: python scripts/check_package.py
@@ -55,16 +79,29 @@ jobs:
   full:
     if: ${{ github.event_name == 'workflow_dispatch' && inputs.full_regression }}
     name: full regression (manual)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      MOON_HOME: ${{ runner.temp }}/moonbit
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-python@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
-          python-version: '3.13'
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
+        with:
+          python-version: '3.13.9'
       - name: Install MoonBit
         run: |
-          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
-          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+          curl --fail --location --retry 2 --max-time 180 https://cli.moonbitlang.com/binaries/0.10.17%2Bd971670cd/moonbit-linux-x86_64.tar.gz -o "$RUNNER_TEMP/moonbit.tar.gz"
+          echo "d0a96eaf91c77cfcdd7b7df75390c5a1a95d0b8a328b1a5ed6fee050cfbf8d50  $RUNNER_TEMP/moonbit.tar.gz" | sha256sum --check --strict
+          curl --fail --location --retry 2 --max-time 180 https://cli.moonbitlang.com/cores/core-0.10.17%2Bd971670cd.tar.gz -o "$RUNNER_TEMP/core.tar.gz"
+          echo "2d837ecbef5933c09726d63682a7695123d622e6aee13525fbc98c4b49433714  $RUNNER_TEMP/core.tar.gz" | sha256sum --check --strict
+          mkdir -p "$MOON_HOME/lib"
+          tar -xzf "$RUNNER_TEMP/moonbit.tar.gz" -C "$MOON_HOME"
+          tar -xzf "$RUNNER_TEMP/core.tar.gz" -C "$MOON_HOME/lib"
+          export PATH="$MOON_HOME/bin:$PATH"
+          "$MOON_HOME/bin/moon" -C "$MOON_HOME/lib/core" bundle --warn-list -a --all
+          echo "$MOON_HOME/bin" >> "$GITHUB_PATH"
       - name: Toolchain version
         run: moon version --all
       - name: Check formatting
@@ -112,7 +149,7 @@ jobs:
         run: node scripts/benchmark.cjs --smoke --target js
       - name: Save validation cases and failure classifications
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: validation-results
           path: |

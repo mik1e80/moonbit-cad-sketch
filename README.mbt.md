@@ -62,7 +62,9 @@ test "dimensioned segment and repeated solve" {
 }
 ```
 
-仅 `Satisfied` 表示返回坐标的全部残差分量满足指定容差。`Stalled` / `IterationLimit` 不构成无解证明；残差列表不构成最小冲突集，`local_dof` 是当前构型的一阶数值估计。所有实体句柄局限于创建它们的草图。
+仅 `Satisfied` 表示返回坐标的全部残差分量满足指定容差。`Stalled` / `IterationLimit` / `BudgetLimit` 不构成无解证明；残差列表不构成最小冲突集，`local_dof` 是当前构型的一阶数值估计。所有实体句柄局限于创建它们的草图。
+
+源码 0.3.0（未发布）新增 `try_add_point` / `try_add_line` / `try_add_circle` / `try_constrain`、累计计算预算和类型化编号耗尽错误。[API 指南](docs/API_GUIDE.md)说明与正式版 0.2.2 的差异；[安全策略](SECURITY.md)说明不可信输入与宿主资源隔离边界。
 
 求解的 `Err` 可直接匹配 `SketchError`；日志使用 `error.message()`。完整分类与迁移见 [API 指南](docs/API_GUIDE.md#类型化错误与迁移)。
 

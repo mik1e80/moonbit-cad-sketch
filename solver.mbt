@@ -3,6 +3,7 @@ pub(all) enum SolveStatus {
   Satisfied
   Stalled
   IterationLimit
+  BudgetLimit
 } derive(Debug)
 
 ///|
@@ -46,6 +47,7 @@ pub struct SolveReport {
   priv owner : Array[Unit]
   status : SolveStatus
   iterations : Int32
+  linear_solves : Int32
   variables : Int32
   equations : Int32
   rank : Int32
@@ -176,6 +178,7 @@ fn Sketch::solution(
   options : SolveOptions,
   status : SolveStatus,
   iterations : Int32,
+  linear_solves : Int32,
 ) -> Result[Solution, SketchError] {
   let points : Array[Point] = Array::makei(self.points.length(), i => {
     x: x[i * 2] * frame.scale + frame.x,
@@ -243,6 +246,7 @@ fn Sketch::solution(
     owner: self.owner,
     status,
     iterations,
+    linear_solves,
     variables: x.length(),
     equations: rows.length(),
     rank,
@@ -258,9 +262,14 @@ fn Sketch::solution(
 /// Local damped Gauss-Newton solve with forward-mode AD in Double arithmetic.
 /// Err means invalid input/evaluation, not a mathematical proof of inconsistency.
 /// A nonconverged Solution still contains the best accepted iterate for inspection.
+/// max_linear_solves (1..4000, default 400) counts every damped QR attempt,
+/// including rejected/failed steps. Final diagnostic rank evaluation is separate.
+/// max_damping_attempts (1..16) bounds trials within each iteration.
 pub fn Sketch::solve(
   self : Sketch,
   options~ : SolveOptions = SolveOptions::default(),
+  max_linear_solves~ : Int32 = 400,
+  max_damping_attempts~ : Int32 = 16,
 ) -> Result[Solution, SketchError] {
   match self.validate() {
     Err(e) => return Err(e)
@@ -275,9 +284,15 @@ pub fn Sketch::solve(
     options.rank_tolerance < 1.0e-14 ||
     options.rank_tolerance > 0.01 ||
     options.max_iterations < 1 ||
-    options.max_iterations > 1000 {
+    options.max_iterations > 1000 ||
+    max_linear_solves < 1 ||
+    max_linear_solves > 4000 ||
+    max_damping_attempts < 1 ||
+    max_damping_attempts > 16 {
     return Err(
-      InvalidOptions("Invalid tolerances or iteration budget (1..1000)"),
+      InvalidOptions(
+        "Invalid tolerances or budgets: iterations 1..1000, linear solves 1..4000, damping attempts 1..16",
+      ),
     )
   }
   let frame = self.frame()
@@ -297,16 +312,35 @@ pub fn Sketch::solve(
     Err(e) => return Err(e)
   }
   let mut lambda = 1.0e-3
+  let mut linear_solves = 0
   for iteration = 0
       iteration < options.max_iterations
       iteration = iteration + 1 {
     let (residual, jacobian) = weighted_system(rows, frame, options)
     if max_abs(residual) <= 1.0 {
-      return self.solution(x, frame, options, Satisfied, iteration)
+      return self.solution(
+        x,
+        frame,
+        options,
+        Satisfied,
+        iteration,
+        linear_solves,
+      )
     }
     let old_cost = cost(residual)
     let mut accepted = false
-    for attempt = 0; attempt < 16; attempt = attempt + 1 {
+    for attempt = 0; attempt < max_damping_attempts; attempt = attempt + 1 {
+      if linear_solves >= max_linear_solves {
+        return self.solution(
+          x,
+          frame,
+          options,
+          BudgetLimit,
+          iteration,
+          linear_solves,
+        )
+      }
+      linear_solves += 1
       let delta = match damped_step(jacobian, residual, x.length(), lambda) {
         Some(d) => d
         None => {
@@ -334,12 +368,26 @@ pub fn Sketch::solve(
       lambda = lambda * 10.0
     }
     if !accepted {
-      return self.solution(x, frame, options, Stalled, iteration + 1)
+      return self.solution(
+        x,
+        frame,
+        options,
+        Stalled,
+        iteration + 1,
+        linear_solves,
+      )
     }
   }
   let (residual, _) = weighted_system(rows, frame, options)
   let status = if max_abs(residual) <= 1.0 { Satisfied } else { IterationLimit }
-  self.solution(x, frame, options, status, options.max_iterations)
+  self.solution(
+    x,
+    frame,
+    options,
+    status,
+    options.max_iterations,
+    linear_solves,
+  )
 }
 
 ///|
@@ -347,8 +395,11 @@ pub fn Sketch::solve(
 pub fn Sketch::solve_and_apply(
   self : Sketch,
   options~ : SolveOptions = SolveOptions::default(),
+  max_linear_solves~ : Int32 = 400,
+  max_damping_attempts~ : Int32 = 16,
 ) -> Result[Solution, SketchError] {
-  let solution = match self.solve(options~) {
+  let solution = match
+    self.solve(options~, max_linear_solves~, max_damping_attempts~) {
     Ok(s) => s
     Err(e) => return Err(e)
   }

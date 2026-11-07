@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0 (unreleased)
+
+- Reject storage overflow before all public builder writes; add recoverable `try_add_*` / `try_constrain` APIs with eager definition validation and typed identifier exhaustion.
+- Bound total damped QR attempts and expose `BudgetLimit` / `report.linear_solves`; preserve stored geometry on unsuccessful solves. Exhaustive status/error matches need the new variants.
+- Bound SVG title input to 4096 UTF-16 code units before escaping.
+- Add security/contribution policies, clarify geometry and host boundaries, and complete development dependency notices.
+- Pin CI action commits and MoonBit compiler/core downloads with SHA256 checks; keep complete regression an explicit manual opt-in.
+
 ## 0.2.2 — 2026-10-26
 
 - 补充 Windows 工具链、匹配标准库及缓存异常的排查说明。

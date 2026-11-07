@@ -232,6 +232,7 @@ fn run_case(group : Int32, index : Int32) -> Record {
           Satisfied => "Satisfied"
           Stalled => "Stalled"
           IterationLimit => "IterationLimit"
+          BudgetLimit => "BudgetLimit"
         },
         iterations: report.iterations,
         variables: report.variables,

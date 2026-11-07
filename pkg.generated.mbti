@@ -11,7 +11,7 @@ import {
 
 // Types and methods
 pub struct CircleId {
-  index : Int
+  index : Int32
   // private fields
 } derive(@debug.Debug)
 pub fn CircleId::to_repr(Self) -> @debug.Repr
@@ -45,10 +45,10 @@ pub(all) enum Constraint {
 pub fn Constraint::to_repr(Self) -> @debug.Repr
 
 pub struct ConstraintId {
-  index : Int
+  index : Int32
   // private fields
 } derive(@debug.Debug)
-pub fn ConstraintId::index(Self) -> Int
+pub fn ConstraintId::index(Self) -> Int32
 pub fn ConstraintId::to_repr(Self) -> @debug.Repr
 
 pub struct ConstraintResidual {
@@ -61,7 +61,7 @@ pub struct ConstraintResidual {
 pub fn ConstraintResidual::to_repr(Self) -> @debug.Repr
 
 pub struct LineId {
-  index : Int
+  index : Int32
   // private fields
 } derive(@debug.Debug)
 pub fn LineId::to_repr(Self) -> @debug.Repr
@@ -73,7 +73,7 @@ pub(all) struct Point {
 pub fn Point::to_repr(Self) -> @debug.Repr
 
 pub struct PointId {
-  index : Int
+  index : Int32
   // private fields
 } derive(@debug.Debug)
 pub fn PointId::to_repr(Self) -> @debug.Repr
@@ -95,9 +95,13 @@ pub fn Sketch::set_constraint(Self, ConstraintId, Constraint) -> Bool
 pub fn Sketch::set_constraint_enabled(Self, ConstraintId, Bool) -> Bool
 pub fn Sketch::set_point(Self, PointId, Point) -> Bool
 pub fn Sketch::set_radius(Self, CircleId, Double) -> Bool
-pub fn Sketch::solve(Self, options? : SolveOptions) -> Result[Solution, SketchError]
-pub fn Sketch::solve_and_apply(Self, options? : SolveOptions) -> Result[Solution, SketchError]
+pub fn Sketch::solve(Self, options? : SolveOptions, max_linear_solves? : Int32, max_damping_attempts? : Int32) -> Result[Solution, SketchError]
+pub fn Sketch::solve_and_apply(Self, options? : SolveOptions, max_linear_solves? : Int32, max_damping_attempts? : Int32) -> Result[Solution, SketchError]
 pub fn Sketch::to_svg(Self, options? : SvgOptions) -> Result[String, SketchError]
+pub fn Sketch::try_add_circle(Self, PointId, Double) -> Result[CircleId, SketchError]
+pub fn Sketch::try_add_line(Self, PointId, PointId) -> Result[LineId, SketchError]
+pub fn Sketch::try_add_point(Self, Double, Double) -> Result[PointId, SketchError]
+pub fn Sketch::try_constrain(Self, Constraint) -> Result[ConstraintId, SketchError]
 
 pub(all) enum SketchError {
   InvalidGeometry(String)
@@ -106,6 +110,7 @@ pub(all) enum SketchError {
   DegenerateLine(LineId)
   InvalidRadius(CircleId)
   ResourceLimit
+  IdentifierExhausted
   InvalidOptions(String)
   NumericalFailure(String)
 } derive(@debug.Debug)
@@ -123,18 +128,19 @@ pub(all) struct SolveOptions {
   length_tolerance : Double
   angular_tolerance : Double
   rank_tolerance : Double
-  max_iterations : Int
+  max_iterations : Int32
 }
 pub fn SolveOptions::default() -> Self
 
 pub struct SolveReport {
   status : SolveStatus
-  iterations : Int
-  variables : Int
-  equations : Int
-  rank : Int
-  local_dof : Int
-  dependent_equations : Int
+  iterations : Int32
+  linear_solves : Int32
+  variables : Int32
+  equations : Int32
+  rank : Int32
+  local_dof : Int32
+  dependent_equations : Int32
   max_tolerance_ratio : Double
   residuals : Array[ConstraintResidual]
   // private fields
@@ -149,6 +155,7 @@ pub(all) enum SolveStatus {
   Satisfied
   Stalled
   IterationLimit
+  BudgetLimit
 } derive(@debug.Debug)
 pub fn SolveStatus::to_repr(Self) -> @debug.Repr
 
@@ -161,8 +168,8 @@ pub(all) struct SvgBounds {
 pub fn SvgBounds::to_repr(Self) -> @debug.Repr
 
 pub(all) struct SvgOptions {
-  width : Int
-  height : Int
+  width : Int32
+  height : Int32
   padding : Double
   title : String
   show_points : Bool

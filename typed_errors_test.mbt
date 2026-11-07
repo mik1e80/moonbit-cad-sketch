@@ -60,11 +60,10 @@ test "typed constraint errors use stable creation IDs after deletion" {
 test "typed resource limit leaves geometry unchanged" {
   let s = @sketch.Sketch::new()
   let p = s.add_point(4.0, 5.0)
-  for i = 0; i < 128; i = i + 1 {
+  for i = 0; i < 127; i = i + 1 {
     s.add_point(i.to_double(), 0.0) |> ignore
   }
-  assert_true(s.solve() is Err(ResourceLimit))
-  assert_true(s.solve_and_apply() is Err(ResourceLimit))
+  assert_true(s.try_add_point(0.0, 0.0) is Err(ResourceLimit))
   assert_eq(s.point(p).unwrap().x, 4.0)
   assert_eq(s.point(p).unwrap().y, 5.0)
 }

@@ -145,8 +145,12 @@ fn Sketch::constraint_id(self : Sketch, index : Int32) -> ConstraintId {
 }
 
 ///|
-/// Nonfinite coordinates are rejected by solve().
+/// Convenience builder for trusted input. Traps before exceeding 256 variables.
+/// Values remain validated at solve time; prefer try_add_point for external input.
 pub fn Sketch::add_point(self : Sketch, x : Double, y : Double) -> PointId {
+  if self.points.length() * 2 + self.circles.length() > 254 {
+    abort("Small-sketch variable limit; use try_add_point")
+  }
   let id = self.point_id(self.points.length())
   self.points.push({ x, y, })
   id
@@ -154,6 +158,9 @@ pub fn Sketch::add_point(self : Sketch, x : Double, y : Double) -> PointId {
 
 ///|
 pub fn Sketch::add_line(self : Sketch, a : PointId, b : PointId) -> LineId {
+  if self.lines.length() >= 512 {
+    abort("Small-sketch line limit; use try_add_line")
+  }
   let id = self.line_id(self.lines.length())
   self.lines.push({ a, b, })
   id
@@ -166,6 +173,9 @@ pub fn Sketch::add_circle(
   center : PointId,
   radius : Double,
 ) -> CircleId {
+  if self.points.length() * 2 + self.circles.length() >= 256 {
+    abort("Small-sketch variable limit; use try_add_circle")
+  }
   let id = self.circle_id(self.circles.length())
   self.circles.push({ center, radius, })
   id
@@ -173,6 +183,9 @@ pub fn Sketch::add_circle(
 
 ///|
 pub fn Sketch::constrain(self : Sketch, c : Constraint) -> ConstraintId {
+  if self.constraints.length() >= 512 {
+    abort("Small-sketch constraint limit; use try_constrain")
+  }
   // IDs never alias a removed relation, even after compacting the live arrays.
   let index = self.next_constraint[0]
   if index == 2147483647 {
@@ -184,6 +197,138 @@ pub fn Sketch::constrain(self : Sketch, c : Constraint) -> ConstraintId {
   self.enabled.push(true)
   self.constraint_ids.push(id)
   id
+}
+
+///|
+/// Checked builder: rejects invalid coordinates and resource limits before mutation.
+/// ```mbt check
+/// test {
+///   let s = @sketch.Sketch::new()
+///   let p = s.try_add_point(0.0, 0.0).unwrap()
+///   assert_eq(s.point(p).unwrap().x, 0.0)
+/// }
+/// ```
+pub fn Sketch::try_add_point(
+  self : Sketch,
+  x : Double,
+  y : Double,
+) -> Result[PointId, SketchError] {
+  if self.points.length() * 2 + self.circles.length() > 254 {
+    return Err(ResourceLimit)
+  }
+  if !bounded(x) || !bounded(y) {
+    return Err(
+      InvalidGeometry("Coordinates must be finite and within +/-1e100"),
+    )
+  }
+  Ok(self.add_point(x, y))
+}
+
+///|
+/// Reject foreign/missing endpoints, coincident coordinates and capacity overflow.
+/// Scale-relative degeneracy is still checked by solve().
+/// ```mbt check
+/// test {
+///   let s = @sketch.Sketch::new()
+///   let a = s.try_add_point(0.0, 0.0).unwrap()
+///   let b = s.try_add_point(1.0, 0.0).unwrap()
+///   let _line = s.try_add_line(a, b).unwrap()
+/// }
+/// ```
+pub fn Sketch::try_add_line(
+  self : Sketch,
+  a : PointId,
+  b : PointId,
+) -> Result[LineId, SketchError] {
+  if self.lines.length() >= 512 {
+    return Err(ResourceLimit)
+  }
+  if !physical_equal(self.owner, a.owner) ||
+    !physical_equal(self.owner, b.owner) {
+    return Err(ForeignHandle)
+  }
+  if !self.valid_point(a) || !self.valid_point(b) {
+    return Err(InvalidGeometry("Line references a missing point"))
+  }
+  let pa = self.points[a.index]
+  let pb = self.points[b.index]
+  if !bounded(pa.x) || !bounded(pa.y) || !bounded(pb.x) || !bounded(pb.y) {
+    return Err(
+      InvalidGeometry("Line endpoints must have finite bounded coordinates"),
+    )
+  }
+  if pa.x == pb.x && pa.y == pb.y {
+    return Err(DegenerateLine(self.line_id(self.lines.length())))
+  }
+  Ok(self.add_line(a, b))
+}
+
+///|
+/// Reject invalid centers/radii and capacity overflow before mutation.
+/// An error's candidate ID is not a stored handle. Scale checks occur at solve time.
+/// ```mbt check
+/// test {
+///   let s = @sketch.Sketch::new()
+///   let p = s.try_add_point(0.0, 0.0).unwrap()
+///   let c = s.try_add_circle(p, 2.0).unwrap()
+///   assert_eq(s.radius(c).unwrap(), 2.0)
+/// }
+/// ```
+pub fn Sketch::try_add_circle(
+  self : Sketch,
+  center : PointId,
+  radius : Double,
+) -> Result[CircleId, SketchError] {
+  if self.points.length() * 2 + self.circles.length() >= 256 {
+    return Err(ResourceLimit)
+  }
+  if !physical_equal(self.owner, center.owner) {
+    return Err(ForeignHandle)
+  }
+  if !self.valid_point(center) {
+    return Err(InvalidGeometry("Circle references a missing center"))
+  }
+  let p = self.points[center.index]
+  if !bounded(p.x) || !bounded(p.y) {
+    return Err(
+      InvalidGeometry("Circle center must have finite bounded coordinates"),
+    )
+  }
+  if !bounded(radius) || radius <= 0.0 {
+    return Err(InvalidRadius(self.circle_id(self.circles.length())))
+  }
+  Ok(self.add_circle(center, radius))
+}
+
+///|
+/// Reject invalid definitions, full capacity or exhausted IDs before mutation.
+/// Failed attempts consume no ID; InvalidConstraint carries an unallocated candidate.
+/// Existing geometry and scale-relative domains are revalidated by solve().
+/// ```mbt check
+/// test {
+///   let s = @sketch.Sketch::new()
+///   let p = s.try_add_point(0.0, 0.0).unwrap()
+///   let id = s.try_constrain(@sketch.Fix(p, 0.0, 0.0)).unwrap()
+///   assert_eq(id.index(), 0)
+/// }
+/// ```
+pub fn Sketch::try_constrain(
+  self : Sketch,
+  c : Constraint,
+) -> Result[ConstraintId, SketchError] {
+  if self.constraints.length() >= 512 {
+    return Err(ResourceLimit)
+  }
+  if self.next_constraint[0] == 2147483647 {
+    return Err(IdentifierExhausted)
+  }
+  if self.constraint_has_foreign_handle(c) {
+    return Err(ForeignHandle)
+  }
+  if !self.constraint_valid(c) {
+    return Err(InvalidConstraint(self.constraint_id(self.next_constraint[0])))
+  }
+  Ok(self.constrain(c))
 }
 
 ///|

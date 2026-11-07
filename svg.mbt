@@ -69,6 +69,12 @@ pub fn Sketch::to_svg(
   self : Sketch,
   options~ : SvgOptions = SvgOptions::default(),
 ) -> Result[String, SketchError] {
+  // Bound before iterating/escaping. String.length counts UTF-16 code units.
+  if options.title.length() > 4096 {
+    return Err(
+      InvalidOptions("SVG title must contain at most 4096 UTF-16 code units"),
+    )
+  }
   if options.width < 64 ||
     options.width > 4096 ||
     options.height < 96 ||

@@ -8,6 +8,7 @@ pub(all) enum SketchError {
   DegenerateLine(LineId)
   InvalidRadius(CircleId)
   ResourceLimit
+  IdentifierExhausted
   InvalidOptions(String)
   NumericalFailure(String)
 } derive(Debug)
@@ -32,5 +33,7 @@ pub fn SketchError::message(self : SketchError) -> String {
       "Circle at index \{id.index}: radius must be finite, positive and nondegenerate relative to sketch scale"
     ResourceLimit =>
       "Small-sketch limit: at most 256 variables, 512 lines, and 512 constraints"
+    IdentifierExhausted =>
+      "Constraint identifier space exhausted; create a new sketch"
   }
 }

@@ -83,6 +83,7 @@ fn sample(index : Int32) -> Sample {
           Satisfied => "Satisfied"
           Stalled => "Stalled"
           IterationLimit => "IterationLimit"
+          BudgetLimit => "BudgetLimit"
         },
         iterations: report.iterations,
         variables: report.variables,

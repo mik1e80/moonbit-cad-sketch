@@ -14,6 +14,7 @@
 | 字段 | 含义 |
 | --- | --- |
 | `status` | `Satisfied`：返回几何的每个残差分量均达标；`Stalled`：无法继续降低误差或输出坐标精度不足；`IterationLimit`：达到迭代次数上限 |
+| `linear_solves` | 源码 0.3.0：累计阻尼 QR 尝试次数，包含失败及被拒绝的步；不包含最终诊断秩计算 |
 | `local_dof` | 当前构型下估计的剩余自由度；为零不等于全局唯一解 |
 | `dependent_equations` | 可选高级诊断：当前构型下的相关方程数，技术定义见[内部实现](ARCHITECTURE.md#自由度与失败的含义) |
 | `residuals` | 求解时每条现存约束的启用状态 `active`、最大长度误差、角度 / 方向误差、误差与容差之比；禁用项误差置零，已删除项不包含在新报告中 |
@@ -28,6 +29,10 @@
 约束索引是同一草图内稳定、不复用的创建编号。删除后编号可能不连续，`report.residuals[id.index()]` 不再表示指定约束，请使用 `report.residual(id)`。旧报告属于求解当时的快照；若关系后来已删除，当前草图的 `constraint(id)` 返回 `None`。
 
 ## 容差与选项
+
+源码开发版 0.3.0 的 `solve()` 与 `solve_and_apply()` 接受独立可选参数 `max_linear_solves`（默认 400，范围 1..4000）与 `max_damping_attempts`（默认 16，范围 1..16）。总 QR 预算先耗尽时返回 `Ok(Solution)`，状态为 `BudgetLimit`，保留最后接受的候选几何与诊断；未达标不会写回。若迭代上限或停滞先发生，保持相应状态。已达标的输入无需 QR，计数为零。最终世界坐标校验可将候选成功降为 `Stalled`；实际达标始终记作 `Satisfied`。
+
+例如 `sketch.solve_and_apply(max_linear_solves=50, max_damping_attempts=8)`。这两个参数不改变 `SolveOptions` 结构；新增的 `SolveStatus::BudgetLimit` 和 `SketchError::IdentifierExhausted` 需要更新调用方的穷尽匹配。总预算限制迭代求解工作量，不是墙钟超时；秩诊断和残差复核仍会执行一次。
 
 默认调用 `sketch.solve_and_apply()` 即可。只有需要调整精度或预算时才传 `options`：
 

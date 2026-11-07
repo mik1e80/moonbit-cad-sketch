@@ -12,6 +12,12 @@
 
 ## 类型化错误与迁移
 
+源码开发版 0.3.0 增加 `try_add_point()`、`try_add_line()`、`try_add_circle()` 和 `try_constrain()`，返回 `Result[Id, SketchError]`，在写入前拒绝超限或非法定义，失败不消耗编号。处理外部输入应使用这些接口。圆和线的尺度退化、既有几何及组合关系仍在求解时复核；编辑接口仍保留延迟校验语义。
+
+旧 `add_*()` / `constrain()` 保留原签名供可信、有界输入使用：资源超限前会 trap，`constrain()` 的编号耗尽同样会 trap；可恢复的 `IdentifierExhausted` 由 `try_constrain()` 返回。创建失败中的几何/约束 ID 是未写入的候选编号，不能作为已存在对象使用。
+
+长度必须使用调用者统一单位，本库不换算毫米或英寸。句柄仅在同一 `Sketch` 生命周期中使用，不适合作为持久化标识。`let b = a` 共享同一份可变草图，不能用作深复制；本库不承诺并发修改安全，宿主须自行同步。
+
 `solve()` / `solve_and_apply()` 返回 `Result[Solution,SketchError]`。完整分类、模式匹配和 String API 迁移说明已整理到 [诊断文档](DIAGNOSTICS.md#类型化错误与迁移)。
 
 ## 进阶入口

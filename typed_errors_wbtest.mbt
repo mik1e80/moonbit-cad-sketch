@@ -12,6 +12,7 @@ test "nonfinite evaluation and output overflow have numerical error types" {
       SolveOptions::default(),
       Satisfied,
       0,
+      0,
     )
     is Err(NumericalFailure(_)),
   )

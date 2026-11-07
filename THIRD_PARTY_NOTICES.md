@@ -41,4 +41,6 @@
 
 四杆机构图 `docs/images/four-bar-motion.svg` 同样来自本项目自建模型的实际求解姿态，由 `scripts/four_bar_showcase.cjs` 使用 Node.js 标准库生成。解析期望值采用三角函数和两圆交点公式，没有引入外部机构语料或求解器代码。
 
-GitHub Actions 使用的 `actions/checkout` 和 `actions/setup-python` 为 MIT 许可的 CI 工具，分别见[checkout LICENSE](https://github.com/actions/checkout/blob/main/LICENSE)和[setup-python LICENSE](https://github.com/actions/setup-python/blob/main/LICENSE)；只在工作流中引用，不复制其实现。Python 审查脚本只使用标准库，是开发验证工具，不参与 MoonBit 库的运行时。
+GitHub Actions 使用 `actions/checkout`、`actions/setup-python` 和 `actions/upload-artifact`，均为 MIT 许可的 CI 工具，分别见 [checkout LICENSE](https://github.com/actions/checkout/blob/3d3c42e5aac5ba805825da76410c181273ba90b1/LICENSE)、[setup-python LICENSE](https://github.com/actions/setup-python/blob/6d4fd22b20465ccc0f7354476588e8df7c9ca0e0/LICENSE) 和 [upload-artifact LICENSE](https://github.com/actions/upload-artifact/blob/cf430e030ddbb5b0abf93d22962f4752f3646cd9/LICENSE)。工作流固定提交 SHA，只引用工具，不复制实现。
+
+`scripts/` 中的 Python 审查工具仅使用标准库。`dev/scipy/` 是独立的可选开发对照工具，使用 NumPy 2.3.5（[BSD-3-Clause 及随发行包保留的第三方条款](https://github.com/numpy/numpy/blob/v2.3.5/LICENSE.txt)）与 SciPy 1.18.0（[BSD-3-Clause 及第三方条款](https://github.com/scipy/scipy/blob/v1.18.0/LICENSE.txt)）。实际安装的二进制发行包还可能包含各自声明的底层数值依赖，应保留其随包许可。这些依赖不属于 MoonBit 运行时；`dev/scipy/.moonignore` 将该目录排除在源码发布包之外。
