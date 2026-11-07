@@ -24,8 +24,6 @@ jobs:
     name: smoke (${{ matrix.target }})
     runs-on: ubuntu-24.04
     timeout-minutes: 15
-    env:
-      MOON_HOME: ${{ runner.temp }}/moonbit
     strategy:
       fail-fast: false
       matrix:
@@ -39,6 +37,8 @@ jobs:
         with:
           python-version: '3.13.9'
       - name: Install MoonBit
+        env:
+          MOON_HOME: ${{ runner.temp }}/moonbit
         run: |
           curl --fail --location --retry 2 --max-time 180 https://cli.moonbitlang.com/binaries/0.10.17%2Bd971670cd/moonbit-linux-x86_64.tar.gz -o "$RUNNER_TEMP/moonbit.tar.gz"
           echo "d0a96eaf91c77cfcdd7b7df75390c5a1a95d0b8a328b1a5ed6fee050cfbf8d50  $RUNNER_TEMP/moonbit.tar.gz" | sha256sum --check --strict
@@ -50,6 +50,7 @@ jobs:
           export PATH="$MOON_HOME/bin:$PATH"
           "$MOON_HOME/bin/moon" -C "$MOON_HOME/lib/core" bundle --warn-list -a --all
           echo "$MOON_HOME/bin" >> "$GITHUB_PATH"
+          echo "MOON_HOME=$MOON_HOME" >> "$GITHUB_ENV"
       - name: Toolchain version
         run: moon version --all
       - name: Check formatting
@@ -81,8 +82,6 @@ jobs:
     name: full regression (manual)
     runs-on: ubuntu-24.04
     timeout-minutes: 30
-    env:
-      MOON_HOME: ${{ runner.temp }}/moonbit
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -91,6 +90,8 @@ jobs:
         with:
           python-version: '3.13.9'
       - name: Install MoonBit
+        env:
+          MOON_HOME: ${{ runner.temp }}/moonbit
         run: |
           curl --fail --location --retry 2 --max-time 180 https://cli.moonbitlang.com/binaries/0.10.17%2Bd971670cd/moonbit-linux-x86_64.tar.gz -o "$RUNNER_TEMP/moonbit.tar.gz"
           echo "d0a96eaf91c77cfcdd7b7df75390c5a1a95d0b8a328b1a5ed6fee050cfbf8d50  $RUNNER_TEMP/moonbit.tar.gz" | sha256sum --check --strict
@@ -102,6 +103,7 @@ jobs:
           export PATH="$MOON_HOME/bin:$PATH"
           "$MOON_HOME/bin/moon" -C "$MOON_HOME/lib/core" bundle --warn-list -a --all
           echo "$MOON_HOME/bin" >> "$GITHUB_PATH"
+          echo "MOON_HOME=$MOON_HOME" >> "$GITHUB_ENV"
       - name: Toolchain version
         run: moon version --all
       - name: Check formatting
