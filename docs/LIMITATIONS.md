@@ -2,7 +2,7 @@
 
 0.3.0 源码要求 `moonc >= 0.10.17` 与匹配的 core。Ubuntu CI 覆盖 wasm、wasm-gc、JS 和 native，另有 Windows 本机验证；目前没有 macOS CI 验证证据。
 
-源码开发版 0.3.0 的资源前置保护、checked builder 与总 QR 预算见 [API 使用指南](API_GUIDE.md)和[求解选项](SOLVER.md#容差与选项)。Mooncakes 最新正式版仍为 0.2.2，不包含本次加固。
+0.3.0 的资源前置保护、checked builder / setter 与总 QR 预算见 [API 使用指南](API_GUIDE.md)和[求解选项](SOLVER.md#容差与选项)。本次加固随 Mooncakes 0.3.0 提供。
 
 SVG 标题最多 4096 个 UTF-16 代码单元（补充平面字符占两个），超限在转义前返回 `InvalidOptions`。输出保留 XML 转义，不接受用户提供的 SVG 标记。
 

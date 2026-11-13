@@ -1,8 +1,10 @@
 # Mooncakes 发布与独立安装验证
 
-模块：`mik1e80/cad_sketch`；当前版本：`0.2.2`（首版 `0.1.0` 保留不可变）。[Mooncakes 包页面](https://mooncakes.io/docs/mik1e80/cad_sketch)。
+模块：`mik1e80/cad_sketch`；当前版本：`0.3.0`（首版 `0.1.0` 保留不可变）。[Mooncakes 包页面](https://mooncakes.io/docs/mik1e80/cad_sketch)。
 
 ## 使用方安装
+
+0.3.0 发布准备已完成核心四后端全量回归，各 127 项测试、400×4 生成模型、1000 组随机初值和四后端各 132 项源码包消费检查通过。[对应源码与 CI 记录](releases/0.3.0-full-regression.json)不使用旧版结果替代本版验证。发布后另保存上传归档指纹和真实 registry consumer 回执；日常检查仍保持轻量。0.3.0 最低要求 `moonc >= 0.10.17`。
 
 在已有 MoonBit 项目的根目录运行：
 

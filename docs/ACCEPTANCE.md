@@ -22,7 +22,7 @@
 | 核心路径测试 | AD 差分、解析几何、机构运动、矛盾 / 冗余、启停、极端数值、跨草图误用、资源边界；已有失败反例先复现再修复 |
 | 开源和参考来源 | 完整 Apache-2.0 LICENSE；THIRD_PARTY_NOTICES.md 记录参考项目名称、链接、许可证和具体范围；没有第三方 CAD 样例或求解器代码进入源码包 |
 | AI 使用可解释 | docs/ARCHITECTURE.md 说明建模、数值步骤、质量边界及 AI 协作；参赛者仍需掌握并解释这些内容 |
-| Mooncakes 发布 | `mik1e80/cad_sketch@0.2.2` 通过 [Mooncakes](https://mooncakes.io/docs/mik1e80/cad_sketch) 分发；发布记录和独立安装验证见 [PUBLISHING](PUBLISHING.md) |
+| Mooncakes 发布 | `mik1e80/cad_sketch@0.3.0` 通过 [Mooncakes](https://mooncakes.io/docs/mik1e80/cad_sketch) 分发；发布记录和独立安装验证见 [PUBLISHING](PUBLISHING.md) |
 
 ## 代码行数与申报口径
 

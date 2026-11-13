@@ -3,8 +3,8 @@
 ## Scope and support
 
 Security fixes target the current development branch and the next release. The
-latest published version is 0.2.2; the 0.3.0 source tree contains unreleased
-hardening changes. Older versions do not have a separate maintenance branch.
+current release is 0.3.0, including checked creation/editing and solver
+work budgets. Older versions do not have a separate maintenance branch.
 There is no guaranteed response or patch deadline.
 
 The library runs in its host application, with no networking, authentication,

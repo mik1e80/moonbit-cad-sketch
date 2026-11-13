@@ -4,7 +4,7 @@
 
 ## 安装与版本
 
-当前版本 `0.2.2`：[Mooncakes 包页面](https://mooncakes.io/docs/mik1e80/cad_sketch)。源码仓库：[moonbit-cad-sketch](https://github.com/mik1e80/moonbit-cad-sketch)。模块名：`mik1e80/cad_sketch`。
+当前版本 `0.3.0`：[Mooncakes 包页面](https://mooncakes.io/docs/mik1e80/cad_sketch)。源码仓库：[moonbit-cad-sketch](https://github.com/mik1e80/moonbit-cad-sketch)。模块名：`mik1e80/cad_sketch`。
 
 在已有 MoonBit 项目的根目录运行：
 

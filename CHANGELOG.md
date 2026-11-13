@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.3.0 (unreleased)
+## 0.3.0 — 2026-11-13
 
 - Add atomic checked setters `try_set_point`, `try_set_radius`, and `try_set_constraint`, preserving constraint IDs and enabled state; existing setters retain deferred validation.
 - Require moonc >= 0.10.17 for 0.3.0, matching the verified compiler family.

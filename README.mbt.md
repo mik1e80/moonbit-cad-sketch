@@ -4,7 +4,7 @@
 
 适用于参数化零件草图、草图编辑器集成及小型平面机构教学。核心库仅依赖 MoonBit core，支持 wasm、wasm-gc、JS 和 native；当前上限为 256 个标量变量、512 条线、512 条约束。非线性求解依赖初值，局部自由度是一阶数值估计。
 
-版本 `0.2.2` 可从 [Mooncakes](https://mooncakes.io/docs/mik1e80/cad_sketch) 安装。在自己的 MoonBit 项目根目录运行：
+版本 `0.3.0` 可从 [Mooncakes](https://mooncakes.io/docs/mik1e80/cad_sketch) 安装。在自己的 MoonBit 项目根目录运行：
 
 ```sh
 moon add mik1e80/cad_sketch
@@ -64,7 +64,7 @@ test "dimensioned segment and repeated solve" {
 
 仅 `Satisfied` 表示返回坐标的全部残差分量满足指定容差。`Stalled` / `IterationLimit` / `BudgetLimit` 不构成无解证明；残差列表不构成最小冲突集，`local_dof` 是当前构型的一阶数值估计。所有实体句柄局限于创建它们的草图。
 
-源码 0.3.0（未发布）新增 `try_add_point` / `try_add_line` / `try_add_circle` / `try_constrain`、累计计算预算和类型化编号耗尽错误。[API 指南](docs/API_GUIDE.md)说明与正式版 0.2.2 的差异；[安全策略](SECURITY.md)说明不可信输入与宿主资源隔离边界。
+0.3.0 新增 `try_add_point` / `try_add_line` / `try_add_circle` / `try_constrain`，以及 `try_set_point` / `try_set_radius` / `try_set_constraint`、累计计算预算和类型化编号耗尽错误。[API 指南](docs/API_GUIDE.md)说明从 0.2.2 升级时的差异；[安全策略](SECURITY.md)说明不可信输入与宿主资源隔离边界。
 
 求解的 `Err` 可直接匹配 `SketchError`；日志使用 `error.message()`。完整分类与迁移见 [API 指南](docs/API_GUIDE.md#类型化错误与迁移)。
 
@@ -189,7 +189,7 @@ test "mirror a hole center about a vertical construction line" {
 
 机构案例见 [Four-bar linkage](examples/four_bar/README.md)：运行 `moon run examples/four_bar`，仅修改角度约束，在同一草图中往返求解 25 个姿态，核对杆长、分支和局部自由度，并提供轨迹图与 JSON / CSV。
 
-以下批量测量保留原源码指纹；类型化错误升级仅做定向检查，未重跑这些实验。
+0.3.0 已重新执行四后端完整回归：各 127 项测试、各 400 组生成模型及 JS 1000 组随机初值通过。证据见 [0.3.0 回归记录](docs/releases/0.3.0-full-regression.json)。SciPy 对照与四档计时仍为历史测量。
 
 [Validation Suite](docs/VALIDATION.md) 自动生成 400 个模型配置，分为基础解析、平移、旋转、缩放、固定种子初始扰动和极端尺寸六组；在四后端独立核对残差与解析坐标，并记录逐案例结果。运行 `node scripts/validation_suite.cjs --check --target js` 复现。结果仅代表文档中定义的小型模型和初值范围。
 
@@ -199,14 +199,14 @@ test "mirror a hole center about a vertical construction line" {
 
 [Benchmark](docs/BENCHMARK.md)提供 10/30/60/100 点、20/60/120/200 条约束的 JS release 实测，保存迭代、收敛状态、独立残差及限定环境下的耗时。日常可用 `node scripts/benchmark.cjs --smoke --target js` 只检查最小模型。
 
-需要 `moonc >= 0.10.15`；本次轻量验证使用 `moonc 0.10.17+d971670cd`。[环境准备](docs/ENVIRONMENT.md)说明编译器和标准库匹配要求。
+需要 `moonc >= 0.10.17`；本次轻量验证使用 `moonc 0.10.17+d971670cd`。[环境准备](docs/ENVIRONMENT.md)说明编译器和标准库匹配要求。
 
 核心库仅依赖 MoonBit core，无 C/C++ 或 JS 求解器依赖。使用者通过几何关系调用，无需提供方程或导数。算法实现与高级设置见[内部实现](docs/ARCHITECTURE.md)，参考来源和许可说明见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
 
 
 ## SVG 输出
 
-`to_svg()` 返回当前保存几何的 SVG 字符串，保留草图不变。它从 0.2.0 起提供，建议使用当前 0.2.2；选项、共享比例和三阶段图形见 [SVG_EXPORT](docs/SVG_EXPORT.md)。
+`to_svg()` 返回当前保存几何的 SVG 字符串，保留草图不变。它从 0.2.0 起提供，建议使用当前 0.3.0；选项、共享比例和三阶段图形见 [SVG_EXPORT](docs/SVG_EXPORT.md)。
 
 ```mbt check
 ///|

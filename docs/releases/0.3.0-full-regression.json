@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "version": "0.3.0",
+  "source_commit": "5ea24f2da7f99255de142e0796d54caa9be4fb3f",
+  "workflow_run": "https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/43365012044",
+  "conclusion": "success",
+  "backends": ["wasm", "wasm-gc", "js", "native"],
+  "tests_per_backend": 127,
+  "generated_models_per_backend": 400,
+  "checker_mutations_per_backend": 6,
+  "random_triangle": {"target": "js", "cases": 1000, "satisfied": 1000, "correctness_failures": 0},
+  "archive_tests_per_backend": 132,
+  "showcases": ["basic", "conflict", "edit_demo", "mirror_holes", "parametric_bracket", "four_bar"],
+  "benchmark": "smallest smoke only; no new full timing measurement",
+  "scipy_reference_rerun": false,
+  "local_windows_full_regression": "26 commands passed, same runtime sources",
+  "runtime_unchanged_in_following_release_documentation_commit": true,
+  "raw_artifacts": "validation-results artifact in the workflow run; prior version results remain unchanged",
+  "note": "This is source/archive verification; registry installation and publication evidence are separate. Daily checks remain lightweight."
+}
