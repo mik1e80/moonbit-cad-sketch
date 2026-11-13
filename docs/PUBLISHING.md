@@ -1,5 +1,13 @@
 # Mooncakes 发布与独立安装验证
 
+## 0.3.0 实际发布与验证 — 2026-11-13
+
+Mooncakes 正式上传返回 `200 OK`；GitHub 已发布 [v0.3.0](https://github.com/mik1e80/moonbit-cad-sketch/releases/tag/v0.3.0)，tag 指向 `928b946`。此前核心提交 `5ea24f2` 的[完整四后端回归](https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/43365012044)通过，发布文档提交的[四后端轻量检查](https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/43365443114)通过，期间运行时代码未变。
+
+仓库外全新项目实际从注册表安装 0.3.0，未用缓存或 workspace/path 替换；3 项 JS 消费测试、程序运行和 SVG XML 检查通过，124 个下载文件与上传 ZIP 逐字节一致。另有 10 项安装包 checked setter、builder 和预算测试通过。[发布回执](releases/0.3.0.json)记录归档 SHA256，[注册表消费回执](releases/consumer-0.3.0.json)记录真实命令与结果。Windows 默认 GBK 环境使用 `python -X utf8 scripts/check_consumer.py`，避免命令输出解码失败。
+
+本次全量回归是用户单独授权的例外，日常仍采用轻量检查。未重新测量 SciPy 对照或全规模 Benchmark，旧版回执保持不变。以下按原日期保留历史发布记录。
+
 模块：`mik1e80/cad_sketch`；当前版本：`0.3.0`（首版 `0.1.0` 保留不可变）。[Mooncakes 包页面](https://mooncakes.io/docs/mik1e80/cad_sketch)。
 
 ## 使用方安装

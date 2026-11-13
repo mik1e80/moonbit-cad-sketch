@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "module": "mik1e80/cad_sketch",
+  "version": "0.3.0",
+  "publish_http_status": 200,
+  "release_commit": "928b9466e8f6ceb441e3c5179fe968f88b1a3bbe",
+  "full_regression_runtime_commit": "5ea24f2da7f99255de142e0796d54caa9be4fb3f",
+  "full_regression": "https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/43365012044",
+  "release_documentation_smoke": "https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/43365443114",
+  "github_release": "https://github.com/mik1e80/moonbit-cad-sketch/releases/tag/v0.3.0",
+  "uploaded_archive_sha256": "b93df94f3648fd44b16e1db8dfd828c44a6daf2ecb15a8c4777d9308b744827f",
+  "registry_download_matches_archive": true,
+  "matched_archive_files": 124,
+  "consumer_report": "consumer-0.3.0.json",
+  "additional_installed_package_tests": {"target": "js", "total": 10, "passed": 10, "failed": 0, "scope": ["checked_edit_test.mbt", "hardening_test.mbt"], "command": "moon test checked --target js --deny-warn"},
+  "toolchain": {"moon": "0.1.20261023", "moonc": "v0.10.17+d971670cd", "moonrun": "0.1.20261023"},
+  "platform_evidence": ["Ubuntu CI, four backends", "Windows local full regression and registry consumer"],
+  "windows_consumer_note": "Use python -X utf8 scripts/check_consumer.py on systems defaulting to GBK.",
+  "immutable_archive_note": "Publication and registry receipts were created after upload and are not part of the immutable 0.3.0 archive. No runtime changes followed the full regression."
+}

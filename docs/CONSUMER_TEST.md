@@ -1,6 +1,8 @@
 # Consumer Test：全新项目安装、测试与运行
 
-这项检查使用当前 `moon.mod` 指定的 `mik1e80/cad_sketch@0.2.2`。它在系统临时目录创建全新项目，从 Mooncakes 解析依赖，执行消费项目自身的三项测试，再运行可执行入口。它不运行本仓库的回归套件或后端矩阵。
+这项检查使用当前 `moon.mod` 指定的 `mik1e80/cad_sketch@0.3.0`。它在系统临时目录创建全新项目，从 Mooncakes 解析依赖，执行消费项目自身的三项测试，再运行可执行入口。它不运行本仓库的回归套件或后端矩阵。
+
+2026-11-13 实际安装 0.3.0：未命中缓存，3 项测试、运行和 SVG XML 校验通过，124 个归档文件逐字节一致；额外安装包安全接口测试 10/10 通过。[消费回执](releases/consumer-0.3.0.json)与[发布回执](releases/0.3.0.json)保存证据。Windows 默认 GBK 环境使用 `python -X utf8 scripts/check_consumer.py`。
 
 ## 一条命令复现
 

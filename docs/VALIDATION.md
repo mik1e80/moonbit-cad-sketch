@@ -1,6 +1,6 @@
 # Validation Suite：400 个可复现模型配置
 
-最新 Release 验证：`v0.2.1` / `458d5f3` 的[完整回归](https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/39787171206)已通过。新测量见[版本摘要](releases/0.2.1-full-regression.json)，下文旧快照保持历史指纹。
+最新 Release 验证：0.3.0 核心提交 `5ea24f2` 的[完整回归](https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/43365012044)通过，四后端各 400/400 模型与 6/6 检查器故障注入通过。[版本摘要](releases/0.3.0-full-regression.json)记录本次结果，下文旧快照保持历史指纹。
 
 本套件将批量可靠性验证作为交付证据：使用公开 API 自动建模，由独立 Node.js 检查器验证实际返回坐标、半径和诊断。固定语料标识为 `cad-validation-400-v1`，基础种子为 `20261022`。
 
