@@ -14,7 +14,7 @@ moon add mik1e80/cad_sketch
 
 该命令从注册表下载模块，并写入当前项目的 `moon.mod` 依赖。然后按下文配置使用方的 `moon.pkg` 导入核心包。
 
-工具链要求：`moonc >= 0.10.15`。`0.2.2` 的 Windows 轻量验证使用 `moon 0.1.20261023` / `moonc 0.10.17+d971670cd` 和匹配的 core；旧版 0.10.14 需要先更新工具链。标准库缺失或 Windows 路径问题见[环境排查](ENVIRONMENT.md)。
+工具链要求：`moonc >= 0.10.17`。`0.2.2` 的 Windows 轻量验证使用 `moon 0.1.20261023` / `moonc 0.10.17+d971670cd` 和匹配的 core；旧版 0.10.14 需要先更新工具链。标准库缺失或 Windows 路径问题见[环境排查](ENVIRONMENT.md)。
 
 如果希望修改源码或运行仓库内案例：
 

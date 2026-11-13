@@ -102,6 +102,9 @@ pub fn Sketch::try_add_circle(Self, PointId, Double) -> Result[CircleId, SketchE
 pub fn Sketch::try_add_line(Self, PointId, PointId) -> Result[LineId, SketchError]
 pub fn Sketch::try_add_point(Self, Double, Double) -> Result[PointId, SketchError]
 pub fn Sketch::try_constrain(Self, Constraint) -> Result[ConstraintId, SketchError]
+pub fn Sketch::try_set_constraint(Self, ConstraintId, Constraint) -> Result[Unit, SketchError]
+pub fn Sketch::try_set_point(Self, PointId, Point) -> Result[Unit, SketchError]
+pub fn Sketch::try_set_radius(Self, CircleId, Double) -> Result[Unit, SketchError]
 
 pub(all) enum SketchError {
   InvalidGeometry(String)

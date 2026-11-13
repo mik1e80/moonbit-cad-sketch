@@ -220,7 +220,7 @@ moon test README.mbt.md --target js
 
 ## Installation
 
-[Mooncakes：mik1e80/cad_sketch@0.2.2](https://mooncakes.io/docs/mik1e80/cad_sketch)。需 `moonc >= 0.10.15`；本次使用 `moonc 0.10.17+d971670cd` 做轻量发布验证。[Windows 环境准备](docs/ENVIRONMENT.md)说明安装与标准库匹配检查。核心仅依赖 MoonBit core。Python、Node.js 和 SciPy 用于可选开发验证。
+[Mooncakes：mik1e80/cad_sketch@0.2.2](https://mooncakes.io/docs/mik1e80/cad_sketch)。需 `moonc >= 0.10.17`；本次使用 `moonc 0.10.17+d971670cd` 做轻量发布验证。[Windows 环境准备](docs/ENVIRONMENT.md)说明安装与标准库匹配检查。核心仅依赖 MoonBit core。Python、Node.js 和 SciPy 用于可选开发验证。
 
 ```sh
 moon add mik1e80/cad_sketch

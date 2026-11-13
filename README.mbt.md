@@ -23,7 +23,7 @@ import {
 
 完整文档入口：[快速开始](docs/QUICK_START.md)、[约束参考](docs/CONSTRAINTS.md)、[求解](docs/SOLVER.md)、[诊断](docs/DIAGNOSTICS.md)和[限制](docs/LIMITATIONS.md)。
 
-默认选项即可开始；[API 使用指南](docs/API_GUIDE.md)按几何、约束、求解、编辑和诊断介绍接口。需要 `moonc >= 0.10.15`。
+默认选项即可开始；[API 使用指南](docs/API_GUIDE.md)按几何、约束、求解、编辑和诊断介绍接口。需要 `moonc >= 0.10.17`。
 
 ## 输入、求解与尺寸编辑
 

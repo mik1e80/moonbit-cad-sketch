@@ -12,7 +12,11 @@
 
 ## 类型化错误与迁移
 
-源码开发版 0.3.0 增加 `try_add_point()`、`try_add_line()`、`try_add_circle()` 和 `try_constrain()`，返回 `Result[Id, SketchError]`，在写入前拒绝超限或非法定义，失败不消耗编号。处理外部输入应使用这些接口。圆和线的尺度退化、既有几何及组合关系仍在求解时复核；编辑接口仍保留延迟校验语义。
+0.3.0 增加 `try_add_point()`、`try_add_line()`、`try_add_circle()` 和 `try_constrain()`，返回 `Result[Id, SketchError]`，在写入前拒绝超限或非法定义，失败不消耗编号。
+
+处理外部编辑输入使用 `try_set_point(id, point)`、`try_set_radius(id, radius)`、`try_set_constraint(id, relation)`，均返回 `Result[Unit, SketchError]`。它们在写入前检查归属、句柄存在性、有限有界坐标、正半径或约束定义；失败保留原值，替换约束保留编号和启停状态，删除的编号不能重新编辑。跨草图句柄返回 `ForeignHandle`；不存在的点、圆、约束分别返回 `InvalidGeometry`、`InvalidRadius`、`InvalidConstraint`。
+
+这些检查仅验证编辑字段和关系定义，不保证整个草图立即有效：移动点导致线重合、尺度相对退化、既有非法几何和组合关系冲突仍在 `solve()` 复核。旧 `set_point()`、`set_radius()`、`set_constraint()` 保留延迟校验语义。安全编辑改变初值或关系，不是求解；求解失败保留的是调用求解前的已编辑几何，不是自动撤销编辑。
 
 旧 `add_*()` / `constrain()` 保留原签名供可信、有界输入使用：资源超限前会 trap，`constrain()` 的编号耗尽同样会 trap；可恢复的 `IdentifierExhausted` 由 `try_constrain()` 返回。创建失败中的几何/约束 ID 是未写入的候选编号，不能作为已存在对象使用。
 

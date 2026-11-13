@@ -66,6 +66,7 @@ jobs:
       - name: Test resource and input hardening
         run: |
           moon test hardening_test.mbt --target ${{ matrix.target }} --deny-warn
+          moon test checked_edit_test.mbt --target ${{ matrix.target }} --deny-warn
           moon test hardening_wbtest.mbt --target ${{ matrix.target }} --deny-warn
           moon test constraint_combinations_test.mbt --target ${{ matrix.target }} --deny-warn
           moon test typed_errors_test.mbt --target ${{ matrix.target }} --deny-warn

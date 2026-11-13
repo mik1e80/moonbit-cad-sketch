@@ -55,7 +55,7 @@ Topics：`cad`, `constraint-solver`, `geometry`, `moonbit`, `parametric-design`,
 
 ## 可复现命令
 
-需要 MoonBit 0.10.15 或更新版本；包消费审查脚本另外需要 Python 3.10+，仅使用标准库。
+当前 0.3.0 源码需要 MoonBit 0.10.17 或更新版本；包消费审查脚本另外需要 Python 3.10+，仅使用标准库。
 
 ```sh
 moon fmt --check

@@ -444,6 +444,95 @@ pub fn Sketch::set_constraint(
 }
 
 ///|
+/// Checked edit of an initial point. Rejects invalid coordinates before mutation.
+/// Scale-relative degeneracy and joint constraints are checked at solve time.
+/// ```mbt check
+/// test {
+///   let s = @sketch.Sketch::new()
+///   let p = s.try_add_point(0.0, 0.0).unwrap()
+///   s.try_set_point(p, { x: 2.0, y: 3.0, }).unwrap()
+///   assert_eq(s.point(p).unwrap().x, 2.0)
+/// }
+/// ```
+pub fn Sketch::try_set_point(
+  self : Sketch,
+  id : PointId,
+  p : Point,
+) -> Result[Unit, SketchError] {
+  if !physical_equal(self.owner, id.owner) {
+    return Err(ForeignHandle)
+  }
+  if !self.valid_point(id) || !bounded(p.x) || !bounded(p.y) {
+    return Err(
+      InvalidGeometry(
+        "Point must exist and coordinates must be finite and within +/-1e100",
+      ),
+    )
+  }
+  self.points[id.index] = p
+  Ok(())
+}
+
+///|
+/// Checked edit of an initial radius; this does not add a driving constraint.
+/// ```mbt check
+/// test {
+///   let s = @sketch.Sketch::new()
+///   let p = s.try_add_point(0.0, 0.0).unwrap()
+///   let c = s.try_add_circle(p, 1.0).unwrap()
+///   s.try_set_radius(c, 2.0).unwrap()
+///   assert_eq(s.radius(c).unwrap(), 2.0)
+/// }
+/// ```
+pub fn Sketch::try_set_radius(
+  self : Sketch,
+  id : CircleId,
+  radius : Double,
+) -> Result[Unit, SketchError] {
+  if !physical_equal(self.owner, id.owner) {
+    return Err(ForeignHandle)
+  }
+  if !self.valid_circle(id) || !bounded(radius) || radius <= 0.0 {
+    return Err(InvalidRadius(id))
+  }
+  let c = self.circles[id.index]
+  self.circles[id.index] = { center: c.center, radius, }
+  Ok(())
+}
+
+///|
+/// Checked relation replacement, preserving its ID and enabled state.
+/// Invalid definitions and missing/removed IDs leave the relation unchanged.
+/// ```mbt check
+/// test {
+///   let s = @sketch.Sketch::new()
+///   let p = s.try_add_point(0.0, 0.0).unwrap()
+///   let id = s.try_constrain(Fix(p, 0.0, 0.0)).unwrap()
+///   s.try_set_constraint(id, @sketch.Fix(p, 1.0, 0.0)).unwrap()
+///   assert_true(s.solve_and_apply().unwrap().report.is_satisfied())
+/// }
+/// ```
+pub fn Sketch::try_set_constraint(
+  self : Sketch,
+  id : ConstraintId,
+  c : Constraint,
+) -> Result[Unit, SketchError] {
+  if !physical_equal(self.owner, id.owner) ||
+    self.constraint_has_foreign_handle(c) {
+    return Err(ForeignHandle)
+  }
+  let slot = match self.constraint_slot(id) {
+    Some(slot) => slot
+    None => return Err(InvalidConstraint(id))
+  }
+  if !self.constraint_valid(c) {
+    return Err(InvalidConstraint(id))
+  }
+  self.constraints[slot] = c
+  Ok(())
+}
+
+///|
 fn finite(x : Double) -> Bool {
   !x.is_nan() && !x.is_inf()
 }

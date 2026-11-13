@@ -2,6 +2,8 @@
 
 ## 0.3.0 (unreleased)
 
+- Add atomic checked setters `try_set_point`, `try_set_radius`, and `try_set_constraint`, preserving constraint IDs and enabled state; existing setters retain deferred validation.
+- Require moonc >= 0.10.17 for 0.3.0, matching the verified compiler family.
 - Reject storage overflow before all public builder writes; add recoverable `try_add_*` / `try_constrain` APIs with eager definition validation and typed identifier exhaustion.
 - Bound total damped QR attempts and expose `BudgetLimit` / `report.linear_solves`; preserve stored geometry on unsuccessful solves. Exhaustive status/error matches need the new variants.
 - Bound SVG title input to 4096 UTF-16 code units before escaping.
