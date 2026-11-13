@@ -171,9 +171,9 @@ test "deletion frees the live constraint limit while disabled relations still co
   let report = solved(s).report
   assert_eq(report.residuals.length(), 512)
   assert_eq(report.equations, 0)
-  let extra = s.constrain(Fix(p, 0.0, 0.0))
-  assert_true(s.solve() is Err(_))
+  assert_true(s.try_constrain(Fix(p, 0.0, 0.0)) is Err(ResourceLimit))
   assert_true(s.remove_constraint(ids[200]))
+  let extra = s.try_constrain(Fix(p, 0.0, 0.0)).unwrap()
   let report = solved(s).report
   assert_eq(report.residuals.length(), 512)
   assert_eq(report.equations, 2)
@@ -181,9 +181,9 @@ test "deletion frees the live constraint limit while disabled relations still co
   assert_true(report.residual(ids[200]) is None)
   assert_false(report.residual(ids[511]).unwrap().active)
   assert_true(report.residual(extra).unwrap().active)
-  let over = s.constrain(Fix(p, 0.0, 0.0))
-  assert_true(s.solve() is Err(_))
+  assert_true(s.try_constrain(Fix(p, 0.0, 0.0)) is Err(ResourceLimit))
   assert_true(s.remove_constraint(extra))
+  let over = s.try_constrain(Fix(p, 0.0, 0.0)).unwrap()
   assert_true(solved(s).report.residual(over).unwrap().active)
 }
 
