@@ -6,6 +6,7 @@
 - 句柄包含运行时归属标识。同号但来自其他草图的句柄不会匹配：查询返回 `None`、编辑返回 `false`，启用的约束或几何引用跨草图对象时求解返回错误；句柄不能作为持久化或跨进程标识。
 - `set_point()` 修改下一次求解的初值；`set_constraint()` 修改已有尺寸或关系。它们返回是否找到相应句柄，数值合法性在 `solve()` 时统一验证。
 - `set_radius()` 修改已有圆的初始半径，保留中心与关联约束；它不固定半径，驱动半径尺寸应使用 `Radius`。非法数值同样在求解时诊断。
+- 外部输入使用 `try_set_point()` / `try_set_radius()` / `try_set_constraint()`，非法字段或句柄在写入前返回类型化错误，失败保持原值；尺度退化和联合关系仍在求解时复核。[安全编辑语义](API_GUIDE.md#类型化错误与迁移)说明检查范围与编辑后的失败行为。
 - `set_constraint_enabled(id, false)` 暂停某条约束，传 `true` 恢复；编号与关系保留，`set_constraint()` 不改变启停状态。禁用关系不参与校验、尺度计算、方程和自由度计算，仍计入 512 条关系的存储上限；几何本身始终需要合法。
 - `remove_constraint(id)` 永久删除一条现存约束并释放名额，成功返回 `true`；重复删除、未知或跨草图句柄返回 `false`。删除不修改当前几何，其他约束编号保持不变，新约束不复用已删除编号；旧句柄不能重新启用或修改。删除后的查询返回 `None`，新报告不包含它，旧报告仍保留历史残差。[完整生命周期与可运行示例](CONSTRAINT_LIFECYCLE.md)覆盖添加、修改、禁用、恢复和删除。
 
@@ -13,8 +14,8 @@
 
 | 字段 | 含义 |
 | --- | --- |
-| `status` | `Satisfied`：返回几何的每个残差分量均达标；`Stalled`：无法继续降低误差或输出坐标精度不足；`IterationLimit`：达到迭代次数上限 |
-| `linear_solves` | 源码 0.3.0：累计阻尼 QR 尝试次数，包含失败及被拒绝的步；不包含最终诊断秩计算 |
+| `status` | `Satisfied`：返回几何的每个残差分量均达标；`Stalled`：无法继续降低误差或输出坐标精度不足；`IterationLimit`：达到迭代次数上限；`BudgetLimit`：累计 QR 尝试预算耗尽且候选尚未达标 |
+| `linear_solves` | 累计阻尼 QR 尝试次数，包含失败及被拒绝的步；不包含最终诊断秩计算 |
 | `local_dof` | 当前构型下估计的剩余自由度；为零不等于全局唯一解 |
 | `dependent_equations` | 可选高级诊断：当前构型下的相关方程数，技术定义见[内部实现](ARCHITECTURE.md#自由度与失败的含义) |
 | `residuals` | 求解时每条现存约束的启用状态 `active`、最大长度误差、角度 / 方向误差、误差与容差之比；禁用项误差置零，已删除项不包含在新报告中 |
@@ -30,7 +31,7 @@
 
 ## 容差与选项
 
-源码开发版 0.3.0 的 `solve()` 与 `solve_and_apply()` 接受独立可选参数 `max_linear_solves`（默认 400，范围 1..4000）与 `max_damping_attempts`（默认 16，范围 1..16）。总 QR 预算先耗尽时返回 `Ok(Solution)`，状态为 `BudgetLimit`，保留最后接受的候选几何与诊断；未达标不会写回。若迭代上限或停滞先发生，保持相应状态。已达标的输入无需 QR，计数为零。最终世界坐标校验可将候选成功降为 `Stalled`；实际达标始终记作 `Satisfied`。
+0.3.0 的 `solve()` 与 `solve_and_apply()` 接受独立可选参数 `max_linear_solves`（默认 400，范围 1..4000）与 `max_damping_attempts`（默认 16，范围 1..16）。总 QR 预算先耗尽时返回 `Ok(Solution)`，状态为 `BudgetLimit`，保留最后接受的候选几何与诊断；未达标不会写回。若迭代上限或停滞先发生，保持相应状态。已达标的输入无需 QR，计数为零。最终世界坐标校验可将候选成功降为 `Stalled`；实际达标始终记作 `Satisfied`。
 
 例如 `sketch.solve_and_apply(max_linear_solves=50, max_damping_attempts=8)`。这两个参数不改变 `SolveOptions` 结构；新增的 `SolveStatus::BudgetLimit` 和 `SketchError::IdentifierExhausted` 需要更新调用方的穷尽匹配。总预算限制迭代求解工作量，不是墙钟超时；秩诊断和残差复核仍会执行一次。
 

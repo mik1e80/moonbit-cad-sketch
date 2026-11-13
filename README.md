@@ -140,7 +140,7 @@ if sketch.set_constraint(length, Distance(a, b, 7.0)) {
 | --- | --- |
 | `Err(error)` | 按 `SketchError` 变体匹配并修正输入；`error.message()` 用于日志 |
 | `Ok`，状态为 `Satisfied` | 读取结果；`solve_and_apply()` 已更新保存几何 |
-| `Ok`，状态为 `Stalled` / `IterationLimit` | 检查候选结果与报告；保存几何保持不变 |
+| `Ok`，状态为 `Stalled` / `IterationLimit` / `BudgetLimit` | 检查候选结果与报告；`solve_and_apply()` 不写入未达标候选 |
 
 `report.likely_conflicts()` 按误差比排序启用且超标的关系，帮助决定检查顺序。`local_dof` 是一阶局部估计。未收敛不证明无解，排序列表也不是最小冲突集。处理方式见[错误与诊断](docs/DIAGNOSTICS.md)及[求解与结果](docs/SOLVER.md)。
 

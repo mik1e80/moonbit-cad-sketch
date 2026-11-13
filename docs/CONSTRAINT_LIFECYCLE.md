@@ -26,6 +26,7 @@ s.remove_constraint(relation) |> ignore
 | constraint(id) | 返回原关系 | None |
 | constraint_enabled(id) | Some(false) | None |
 | set_constraint(id, ...) | 可以修改，继续保持禁用 | false |
+| try_set_constraint(id, ...) | 合法定义返回 Ok(())，继续保持禁用；非法定义不写入 | Err(InvalidConstraint(id)) |
 | set_constraint_enabled(id, true) | 恢复参与求解 | false |
 | remove_constraint(id) | true，永久删除 | false |
 | 下一份 SolveReport | 保留一条 active=false、误差为零的记录 | 不包含该关系 |
@@ -49,9 +50,9 @@ ConstraintId::index() 是稳定的创建编号，**不是删除后残差数组�
 
 删除关系只改变约束集合，当前坐标与半径逐项保留。之后重新求解时，自由度可能增加；残差达标仍可能是欠约束结果。原有规则继续适用：solve() 不应用结果，solve_and_apply() 仅在全部启用关系达到容差时更新几何。
 
-最多 512 条**现存关系**，包括禁用关系，不包括已删除关系。累计创建次数可以超过 512；内部会移除已删除记录，不按历史最高编号分配残差数组。与之前一致，添加过多现存关系后，资源错误在 solve() 时报告；可以删除关系使模型回到上限内。
+最多 512 条**现存关系**，包括禁用关系，不包括已删除关系。累计创建次数可以超过 512；内部会移除已删除记录，不按历史最高编号分配残差数组。0.3.0 在创建前检查容量：`try_constrain()` 超限返回 `Err(ResourceLimit)`，不追加关系也不消耗编号；旧 `constrain()` 超限会 trap。删除关系后可重新使用释放的名额。
 
-约束 ID 使用 Int32 创建编号，达到编号空间末端时 constrain() 中止，避免溢出后重新指向旧对象。句柄仍只适用于同一运行时、同一草图，不能当作持久化标识。
+约束 ID 使用 Int32 创建编号，达到编号空间末端时 `try_constrain()` 返回 `Err(IdentifierExhausted)`，旧 `constrain()` 会 trap，避免溢出后重新指向旧对象。句柄仍只适用于同一运行时、同一草图，不能当作持久化标识。
 
 内部采用紧凑的关系 / 启停 / 句柄数组，查找与删除为 O(n)。这里的 n 是现存关系数，接受求解的模型最多为 512；该 API 没有引入增量线性求解、软约束优先级、几何对象删除或自动约束清理。
 

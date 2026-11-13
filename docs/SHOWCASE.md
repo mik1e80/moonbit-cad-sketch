@@ -87,9 +87,9 @@ SVG 使用返回坐标与半径绘制，前后采用同一比例。绘制时将�
 - [额外测试](../examples/parametric_bracket/bracket_wbtest.mbt)从 105×65、R4、边距 17/12 改到 150×90、R6、边距 26/19，另覆盖板高和垂直边距变化，以及冲突恢复。
 - 默认 CI 只对四后端运行静态检查和 README / SVG 定向测试；JS 另做轻量源码包消费检查。完整单元测试与 wasm / JS Showcase 检查属于显式开启的全量回归；最近一次完整运行对应 `v0.2.1`，见[完整记录](releases/0.2.1-full-regression.json)。源码包必须包含案例、说明、SVG 和生成脚本，完整包验证才在解包后的源码上重新运行案例与图形检查。
 
-本例的输入检查要求参数有限且为正，孔处于板内且互不相交；这属于这个安装板应用的参数范围检查，没有为核心库新增不等式或碰撞约束。它交付一个可运行、可检查、可视化的参数化零件案例；交互式 CAD 编辑器和 DXF/STEP 接口仍未实现。核心库当前已发布至 Mooncakes 0.2.2，安装和源码案例的区别见[快速开始](QUICK_START.md)。
+本例的输入检查要求参数有限且为正，孔处于板内且互不相交；这属于这个安装板应用的参数范围检查，没有为核心库新增不等式或碰撞约束。它交付一个可运行、可检查、可视化的参数化零件案例；交互式 CAD 编辑器和 DXF/STEP 接口仍未实现。核心库当前已发布至 Mooncakes 0.3.0，安装和源码案例的区别见[快速开始](QUICK_START.md)。
 
 
 ## 核心库 SVG 输出
 
-六条 JSON 事件包含 `svg` 字段，由 `Sketch::to_svg()` 直接生成。运行 `python scripts/export_svg.py --write` 可保存独立的 `before.svg`、`after.svg` 和 `conflict.svg`，三张图使用同一视野与比例；冲突阶段只画保留几何。原有 Node 对比图和校验入口继续保留。[SVG 接口及文件说明](SVG_EXPORT.md)列出具体行为；此接口已包含在当前 Mooncakes 0.2.2 正式版本中。
+六条 JSON 事件包含 `svg` 字段，由 `Sketch::to_svg()` 直接生成。运行 `python scripts/export_svg.py --write` 可保存独立的 `before.svg`、`after.svg` 和 `conflict.svg`，三张图使用同一视野与比例；冲突阶段只画保留几何。原有 Node 对比图和校验入口继续保留。[SVG 接口及文件说明](SVG_EXPORT.md)列出具体行为；此接口已包含在当前 Mooncakes 0.3.0 正式版本中。

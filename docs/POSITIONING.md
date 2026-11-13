@@ -4,7 +4,7 @@
 
 MoonBit CAD Sketch 是面向 MoonBit 应用开发者的小型二维参数化草图约束求解库：将点、线、圆及设计关系转换为非线性方程，求解坐标与半径，并提供尺寸编辑后的重新求解和约束诊断。
 
-模块名为 `mik1e80/cad_sketch`。核心库使用纯 MoonBit 实现，仅依赖 MoonBit core，支持 wasm、wasm-gc、JS 和 native。当前源码版本为 `0.2.2`，发布状态以 [README](QUICK_START.md#安装与版本) 为准。
+模块名为 `mik1e80/cad_sketch`。核心库使用纯 MoonBit 实现，仅依赖 MoonBit core，支持 wasm、wasm-gc、JS 和 native。当前正式版本为 `0.3.0`，安装入口见[快速开始](QUICK_START.md#安装与版本)，发布及验证证据见[发布记录](PUBLISHING.md)。
 
 ## 面向谁，解决什么问题
 
