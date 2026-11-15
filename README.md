@@ -164,6 +164,8 @@ if sketch.set_constraint(length, Distance(a, b, 7.0)) {
 
 ## Validation
 
+[2026 年 11 月贡献索引](docs/CONTRIBUTIONS_2026_11.md)区分既有基础与本期新增，逐项关联代码、版本和验证记录；[维护与应用验证计划](docs/MAINTENANCE.md)区分已完成的自建验证、待开展的外部集成和反馈处理。
+
 | 验证证据 | 已保存的范围与结果 |
 | --- | --- |
 | [Validation Suite](docs/VALIDATION.md) | 六组 400 个生成配置，四后端分别独立检查 |

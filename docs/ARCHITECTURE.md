@@ -52,7 +52,7 @@ flowchart TD
 
 求值内部的 `Row.slot` 只表示本次现存数组位置；对外残差与错误信息使用稳定的 `ConstraintId`。报告保留求解时的 ID 与误差，`report.residual(id)` 按 ID 查询而不是直接将 ID 当数组下标。删除后的新报告没有该项，旧报告仍描述历史状态，不能据旧报告假定关系目前仍存在。
 
-以上查找与删除为 O(n)，没有引入稀疏增量求解。创建编号耗尽时中止，避免 Int32 溢出使旧句柄复活。完整边界与用例见 [约束生命周期](CONSTRAINT_LIFECYCLE.md)。
+以上查找与删除为 O(n)，没有引入稀疏增量求解。创建编号耗尽时，`try_constrain()` 返回 `Err(IdentifierExhausted)`，旧便利接口 `constrain()` 会中止；两者均避免 Int32 溢出使旧句柄复活。完整边界与用例见 [约束生命周期](CONSTRAINT_LIFECYCLE.md)。
 
 ## 数值求解
 
