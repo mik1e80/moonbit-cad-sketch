@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "date": "2026-11-17",
+  "version": "0.4.1",
+  "source_commit": "36893bd5497e38aacdca1ff18eee705c1c6d3035",
+  "workflow_run": "https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/44089465166",
+  "workflow_job": 134060555551,
+  "conclusion": "success",
+  "backends": [
+    "wasm",
+    "wasm-gc",
+    "js",
+    "native"
+  ],
+  "tests_per_backend": 160,
+  "generated_models": {
+    "original_corpus": "cad-validation-400-v1",
+    "original_per_backend": 400,
+    "new_corpus": "cad-completeness-480-v1",
+    "new_per_backend": 480,
+    "new_configurations_included_in_test_entries": true
+  },
+  "old_checker_mutations_per_backend": 6,
+  "arc_oracle_mutations": 4,
+  "random_triangle": {
+    "target": "js",
+    "cases": 1000,
+    "satisfied": 1000,
+    "correctness_failures": 0
+  },
+  "archive_tests_per_backend": 165,
+  "benchmark": "smallest smoke only; historical full timing data retained",
+  "scipy_reference_rerun": false,
+  "runtime_unchanged_from_0_4_0": true,
+  "raw_artifact": "https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/44089465166/artifacts/14331760435",
+  "raw_artifact_sha256": "1269f7534c6afea137d85b6fec21aeeeca903a6c290a7b95e79a874cb984466b",
+  "note": "Registry upload and installation are separate post-publication receipts. Daily validation remains lightweight."
+}
