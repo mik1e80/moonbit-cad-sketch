@@ -22,18 +22,22 @@ async fn main {
  let source = args[1]
  let workspace = args[2]
  let receipt_path = args[3]
+ let source_manifest = @fs.read_file(source + "/moon.mod").text()
+ guard source_manifest.split_once("version = \"") is Some((_, tail)) else { fail("Source version missing") }
+ guard tail.split_once("\"") is Some((version, _)) else { fail("Source version malformed") }
+ let version = version.to_owned()
  guard !workspace.has_prefix(source) && !@fs.exists(workspace) else { fail("Consumer workspace must be fresh and outside source") }
  @fs.mkdir(workspace, recursive=true)
  run(workspace, workspace + "/new", ["new", "consumer", "--user", "audit"]) |> ignore
  let project = workspace + "/consumer"
  guard !@fs.exists(project + "/moon.work") && !@fs.exists(project + "/.mooncakes") else { fail("Expected independent fresh project") }
- let installed = run(project, workspace + "/install", ["add", "mik1e80/cad_sketch@0.4.0"])
+ let installed = run(project, workspace + "/install", ["add", "mik1e80/cad_sketch@" + version])
  guard !installed.contains("failed to update registry index") else { fail("Registry index refresh failed") }
  let manifest = @fs.read_file(project + "/moon.mod").text()
- guard manifest.contains("mik1e80/cad_sketch@0.4.0") && !manifest.contains("path") else { fail("Registry version did not match") }
+ guard manifest.contains("mik1e80/cad_sketch@" + version) && !manifest.contains("path") else { fail("Registry version did not match") }
  let downloaded = @fs.read_file(project + "/.mooncakes/mik1e80/cad_sketch/moon.mod").text()
- guard downloaded.contains("version = \"0.4.0\"") else { fail("Downloaded wrong module version") }
- @fs.write_file(project + "/moon.pkg", "import { \"mik1e80/cad_sketch\" @sketch, \"moonbitlang/core/math\", }\n")
+ guard downloaded.contains("version = \"" + version + "\"") else { fail("Downloaded wrong module version") }
+ @fs.write_file(project + "/moon.pkg", "import { \"mik1e80/cad_sketch\" @sketch, \"moonbitlang/core/math\", } for \"test\"\n")
  @fs.write_file(project + "/consumer.mbt", "")
  @fs.write_file(project + "/consumer_test.mbt", "")
  let files = ["arc_test.mbt", "arc_boundaries_test.mbt", "arc_relations_test.mbt", "arc_scale_test.mbt", "geometry_edit_test.mbt", "diagnostics_analysis_test.mbt"]
@@ -49,7 +53,7 @@ async fn main {
  let display = run(project, workspace + "/run", ["run", "cmd/main", "--target", "js", "--deny-warn"])
  guard display.contains("Arc showcase verified:") && display.contains("<path data-arc=") else { fail("Consumer arc executable did not verify") }
  let receipt : Json = {
-  "schema":1, "date":"2026-11-17", "module":"mik1e80/cad_sketch", "version":"0.4.0",
+  "schema":1, "date":"2026-11-17", "module":"mik1e80/cad_sketch", "version":version,
   "source":"Mooncakes registry", "outside_repository":true, "fresh_project_created_with_moon_new":true,
   "workspace_or_path_override":false, "targets":["wasm","wasm-gc","js","native"],
   "public_consumer_tests_per_backend":22, "generated_configurations_per_backend":480,
@@ -58,6 +62,6 @@ async fn main {
   "raw_logs":workspace,
  }
  @fs.write_file(receipt_path, receipt.stringify(indent=2) + "\n")
- println("Registry 0.4.0 completeness consumer passed")
+ println("Registry " + version + " completeness consumer passed")
 }
 
