@@ -26,3 +26,5 @@ Windows x64，moon 0.1.20261023 / moonc 0.10.17+d971670cd 与匹配 core：四�
 
 本地复现入口：`moon run scripts/completeness.mbtx full`；完整归档检查：`moon run scripts/completeness.mbtx archive`（可用 CAD_PYTHON 指定 Python 3.10+ 路径）。原始日志在 `_build/completeness`，保存摘要见 [本机回执](releases/0.4.0-local.json)。脚本在 scripts/_build 的临时产物已排除，归档检查拒绝任何残留开发产物。
 
+首次运行开发脚本前需 `moon update` 取得其显式固定的 async 依赖索引；核心库和圆弧示例无该依赖。首次远端完整运行 [44087155434](https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/44087155434) 在四后端测试与原 400 模型均通过后，因全新环境缺少此索引中断，不能记为完整通过。CI 已改为直接运行核心圆弧示例，避免为展示引入该外部开发依赖；最终成功回执另行记录。
+
