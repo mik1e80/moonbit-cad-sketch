@@ -1,8 +1,10 @@
 # MoonBit CAD Sketch
 
-面向 MoonBit 应用开发者的小型二维参数化草图约束求解库。输入点、线、圆和几何关系，求解坐标与半径；修改尺寸后重新求解，并报告残差、局部自由度和求解状态。
+面向 MoonBit 应用开发者的小型二维参数化草图约束求解库。输入点、线、圆、有限有向圆弧和几何关系，求解坐标与半径；修改尺寸后重新求解，并报告残差、局部自由度和求解状态。
 
-适用于参数化零件草图、草图编辑器集成及小型平面机构教学。核心库仅依赖 MoonBit core，支持 wasm、wasm-gc、JS 和 native；当前上限为 256 个标量变量、512 条线、512 条约束。非线性求解依赖初值，局部自由度是一阶数值估计。
+本轮源码为 **0.4.0**，发布与实测状态见 [完整性验证](docs/COMPLETENESS_VALIDATION.md)。下文 0.3.0 的发布和测试数字保留为历史信息，不替代新版本证据。[几何规格](docs/GEOMETRY_SPEC.md)、[37 种关系](docs/CONSTRAINT_SPEC.md)、[兼容性](docs/COMPATIBILITY.md)和[模型许可政策](docs/MODEL_DATA_POLICY.md)说明新增能力的边界。
+
+适用于参数化零件草图、草图编辑器集成及小型平面机构教学。核心库仅依赖 MoonBit core，支持 wasm、wasm-gc、JS 和 native；当前上限为 256 个标量变量、512 条线、128 条圆弧、512 条用户约束。非线性求解依赖初值，局部自由度是一阶数值估计。
 
 版本 `0.3.0` 可从 [Mooncakes](https://mooncakes.io/docs/mik1e80/cad_sketch) 安装。在自己的 MoonBit 项目根目录运行：
 
@@ -82,7 +84,7 @@ test "handle typed sketch errors through the public API" {
 }
 ```
 
-已支持 24 种关系，包含直线轴对称、中心对称、带符号点线距离、长度比例以及指定内外圆的内切。约束可以临时关闭，编号保持稳定：
+0.4.0 源码支持 37 种用户关系，另有圆弧内置等半径方程；原有 24 种，包含直线轴对称、中心对称、带符号点线距离、长度比例以及指定内外圆的内切。约束可以临时关闭，编号保持稳定：
 
 ```mbt check
 ///|
@@ -206,7 +208,7 @@ test "mirror a hole center about a vertical construction line" {
 
 ## SVG 输出
 
-`to_svg()` 返回当前保存几何的 SVG 字符串，保留草图不变。它从 0.2.0 起提供，建议使用当前 0.3.0；选项、共享比例和三阶段图形见 [SVG_EXPORT](docs/SVG_EXPORT.md)。
+`to_svg()` 返回当前保存几何的 SVG 字符串，保留草图不变。它从 0.2.0 起提供，0.3.0 已正式提供；0.4.0 新增真实圆弧路径与构造几何显示；选项、共享比例和三阶段图形见 [SVG_EXPORT](docs/SVG_EXPORT.md)。
 
 ```mbt check
 ///|
@@ -222,3 +224,49 @@ test "export stored sketch geometry to SVG" {
   assert_eq(s.point(b).unwrap().x, 5.0)
 }
 ```
+
+## 圆弧、测量与生命周期（0.4.0）
+
+圆弧是有限有向几何，内置等半径关系始终参与求解。下例编辑驱动半径；测量不增加方程：
+
+```mbt check
+///|
+test "arc radius edit and reference measurement" {
+  let s = @sketch.Sketch::new()
+  let c = s.try_add_point(0.0, 0.0).unwrap()
+  let a = s.try_add_point(2.0, 0.0).unwrap()
+  let b = s.try_add_point(0.0, 2.0).unwrap()
+  let axis = s.try_add_line(c, a).unwrap()
+  let arc = s.try_add_arc(c, a, b, @sketch.CounterClockwise).unwrap()
+  s.try_constrain(Fix(c, 0.0, 0.0)).unwrap() |> ignore
+  s.try_constrain(Horizontal(axis)).unwrap() |> ignore
+  let dimension = s.try_constrain(ArcRadius(arc, 2.0)).unwrap()
+  s.try_constrain(ArcSweep(arc, 1.5707963267948966)).unwrap() |> ignore
+  s.try_set_constraint(dimension, ArcRadius(arc, 3.0)).unwrap()
+  let result = s.solve_and_apply().unwrap()
+  assert_true(result.report.is_satisfied())
+  assert_true(
+    (s.measure(@sketch.ArcRadiusValue(arc)).unwrap() - 3.0).abs() < 1.0e-7,
+  )
+  assert_eq(result.report.geometry_residuals.length(), 1)
+  assert_true(s.to_svg().unwrap().contains("data-arc="))
+  assert_true(s.remove_arc(arc) is Err(GeometryInUse(_)))
+}
+```
+
+```mbt check
+///|
+test "bounded diagnostic candidates preserve original geometry" {
+  let s = @sketch.Sketch::new()
+  let p = s.try_add_point(0.0, 0.0).unwrap()
+  s.try_constrain(Fix(p, 0.0, 0.0)).unwrap() |> ignore
+  s.try_constrain(Fix(p, 2.0, 0.0)).unwrap() |> ignore
+  let analysis = s.analyze_conflicts(max_subset_solves=8).unwrap()
+  assert_false(analysis.baseline.is_satisfied())
+  assert_true(analysis.removal_suggestions.length() > 0)
+  assert_true(analysis.subset_solves <= 8)
+  assert_eq(s.point(p).unwrap().x, 0.0)
+}
+```
+
+相切要求共享所选端点 ID；PointOnArc 限定有限弧范围，是分段光滑的最近投影关系。构造几何仍参与求解，隐藏只影响显示。几何删除有引用检查，不隐式级联。局部冗余和冲突候选都不是严格不可满足性证明。真实求解的 [圆弧案例](examples/arc_fillet/README.md) 展示编辑、冲突保留和恢复。

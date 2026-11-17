@@ -1,0 +1,47 @@
+{
+  "corpus": "cad-completeness-480-v1",
+  "license": "Apache-2.0",
+  "origin": "Repository-authored analytic and deterministic generated configurations; no external CAD model files",
+  "seed": 20261117,
+  "configuration_count": 480,
+  "groups": [
+    {
+      "name": "arc-analytic",
+      "count": 64,
+      "source": "arc_test.mbt"
+    },
+    {
+      "name": "arc-perturbation",
+      "count": 128,
+      "source": "arc_test.mbt"
+    },
+    {
+      "name": "arc-line-circle",
+      "count": 128,
+      "source": "arc_test.mbt"
+    },
+    {
+      "name": "local-redundancy",
+      "count": 32,
+      "source": "diagnostics_analysis_test.mbt"
+    },
+    {
+      "name": "conflict-components",
+      "count": 64,
+      "source": "diagnostics_analysis_test.mbt"
+    },
+    {
+      "name": "singular-initialization",
+      "count": 64,
+      "source": "diagnostics_analysis_test.mbt"
+    }
+  ],
+  "exclusions": [
+    "unit-test entries",
+    "four-backend repetitions",
+    "old 400-configuration corpus",
+    "1000 triangle experiment",
+    "external industrial-model validation"
+  ]
+}
+

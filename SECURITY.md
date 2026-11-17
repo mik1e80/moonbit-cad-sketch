@@ -29,3 +29,8 @@ advisory. Published package versions are never overwritten.
 
 This policy is a reporting process, not a claim of independent security audit or
 engineering certification. See [limitations](docs/LIMITATIONS.md).
+
+
+## Arc, lifecycle and diagnostic boundaries (0.4.0)
+
+Checked arc builders/editors reject invalid definitions; intrinsic equal-radius equations are mandatory. Finite-arc membership is piecewise smooth and initial-value sensitive. Geometry deletion is reference checked, including disabled constraints, with stable non-reused IDs. Diagnostics copy state and enforce subset/rank/QR budgets; they are not proofs of infeasibility or wall-clock isolation. Hosts must still isolate untrusted work and synchronize mutable Sketch access. See docs/GEOMETRY_SPEC.md and docs/DIAGNOSTIC_DESIGN.md.

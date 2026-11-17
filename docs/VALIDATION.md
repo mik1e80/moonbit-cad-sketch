@@ -115,3 +115,8 @@ node scripts/four_bar_showcase.cjs --check
 ## 注册表 Consumer Test
 
 `python scripts/check_consumer.py` 在仓库外执行 `moon new`、`moon add mik1e80/cad_sketch`，编写小型消费程序并运行三个 JS 测试和一次可执行示例。它针对已发布的包，不使用本地 workspace；标准注册表缓存允许使用并记录。独立项目代码、真实输出及完整复现见 [CONSUMER_TEST](CONSUMER_TEST.md)。这项轻量检查不调用上面的源码包全矩阵检查或 400 / 1000 模型实验。
+
+
+## 0.4.0 新增语料与证据隔离
+
+本文件上文的 24 种语义与 0.3.0 结果为原始套件/历史版本范围。新增圆弧与诊断另有 cad-completeness-480-v1，和旧 400 模型、1000 初值分开报告。新增结果、来源及精确复现见 [COMPLETENESS_VALIDATION](COMPLETENESS_VALIDATION.md)。本轮不会以历史 SciPy 或 Benchmark 结果为新圆弧背书。

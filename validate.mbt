@@ -1,22 +1,16 @@
 ///|
 fn Sketch::valid_point(self : Sketch, id : PointId) -> Bool {
-  physical_equal(self.owner, id.owner) &&
-  id.index >= 0 &&
-  id.index < self.points.length()
+  self.point_slot(id) is Some(_)
 }
 
 ///|
 fn Sketch::valid_line(self : Sketch, id : LineId) -> Bool {
-  physical_equal(self.owner, id.owner) &&
-  id.index >= 0 &&
-  id.index < self.lines.length()
+  self.line_slot(id) is Some(_)
 }
 
 ///|
 fn Sketch::valid_circle(self : Sketch, id : CircleId) -> Bool {
-  physical_equal(self.owner, id.owner) &&
-  id.index >= 0 &&
-  id.index < self.circles.length()
+  self.circle_slot(id) is Some(_)
 }
 
 ///|
@@ -42,6 +36,7 @@ fn Sketch::constraint_has_foreign_handle(self : Sketch, c : Constraint) -> Bool 
   let point = (p : PointId) => physical_equal(self.owner, p.owner)
   let line = (l : LineId) => physical_equal(self.owner, l.owner)
   let circle = (c : CircleId) => physical_equal(self.owner, c.owner)
+  let arc = (a : ArcId) => physical_equal(self.owner, a.owner)
   let owned = match c {
     Fix(p, _, _) => point(p)
     Coincident(a, b)
@@ -58,7 +53,16 @@ fn Sketch::constraint_has_foreign_handle(self : Sketch, c : Constraint) -> Bool 
     | Angle(a, b, _) => line(a) && line(b)
     Midpoint(p, l) | PointOnLine(p, l) | DistanceToLine(p, l, _) =>
       point(p) && line(l)
-    Radius(c, _) => circle(c)
+    Radius(c, _) | Diameter(c, _) => circle(c)
+    ArcRadius(a, _) | ArcDiameter(a, _) | ArcSweep(a, _) | ArcLength(a, _) =>
+      arc(a)
+    EqualArcRadius(a, b) | ArcConcentric(a, b) => arc(a) && arc(b)
+    EqualCircleArcRadius(c, a) | CircleArcConcentric(c, a) =>
+      circle(c) && arc(a)
+    ArcTangentAt(l, a, _) => line(l) && arc(a)
+    ArcArcTangentAt(a, _, b, _) => arc(a) && arc(b)
+    ArcCircleTangentAt(a, _, c) => arc(a) && circle(c)
+    PointOnArc(p, a) => point(p) && arc(a)
     EqualRadius(a, b)
     | Concentric(a, b)
     | ExternalTangent(a, b)
@@ -73,7 +77,8 @@ fn Sketch::constraint_has_foreign_handle(self : Sketch, c : Constraint) -> Bool 
 fn Sketch::validate(self : Sketch) -> Result[Unit, SketchError] {
   if self.points.length() * 2 + self.circles.length() > 256 ||
     self.constraints.length() > 512 ||
-    self.lines.length() > 512 {
+    self.lines.length() > 512 ||
+    self.arcs.length() > 128 {
     return Err(ResourceLimit)
   }
   for i, p in self.points {
@@ -95,8 +100,8 @@ fn Sketch::validate(self : Sketch) -> Result[Unit, SketchError] {
         InvalidGeometry("Line at index \{i}: references a missing point"),
       )
     }
-    let a = self.points[l.a.index]
-    let b = self.points[l.b.index]
+    let a = self.points[self.point_slot(l.a).unwrap()]
+    let b = self.points[self.point_slot(l.b).unwrap()]
     if a.x == b.x && a.y == b.y {
       return Err(DegenerateLine(self.line_id(i)))
     }
@@ -112,6 +117,16 @@ fn Sketch::validate(self : Sketch) -> Result[Unit, SketchError] {
     }
     if !bounded(c.radius) || c.radius <= 0.0 {
       return Err(InvalidRadius(self.circle_id(i)))
+    }
+  }
+  for i, a in self.arcs {
+    if !physical_equal(self.owner, a.center.owner) ||
+      !physical_equal(self.owner, a.start.owner) ||
+      !physical_equal(self.owner, a.end.owner) {
+      return Err(ForeignHandle)
+    }
+    if !self.arc_definition_valid(a) {
+      return Err(InvalidArc(self.arc_ids[i]))
     }
   }
   for i, c in self.constraints {
@@ -159,7 +174,34 @@ fn Sketch::constraint_valid(self : Sketch, c : Constraint) -> Bool {
       self.valid_point(p) && self.valid_line(l)
     DistanceToLine(p, l, d) =>
       self.valid_point(p) && self.valid_line(l) && bounded(d)
-    Radius(c, r) => self.valid_circle(c) && bounded(r) && r > 0.0
+    Radius(c, r) | Diameter(c, r) =>
+      self.valid_circle(c) && bounded(r) && r > 0.0
+    ArcRadius(a, r) | ArcDiameter(a, r) | ArcLength(a, r) =>
+      self.valid_arc(a) && bounded(r) && r > 0.0
+    ArcSweep(a, t) =>
+      self.valid_arc(a) &&
+      finite(t) &&
+      t > 1.0e-12 &&
+      t < 2.0 * @math.PI - 1.0e-12
+    EqualArcRadius(a, b) | ArcConcentric(a, b) =>
+      self.valid_arc(a) && self.valid_arc(b)
+    EqualCircleArcRadius(c, a) | CircleArcConcentric(c, a) =>
+      self.valid_circle(c) && self.valid_arc(a)
+    PointOnArc(p, a) => self.valid_point(p) && self.valid_arc(a)
+    ArcTangentAt(l, a, e) =>
+      if !self.valid_line(l) || !self.valid_arc(a) {
+        false
+      } else {
+        let p = arc_endpoint(self.arc(a).unwrap(), e)
+        let line = self.lines[self.line_slot(l).unwrap()]
+        p.index == line.a.index || p.index == line.b.index
+      }
+    ArcArcTangentAt(a, ae, b, be) =>
+      self.valid_arc(a) &&
+      self.valid_arc(b) &&
+      arc_endpoint(self.arc(a).unwrap(), ae).index ==
+      arc_endpoint(self.arc(b).unwrap(), be).index
+    ArcCircleTangentAt(a, _, c) => self.valid_arc(a) && self.valid_circle(c)
     EqualRadius(a, b)
     | Concentric(a, b)
     | ExternalTangent(a, b)
@@ -201,6 +243,8 @@ fn Sketch::frame(self : Sketch) -> Frame {
       | DistanceY(_, _, d)
       | DistanceToLine(_, _, d)
       | Radius(_, d) => scale = dmax(scale, d.abs())
+      Diameter(_, d) | ArcRadius(_, d) | ArcDiameter(_, d) | ArcLength(_, d) =>
+        scale = dmax(scale, d.abs())
       _ => ()
     }
   }

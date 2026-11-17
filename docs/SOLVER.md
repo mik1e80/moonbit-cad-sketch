@@ -52,3 +52,10 @@ let result = sketch.solve(options~)
 长度沿用调用者统一单位，角度使用弧度。固定位置也按容差求解；返回坐标会重新核对残差。未收敛时可检查候选几何，但 `solve_and_apply()` 不保存它。欠约束的自由方向可能漂移，并无“离初值最近”的目标。
 
 类型化错误处理见 [DIAGNOSTICS](DIAGNOSTICS.md#类型化错误与迁移)，输入边界见 [LIMITATIONS](LIMITATIONS.md)。归一化、自动微分与线性代数属于[内部实现](ARCHITECTURE.md#数值求解)。
+
+
+## 0.4.0 几何内置方程与停止原因
+
+每条现存圆弧的端点等半径关系始终求解，不占用户 ConstraintId；其误差参与 Satisfied、rank 和 local_dof。任一用户或几何内置方程超容差，都不能由 solve_and_apply 写回。普通迭代仍是局部非线性方法，没有全局可满足性证明。
+
+报告新增逐方程来源、几何残差、停止原因与接受/拒绝步数、初始最大容差比及最终阻尼。显式子集和冗余分析另有总预算，不自动附加到 solve 成本。详见 [诊断](DIAGNOSTICS.md) 与 [迁移](COMPATIBILITY.md)。

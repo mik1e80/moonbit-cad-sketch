@@ -1,6 +1,6 @@
 name = "mik1e80/cad_sketch"
 
-version = "0.3.0"
+version = "0.4.0"
 
 readme = "README.mbt.md"
 

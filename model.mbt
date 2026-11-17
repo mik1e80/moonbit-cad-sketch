@@ -91,6 +91,19 @@ pub(all) enum Constraint {
   Tangent(LineId, CircleId)
   ExternalTangent(CircleId, CircleId)
   InternalTangent(CircleId, CircleId)
+  Diameter(CircleId, Double)
+  ArcRadius(ArcId, Double)
+  ArcDiameter(ArcId, Double)
+  ArcSweep(ArcId, Double)
+  ArcLength(ArcId, Double)
+  EqualArcRadius(ArcId, ArcId)
+  EqualCircleArcRadius(CircleId, ArcId)
+  ArcConcentric(ArcId, ArcId)
+  CircleArcConcentric(CircleId, ArcId)
+  ArcTangentAt(LineId, ArcId, ArcEndpoint)
+  ArcArcTangentAt(ArcId, ArcEndpoint, ArcId, ArcEndpoint)
+  ArcCircleTangentAt(ArcId, ArcEndpoint, CircleId)
+  PointOnArc(PointId, ArcId)
 } derive(Debug)
 
 ///|
@@ -103,6 +116,13 @@ pub struct Sketch {
   priv points : Array[Point]
   priv lines : Array[Line]
   priv circles : Array[Circle]
+  priv point_ids : Array[PointId]
+  priv line_ids : Array[LineId]
+  priv circle_ids : Array[CircleId]
+  priv next_geometry : Array[Int32]
+  priv arcs : Array[Arc]
+  priv arc_ids : Array[ArcId]
+  priv roles : Map[String, GeometryRole]
   priv constraints : Array[Constraint]
   priv enabled : Array[Bool]
   priv constraint_ids : Array[ConstraintId]
@@ -116,6 +136,13 @@ pub fn Sketch::new() -> Sketch {
     points: [],
     lines: [],
     circles: [],
+    point_ids: [],
+    line_ids: [],
+    circle_ids: [],
+    next_geometry: [0, 0, 0, 0],
+    arcs: [],
+    arc_ids: [],
+    roles: Map([]),
     constraints: [],
     enabled: [],
     constraint_ids: [],
@@ -126,17 +153,50 @@ pub fn Sketch::new() -> Sketch {
 ///|
 /// Mutable array identity is a runtime-local token; it is never serialized.
 fn Sketch::point_id(self : Sketch, index : Int32) -> PointId {
-  { index, owner: self.owner, }
+  if index >= 0 && index < self.point_ids.length() {
+    self.point_ids[index]
+  } else {
+    {
+      index: if index == self.points.length() {
+        self.next_geometry[0]
+      } else {
+        index
+      },
+      owner: self.owner,
+    }
+  }
 }
 
 ///|
 fn Sketch::line_id(self : Sketch, index : Int32) -> LineId {
-  { index, owner: self.owner, }
+  if index >= 0 && index < self.line_ids.length() {
+    self.line_ids[index]
+  } else {
+    {
+      index: if index == self.lines.length() {
+        self.next_geometry[1]
+      } else {
+        index
+      },
+      owner: self.owner,
+    }
+  }
 }
 
 ///|
 fn Sketch::circle_id(self : Sketch, index : Int32) -> CircleId {
-  { index, owner: self.owner, }
+  if index >= 0 && index < self.circle_ids.length() {
+    self.circle_ids[index]
+  } else {
+    {
+      index: if index == self.circles.length() {
+        self.next_geometry[2]
+      } else {
+        index
+      },
+      owner: self.owner,
+    }
+  }
 }
 
 ///|
@@ -151,8 +211,13 @@ pub fn Sketch::add_point(self : Sketch, x : Double, y : Double) -> PointId {
   if self.points.length() * 2 + self.circles.length() > 254 {
     abort("Small-sketch variable limit; use try_add_point")
   }
+  if self.next_geometry[0] == 2147483647 {
+    abort("Geometry identifier space exhausted")
+  }
   let id = self.point_id(self.points.length())
   self.points.push({ x, y, })
+  self.point_ids.push(id)
+  self.next_geometry[0] += 1
   id
 }
 
@@ -161,8 +226,13 @@ pub fn Sketch::add_line(self : Sketch, a : PointId, b : PointId) -> LineId {
   if self.lines.length() >= 512 {
     abort("Small-sketch line limit; use try_add_line")
   }
+  if self.next_geometry[1] == 2147483647 {
+    abort("Geometry identifier space exhausted")
+  }
   let id = self.line_id(self.lines.length())
   self.lines.push({ a, b, })
+  self.line_ids.push(id)
+  self.next_geometry[1] += 1
   id
 }
 
@@ -177,7 +247,12 @@ pub fn Sketch::add_circle(
     abort("Small-sketch variable limit; use try_add_circle")
   }
   let id = self.circle_id(self.circles.length())
+  if self.next_geometry[2] == 2147483647 {
+    abort("Geometry identifier space exhausted")
+  }
   self.circles.push({ center, radius, })
+  self.circle_ids.push(id)
+  self.next_geometry[2] += 1
   id
 }
 
@@ -213,6 +288,9 @@ pub fn Sketch::try_add_point(
   x : Double,
   y : Double,
 ) -> Result[PointId, SketchError] {
+  if self.next_geometry[0] == 2147483647 {
+    return Err(IdentifierExhausted)
+  }
   if self.points.length() * 2 + self.circles.length() > 254 {
     return Err(ResourceLimit)
   }
@@ -240,6 +318,9 @@ pub fn Sketch::try_add_line(
   a : PointId,
   b : PointId,
 ) -> Result[LineId, SketchError] {
+  if self.next_geometry[1] == 2147483647 {
+    return Err(IdentifierExhausted)
+  }
   if self.lines.length() >= 512 {
     return Err(ResourceLimit)
   }
@@ -250,8 +331,8 @@ pub fn Sketch::try_add_line(
   if !self.valid_point(a) || !self.valid_point(b) {
     return Err(InvalidGeometry("Line references a missing point"))
   }
-  let pa = self.points[a.index]
-  let pb = self.points[b.index]
+  let pa = self.points[self.point_slot(a).unwrap()]
+  let pb = self.points[self.point_slot(b).unwrap()]
   if !bounded(pa.x) || !bounded(pa.y) || !bounded(pb.x) || !bounded(pb.y) {
     return Err(
       InvalidGeometry("Line endpoints must have finite bounded coordinates"),
@@ -279,6 +360,9 @@ pub fn Sketch::try_add_circle(
   center : PointId,
   radius : Double,
 ) -> Result[CircleId, SketchError] {
+  if self.next_geometry[2] == 2147483647 {
+    return Err(IdentifierExhausted)
+  }
   if self.points.length() * 2 + self.circles.length() >= 256 {
     return Err(ResourceLimit)
   }
@@ -288,7 +372,7 @@ pub fn Sketch::try_add_circle(
   if !self.valid_point(center) {
     return Err(InvalidGeometry("Circle references a missing center"))
   }
-  let p = self.points[center.index]
+  let p = self.points[self.point_slot(center).unwrap()]
   if !bounded(p.x) || !bounded(p.y) {
     return Err(
       InvalidGeometry("Circle center must have finite bounded coordinates"),
@@ -334,7 +418,7 @@ pub fn Sketch::try_constrain(
 ///|
 pub fn Sketch::point(self : Sketch, id : PointId) -> Point? {
   if self.valid_point(id) {
-    self.points.get(id.index)
+    self.point_slot(id).map(i => self.points[i])
   } else {
     None
   }
@@ -343,7 +427,7 @@ pub fn Sketch::point(self : Sketch, id : PointId) -> Point? {
 ///|
 pub fn Sketch::radius(self : Sketch, id : CircleId) -> Double? {
   if self.valid_circle(id) {
-    self.circles.get(id.index).map(c => c.radius)
+    self.circle_slot(id).map(i => self.circles[i].radius)
   } else {
     None
   }
@@ -404,7 +488,7 @@ pub fn Sketch::set_point(self : Sketch, id : PointId, p : Point) -> Bool {
   if !self.valid_point(id) {
     false
   } else {
-    self.points[id.index] = p
+    self.points[self.point_slot(id).unwrap()] = p
     true
   }
 }
@@ -421,8 +505,8 @@ pub fn Sketch::set_radius(
   if !self.valid_circle(id) {
     false
   } else {
-    let c = self.circles[id.index]
-    self.circles[id.index] = { center: c.center, radius, }
+    let c = self.circles[self.circle_slot(id).unwrap()]
+    self.circles[self.circle_slot(id).unwrap()] = { center: c.center, radius, }
     true
   }
 }
@@ -469,7 +553,7 @@ pub fn Sketch::try_set_point(
       ),
     )
   }
-  self.points[id.index] = p
+  self.points[self.point_slot(id).unwrap()] = p
   Ok(())
 }
 
@@ -495,8 +579,8 @@ pub fn Sketch::try_set_radius(
   if !self.valid_circle(id) || !bounded(radius) || radius <= 0.0 {
     return Err(InvalidRadius(id))
   }
-  let c = self.circles[id.index]
-  self.circles[id.index] = { center: c.center, radius, }
+  let c = self.circles[self.circle_slot(id).unwrap()]
+  self.circles[self.circle_slot(id).unwrap()] = { center: c.center, radius, }
   Ok(())
 }
 

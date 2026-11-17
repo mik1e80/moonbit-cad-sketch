@@ -93,3 +93,8 @@ SVG 使用返回坐标与半径绘制，前后采用同一比例。绘制时将�
 ## 核心库 SVG 输出
 
 六条 JSON 事件包含 `svg` 字段，由 `Sketch::to_svg()` 直接生成。运行 `python scripts/export_svg.py --write` 可保存独立的 `before.svg`、`after.svg` 和 `conflict.svg`，三张图使用同一视野与比例；冲突阶段只画保留几何。原有 Node 对比图和校验入口继续保留。[SVG 接口及文件说明](SVG_EXPORT.md)列出具体行为；此接口已包含在当前 Mooncakes 0.3.0 正式版本中。
+
+
+## 圆弧半径编辑（0.4.0）
+
+新增 [arc_fillet](../examples/arc_fillet/README.md)：先建有限四分之一圆弧和共享端点切线，半径 2→3 后重新求解，再添加矛盾半径验证保存几何不变，并删除冲突恢复。它展示预建几何的联合约束，不宣称自动圆角、修剪或第三方应用采用。

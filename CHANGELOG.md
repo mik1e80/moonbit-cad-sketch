@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0 — release candidate
+
+- Add finite directed arcs with mandatory equal endpoint radii, checked creation/editing, snapshots and true SVG arc paths. Add circle diameter and 12 arc-related user constraints (37 total).
+- Add stable non-reused geometry IDs, reference-checked removal, construction display roles, read-only measurements and an atomic four-point/four-edge rectangle helper.
+- Expose equation provenance, intrinsic geometry residuals, stop reasons and iteration counters. Add explicitly requested, budgeted local redundancy and conflict-candidate analysis; no infeasibility or minimal-conflict proof.
+- Add 480 separately versioned generated configurations, analytic/derivative checks, ownership, lifecycle and resource-boundary tests, plus arc editing/conflict-recovery showcase.
+- Specify compatibility, geometric/numerical boundaries and model provenance/license policy. Existing historical measurements remain attributable to their original sources. Release gates and actual results are in docs/COMPLETENESS_VALIDATION.md.
+
 ## 0.3.0 — 2026-11-13
 
 - Add atomic checked setters `try_set_point`, `try_set_radius`, and `try_set_constraint`, preserving constraint IDs and enabled state; existing setters retain deferred validation.

@@ -11,3 +11,8 @@
 | [conflict](conflict/README.md) | `moon run examples/conflict --target js` | 诊断、失败保留与恢复 |
 
 这些目录中的 `main.mbt` 使用核心库公开接口。安装与导入见 [快速开始](../docs/QUICK_START.md)。原命令路径 `cmd/demo`、`cmd/bracket_demo`、`cmd/mirror_demo` 分别迁移到前三个目录；旧路径不再提供入口。
+
+
+## 0.4.0 圆弧案例
+
+[arc_fillet](arc_fillet/README.md)：运行 moon run examples/arc_fillet --target js；验证半径编辑、共享端点切线、冲突保留和删除恢复。是独立自建示例，不使用外部 CAD 文件，不是自动圆角工具。
