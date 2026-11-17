@@ -5,7 +5,7 @@
 | 工作 | 接口 | 专题 |
 | --- | --- | --- |
 | Geometry | `Sketch::new()`、`add_point()`、`add_line()`、`add_circle()` | [快速开始](QUICK_START.md) |
-| Constraint | `constrain()` 与 24 种关系构造器 | [约束参考](CONSTRAINTS.md) |
+| Constraint | `try_constrain()` 与 37 种用户关系构造器 | [约束参考](CONSTRAINTS.md) |
 | Solve | `solve()`、`solve_and_apply()`、`Solution` | [求解与结果](SOLVER.md) |
 | Edit | `set_constraint()`、`set_constraint_enabled()`、`remove_constraint()` | [约束生命周期](CONSTRAINT_LIFECYCLE.md) |
 | Diagnostic | `SketchError`、`SolveReport`、`likely_conflicts()` | [错误与诊断](DIAGNOSTICS.md) |
@@ -32,3 +32,10 @@
 ## SVG 导出
 
 `Sketch::to_svg()` 返回当前保存几何的 SVG 字符串；可选设置画布、点标记、标题和共享视野。Mooncakes 0.2.0 起包含此接口。[完整用法与三阶段图形](SVG_EXPORT.md)说明校验、坐标方向和冲突保留语义。
+
+
+## 0.4.0 新入口与迁移
+
+新增 try_add_arc / try_set_arc / arc / arc_radius / arc_sweep；remove_geometry 及各类型 remove_* 有引用保护。set_geometry_role 控制构造显示，measure 返回只读尺寸，try_add_rectangle 原子创建四点四边且不附加约束。analyze_redundancy / analyze_conflicts 是显式、有预算的分析；普通 solve 不运行子集搜索。
+
+完整公开签名以 [pkg.generated.mbti](../pkg.generated.mbti) 为准；[几何规格](GEOMETRY_SPEC.md)、[关系规格](CONSTRAINT_SPEC.md)、[兼容性](COMPATIBILITY.md) 解释失败与边界。新增错误 InvalidArc 和 GeometryInUse；编号耗尽适用于所有实体类型。

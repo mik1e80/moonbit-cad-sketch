@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "date": "2026-11-17",
+  "version": "0.4.0",
+  "scope": "Windows local pre-publication source/archive regression",
+  "base_commit": "f7803c74379ccdd883f9e7b897478fcc4a8c0ed9",
+  "source_commit": "recorded by the enclosing implementation commit; not a self-referential SHA",
+  "compiler": "moonc 0.10.17+d971670cd",
+  "targets": [
+    "wasm",
+    "wasm-gc",
+    "js",
+    "native"
+  ],
+  "tests_per_backend": 160,
+  "new_corpus": "cad-completeness-480-v1",
+  "new_configurations_per_backend": 480,
+  "original_corpus": "cad-validation-400-v1",
+  "original_configurations_per_backend": 400,
+  "old_checker_mutations_per_backend": 6,
+  "random_triangle_js": {
+    "cases": 1000,
+    "Satisfied": 1000,
+    "Stalled": 0,
+    "IterationLimit": 0,
+    "Invalid": 0,
+    "correctness_failures": 0
+  },
+  "archive_tests_per_backend": 165,
+  "archive_consumer_tests": 5,
+  "registry_consumer": "not yet run for 0.4.0",
+  "github_full_regression": "pending",
+  "new_full_benchmark_timing": false,
+  "scipy_reference_rerun": false
+}

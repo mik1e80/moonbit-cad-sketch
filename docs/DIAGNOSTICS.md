@@ -74,3 +74,14 @@ match sketch.solve_and_apply() {
 ## 运行冲突案例
 
 `moon run examples/conflict --target js` 打印真实求解报告中的约束编号与误差比，验证未达标时原几何不变，再演示停用和永久删除后的恢复。代码与预期行为见 [conflict](../examples/conflict/README.md)。
+
+
+## 0.4.0 方程来源与有界分析
+
+report.equation_residuals 给出 ConstraintEquation(id) / ArcEquation(id)、component、angular、error 和 tolerance_ratio。report.geometry_residuals 单列内置圆弧误差，参与最大容差比、秩和成功判断；用户 residuals 仍保留用户关系的启停状态。
+
+stop_reason 区分 Converged、NoDescent、StepTooSmall、SingularJacobian、LinearSolveFailure、IterationBudgetExhausted、QrBudgetExhausted、WorldToleranceFailure。initial_max_tolerance_ratio、accepted_steps、rejected_steps、final_damping 用于复核迭代；局部一阶奇异不等于全局无解。
+
+analyze_redundancy 仅在满足的基线构型上比较单条排除后的数值秩；候选不能同时批量删除。默认最多 33 次秩评估、基线 128 次 QR。analyze_conflicts 默认最多 32 次子集求解（含基线）、总计 400 次收费 QR、每次最多 128；错误试验保守计入其整次 QR 额度。可配置范围与完整签名见接口摘要。返回 trials、候选组、实际恢复的单条 removal_suggestions 和 budget_exhausted。narrowing_completed 只表示完成一次贪心排除扫描，不表示最小或严格不可满足。所有试验来自同一原始几何副本，原草图和旧快照不改动。
+
+[诊断合同](DIAGNOSTIC_DESIGN.md) 明确术语；新增测试验证一/二组件冲突、奇异初值、禁用非法定义、预算与编号空洞。来源不明的工业模型不参与本轮测试。

@@ -18,7 +18,7 @@
 | --- | --- |
 | MoonBit 为主要实现语言 | 求解、自动微分、线性代数、验证和示例均为 MoonBit；Python 只做发布包及消费方验证，不参与求解运行时 |
 | 源码公开，保留开发记录 | [GitHub 仓库](https://github.com/mik1e80/moonbit-cad-sketch)；使用 `git log --oneline`、`git rev-list --count HEAD` 复核历史，已保留首版及逐项完善提交；满足用户至少 10 条 commit 的要求，不伪造开发日期 |
-| 完成声明的核心功能 | 24 种小型二维草图关系；输入、数值及规模边界见 README，不声称完整 CAD、全局收敛、精确刚性判定或 DXF 集成 |
+| 完成声明的核心功能 | 0.4.0 源码的 37 种小型二维草图用户关系及圆弧内置方程；输入、数值及规模边界见 README，不声称完整 CAD、全局收敛、精确刚性判定或 DXF 集成 |
 | 安装、使用、示例可复现 | README 与可执行 README.mbt.md，`examples/basic`、`cmd/edit_demo`；`moon add mik1e80/cad_sketch` 安装发布版本，本地 workspace 用于源码开发 |
 | CI 覆盖检查、构建、测试 | `.github/workflows/ci.yml` 默认对 wasm / wasm-gc / JS / native 执行静态检查、README / API 示例、SVG、安全创建与编辑、预算及少量组合 / 类型化错误测试；JS 另验证案例和 5 项源码包消费测试。完整回归与批量实验必须手动勾选；按对应提交的实际 Actions 结果区分轻量与全量证据 |
 | 核心路径测试 | AD 差分、解析几何、机构运动、矛盾 / 冗余、启停、极端数值、跨草图误用、资源边界；已有失败反例先复现再修复 |
@@ -57,7 +57,7 @@ Topics：`cad`, `constraint-solver`, `geometry`, `moonbit`, `parametric-design`,
 
 ## 可复现命令
 
-当前 0.3.0 源码需要 MoonBit 0.10.17 或更新版本；包消费审查脚本另外需要 Python 3.10+，仅使用标准库。
+0.4.0 源码需要 MoonBit 0.10.17 或更新版本；包消费审查脚本另外需要 Python 3.10+，仅使用标准库。
 
 ```sh
 moon fmt --check

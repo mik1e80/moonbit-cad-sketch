@@ -1,6 +1,6 @@
 # MoonBit CAD Sketch
 
-**Pure MoonBit 2D parametric sketch constraint solver.** 定义点、线和圆，添加几何与尺寸约束，求解草图；修改尺寸后再次求解。
+**Pure MoonBit 2D parametric sketch constraint solver.** 定义点、线、圆和有限有向圆弧，添加几何与尺寸约束，求解草图；修改尺寸后再次求解。
 
 [![Mooncakes v0.3.0](https://img.shields.io/badge/Mooncakes-v0.3.0-blue)](https://mooncakes.io/docs/mik1e80/cad_sketch)
 [![CI](https://github.com/mik1e80/moonbit-cad-sketch/actions/workflows/ci.yml/badge.svg)](https://github.com/mik1e80/moonbit-cad-sketch/actions/workflows/ci.yml)
@@ -8,7 +8,7 @@
 
 ## Why?
 
-当前版本 **0.3.0**：提供安全创建与编辑接口、计算预算和资源保护。最低要求 `moonc >= 0.10.17`。从 0.2.2 升级时的接口与行为变化见 [API 指南](docs/API_GUIDE.md)，安全反馈见 [SECURITY](SECURITY.md)。
+本轮源码 **0.4.0**：新增有限圆弧、几何删除、构造角色、只读测量和有界诊断。发布及完整回归状态见 [本轮验证](docs/COMPLETENESS_VALIDATION.md)；此前正式版为 0.3.0。最低要求 `moonc >= 0.10.17`。从 0.2.2 升级时的接口与行为变化见 [API 指南](docs/API_GUIDE.md)，安全反馈见 [SECURITY](SECURITY.md)。
 
 用距离、方向、对称和相切关系表达设计意图，让孔位、板边和连杆在尺寸变化后一起更新。适用于小型参数化零件草图、草图编辑器集成和平面机构教学。应用通过几何对象和关系建模，库负责联合求解，并报告哪些关系尚未达标。
 
@@ -84,11 +84,20 @@ moon run examples/parametric_bracket --target js
 
 ## Features
 
-- **草图建模**：点、线、圆与草图内实体句柄。
-- **设计关系**：24 种几何和尺寸约束，默认选项即可求解。
-- **参数编辑**：修改尺寸、启停或永久删除约束，再次求解。
+圆弧展示：半径 2→3，端点与切线联动；冲突阶段保留最后一次成功几何。
+
+| 修改前 | 修改后 |
+| --- | --- |
+| ![圆弧修改前](examples/arc_fillet/before.svg) | ![圆弧修改后](examples/arc_fillet/after.svg) |
+
+见 [圆弧案例](examples/arc_fillet/README.md)。它显式建立圆弧与共享端点切线，不提供自动圆角或修剪。
+
+- **草图建模**：点、线、圆、有限有向圆弧与稳定的草图内实体句柄。
+- **设计关系**：37 种用户几何和尺寸约束，另有圆弧内置等半径方程，默认选项即可求解。
+- **参数编辑**：修改尺寸、启停或永久删除约束，带引用检查的几何删除，再次求解。
+- **建模辅助**：构造角色、只读参考测量和四点四边矩形辅助；矩形不会自动添加约束。
 - **结果应用**：只有全部启用关系达标时，`solve_and_apply()` 才写回几何。
-- **诊断**：类型化错误、状态、逐约束残差和局部自由度。
+- **诊断**：类型化错误、停止原因、逐方程来源和局部自由度；显式调用有预算的局部冗余与冲突候选分析。
 - **SVG 输出**：`Sketch::to_svg()` 导出当前草图，支持自动适配或使用共享视野。
 - **运行时**：纯 MoonBit，仅依赖 MoonBit core；支持 wasm、wasm-gc、JS 和 native。
 
@@ -97,7 +106,7 @@ moon run examples/parametric_bracket --target js
 
 ```mermaid
 flowchart LR
-    G["Point · Line · Circle"] --> C["几何与尺寸约束"]
+    G["Point · Line · Circle · Arc"] --> C["几何与尺寸约束"]
     C --> S["solve_and_apply()"]
     S --> R["状态 · 残差 · 局部自由度"]
     R -->|"Satisfied"| U["更新几何"]
@@ -117,7 +126,7 @@ flowchart LR
 | 线关系 | 等长、长度比例、中点、点在线上 |
 | 圆与相切 | 同心、等半径、点在圆上、线圆相切、圆圆内切与外切 |
 
-共 24 种关系。长度沿用调用者统一单位，角度使用弧度。构造器、方向与定义域见[约束参考](docs/CONSTRAINTS.md)。
+原有 24 种关系加圆直径和 12 种圆弧相关关系，共 37 种用户关系；新增定义见 [关系规格](docs/CONSTRAINT_SPEC.md)。长度沿用调用者统一单位，角度使用弧度。构造器、方向与定义域见[约束参考](docs/CONSTRAINTS.md)。
 
 ## Parametric Editing
 
@@ -144,6 +153,8 @@ if sketch.set_constraint(length, Distance(a, b, 7.0)) {
 
 `report.likely_conflicts()` 按误差比排序启用且超标的关系，帮助决定检查顺序。`local_dof` 是一阶局部估计。未收敛不证明无解，排序列表也不是最小冲突集。处理方式见[错误与诊断](docs/DIAGNOSTICS.md)及[求解与结果](docs/SOLVER.md)。
 
+0.4.0 可显式调用 `analyze_redundancy()` 或 `analyze_conflicts()`，获得局部冗余候选、实际子集试验、恢复建议和预算状态；普通求解不执行这些分析。报告中的逐方程来源区分用户关系与内置圆弧方程。
+
 ## Examples
 
 在源码仓库根目录运行，所有案例均使用核心库公开接口：
@@ -154,6 +165,7 @@ if sketch.set_constraint(length, Distance(a, b, 7.0)) {
 | [parametric_bracket](examples/parametric_bracket/README.md) | `moon run examples/parametric_bracket --target js` | 四孔安装板尺寸联动 |
 | [mirror_holes](examples/mirror_holes/README.md) | `moon run examples/mirror_holes --target js` | 镜像孔位与轴移动 |
 | [four_bar](examples/four_bar/README.md) | `moon run examples/four_bar --target js` | 同一机构连续改变驱动角度 |
+| [arc_fillet](examples/arc_fillet/README.md) | `moon run examples/arc_fillet --target js` | 预建圆弧半径编辑、共享端点相切和失败恢复；不是自动圆角 |
 | [conflict](examples/conflict/README.md) | `moon run examples/conflict --target js` | 诊断、几何保留、停用与删除恢复 |
 
 四杆机构固定 A、D，保持 AB=30、BC=70、CD=50，以 15° 步长往返求解 25 个姿态：
@@ -175,7 +187,7 @@ if sketch.set_constraint(length, Distance(a, b, 7.0)) {
 
 **0.3.0 核心实现完整回归通过**：[实际 Actions](https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/43365012044) 对应 `5ea24f2`。四后端各 127 项测试、各 400 个生成配置，以及 JS 的 1000 个随机初值全部通过；解包后的完整检查四后端各 132 项通过。[版本验证记录](docs/releases/0.3.0-full-regression.json)区分源码检查和包消费证据。
 
-历史快照保留原始测量；本次完整结果单独保存，未重测 SciPy 对照或四档计时。日常仍只需运行七项公开接口示例：
+以上 0.3.0 是历史测量。新增 480 配置与 0.4.0 的本轮实测单独记录在 [完整性验证](docs/COMPLETENESS_VALIDATION.md)，不沿用旧版本通过结论；SciPy 与四档计时未重测。日常优先运行相关公开接口示例：
 
 ```sh
 moon test README.mbt.md --target js
@@ -216,13 +228,13 @@ moon test README.mbt.md --target js
 
 ## Limitations
 
-面向小型草图：最多 256 个标量变量、512 条线和 512 条现存约束。当前几何类型为 Point、Line、Circle，关系为等式约束。非线性求解依赖初值，可能有多解、翻转或停滞。
+面向小型草图：最多 256 个标量变量、512 条线、128 条圆弧和 512 条现存用户约束。当前几何类型为 Point、Line、Circle、Arc，关系为等式约束。非线性求解依赖初值，可能有多解、翻转或停滞。
 
-尚未实现圆弧、样条、不等式、增量求解、全局搜索、几何对象删除、模型持久化或完整 CAD 编辑器；没有 DXF / STEP 自动互转。[完整限制](docs/LIMITATIONS.md)明确数值范围与未实现功能，[验收记录](docs/ACCEPTANCE.md)区分已交付证据和其他事项。
+尚未实现样条、不等式、增量求解、全局搜索、自动圆角或修剪、模型持久化或完整 CAD 编辑器；没有 DXF / STEP 自动互转。[完整限制](docs/LIMITATIONS.md)明确数值范围与未实现功能，[验收记录](docs/ACCEPTANCE.md)区分已交付证据和其他事项。
 
 ## Installation
 
-[Mooncakes：mik1e80/cad_sketch@0.3.0](https://mooncakes.io/docs/mik1e80/cad_sketch)。需 `moonc >= 0.10.17`；本次使用 `moonc 0.10.17+d971670cd` 做轻量发布验证。[Windows 环境准备](docs/ENVIRONMENT.md)说明安装与标准库匹配检查。核心仅依赖 MoonBit core。Python、Node.js 和 SciPy 用于可选开发验证。
+[Mooncakes：mik1e80/cad_sketch@0.3.0](https://mooncakes.io/docs/mik1e80/cad_sketch)。需 `moonc >= 0.10.17`；0.4.0 使用 `moonc 0.10.17+d971670cd` 完整回归后才发布，进度见本轮验证记录。[Windows 环境准备](docs/ENVIRONMENT.md)说明安装与标准库匹配检查。核心仅依赖 MoonBit core。Python、Node.js 和 SciPy 用于可选开发验证。
 
 ```sh
 moon add mik1e80/cad_sketch
@@ -231,5 +243,7 @@ moon add mik1e80/cad_sketch
 [源码仓库](https://github.com/mik1e80/moonbit-cad-sketch) · [源码开发与本地 workspace](docs/QUICK_START.md#安装与版本) · [发布记录](docs/PUBLISHING.md) · [版本说明](CHANGELOG.md)
 
 ## License
+
+模型、验证结果与来源政策见 [MODEL_DATA_POLICY](docs/MODEL_DATA_POLICY.md)；自行生成配置不含外部 CAD 模型文件，不以新增测试数量替代独立工程验证。完整需求、范围和兼容性见 [能力矩阵](docs/FEATURE_MATRIX.md)、[SolveSpace 对照](docs/SOLVESPACE_COMPARISON.md)、[迁移说明](docs/COMPATIBILITY.md)。
 
 Apache-2.0，完整条款见 [LICENSE](LICENSE)。参考出处、许可证及使用范围见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。

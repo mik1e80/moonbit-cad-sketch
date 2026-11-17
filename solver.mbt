@@ -10,6 +10,48 @@ pub(all) enum SolveStatus {
 pub extend SolveStatus with @debug.Debug::{to_repr}
 
 ///|
+pub(all) enum SolveStopReason {
+  Converged
+  NoDescent
+  StepTooSmall
+  LinearSolveFailure
+  SingularJacobian
+  IterationBudgetExhausted
+  QrBudgetExhausted
+  WorldToleranceFailure
+} derive(Debug)
+
+///|
+pub(all) enum EquationOrigin {
+  ConstraintEquation(ConstraintId)
+  ArcEquation(ArcId)
+} derive(Debug)
+
+///|
+pub struct EquationResidual {
+  origin : EquationOrigin
+  component : Int32
+  angular : Bool
+  error : Double
+  tolerance_ratio : Double
+} derive(Debug)
+
+///|
+pub struct GeometryResidual {
+  arc : ArcId
+  length_error : Double
+  tolerance_ratio : Double
+} derive(Debug)
+
+///|
+priv struct SolveTrace {
+  reason : SolveStopReason
+  initial_ratio : Double
+  accepted : Int32
+  damping : Double
+}
+
+///|
 pub(all) struct SolveOptions {
   length_tolerance : Double
   angular_tolerance : Double
@@ -55,6 +97,13 @@ pub struct SolveReport {
   dependent_equations : Int32
   max_tolerance_ratio : Double
   residuals : Array[ConstraintResidual]
+  geometry_residuals : Array[GeometryResidual]
+  equation_residuals : Array[EquationResidual]
+  stop_reason : SolveStopReason
+  initial_max_tolerance_ratio : Double
+  accepted_steps : Int32
+  rejected_steps : Int32
+  final_damping : Double
 } derive(Debug)
 
 ///|
@@ -66,12 +115,23 @@ pub struct Solution {
   report : SolveReport
   priv points : Array[Point]
   priv radii : Array[Double]
+  priv point_ids : Array[PointId]
+  priv circle_ids : Array[CircleId]
+  priv line_ids : Array[LineId]
+  priv lines : Array[Line]
+  priv arcs : Array[Arc]
+  priv arc_ids : Array[ArcId]
 }
 
 ///|
 pub fn Solution::point(self : Solution, id : PointId) -> Point? {
   if physical_equal(self.owner, id.owner) {
-    self.points.get(id.index)
+    for i, p in self.point_ids {
+      if p.index == id.index {
+        return self.points.get(i)
+      }
+    }
+    None
   } else {
     None
   }
@@ -80,7 +140,12 @@ pub fn Solution::point(self : Solution, id : PointId) -> Point? {
 ///|
 pub fn Solution::radius(self : Solution, id : CircleId) -> Double? {
   if physical_equal(self.owner, id.owner) {
-    self.radii.get(id.index)
+    for i, c in self.circle_ids {
+      if c.index == id.index {
+        return self.radii.get(i)
+      }
+    }
+    None
   } else {
     None
   }
@@ -179,6 +244,7 @@ fn Sketch::solution(
   status : SolveStatus,
   iterations : Int32,
   linear_solves : Int32,
+  trace~ : SolveTrace? = None,
 ) -> Result[Solution, SketchError] {
   let points : Array[Point] = Array::makei(self.points.length(), i => {
     x: x[i * 2] * frame.scale + frame.x,
@@ -209,9 +275,42 @@ fn Sketch::solution(
   let length_errors = Array::make(self.constraints.length(), 0.0)
   let angular_errors = Array::make(self.constraints.length(), 0.0)
   let ratios = Array::make(self.constraints.length(), 0.0)
+  let geometry_ratios = Array::make(self.arcs.length(), 0.0)
+  let geometry_errors = Array::make(self.arcs.length(), 0.0)
+  let equation_residuals = []
+  let components = Array::make(
+    self.constraints.length() + self.arcs.length(),
+    0,
+  )
+  let mut all_ratio = 0.0
   for row in rows {
     let i = row.slot
     let error = row.jet.v.abs()
+    let ratio = error / row_tolerance(row, world_frame, options)
+    all_ratio = dmax(all_ratio, ratio)
+    let origin = if i < 0 {
+      ArcEquation(self.arc_ids[-i - 1])
+    } else {
+      ConstraintEquation(self.constraint_ids[i])
+    }
+    let component_slot = if i < 0 {
+      self.constraints.length() - i - 1
+    } else {
+      i
+    }
+    equation_residuals.push({
+      origin,
+      component: components[component_slot],
+      angular: row.angular,
+      error,
+      tolerance_ratio: ratio,
+    })
+    components[component_slot] += 1
+    if i < 0 {
+      geometry_errors[-i - 1] = dmax(geometry_errors[-i - 1], error)
+      geometry_ratios[-i - 1] = dmax(geometry_ratios[-i - 1], ratio)
+      continue
+    }
     if row.angular {
       angular_errors[i] = dmax(angular_errors[i], error)
     } else {
@@ -234,13 +333,31 @@ fn Sketch::solution(
     angular_error: angular_errors[i],
     tolerance_ratio: ratios[i],
   })
-  let status = if max_abs(ratios) <= 1.0 {
+  let status = if all_ratio <= 1.0 {
     Satisfied
   } else {
     match status {
       Satisfied => Stalled
       other => other
     }
+  }
+  let default_reason = match status {
+    Satisfied => Converged
+    Stalled => NoDescent
+    IterationLimit => IterationBudgetExhausted
+    BudgetLimit => QrBudgetExhausted
+  }
+  let reason = if all_ratio <= 1.0 {
+    Converged
+  } else if status is Stalled && max_abs(ratios) <= 1.0 && trace is None {
+    WorldToleranceFailure
+  } else {
+    trace.map(t => t.reason).unwrap_or(default_reason)
+  }
+  let reason = if all_ratio > 1.0 && trace is Some({ reason: Converged, .. }) {
+    WorldToleranceFailure
+  } else {
+    reason
   }
   let report : SolveReport = {
     owner: self.owner,
@@ -252,10 +369,34 @@ fn Sketch::solution(
     rank,
     local_dof: x.length() - rank,
     dependent_equations: rows.length() - rank,
-    max_tolerance_ratio: max_abs(ratios),
+    max_tolerance_ratio: all_ratio,
     residuals,
+    geometry_residuals: Array::makei(self.arcs.length(), i => {
+      arc: self.arc_ids[i],
+      length_error: geometry_errors[i],
+      tolerance_ratio: geometry_ratios[i],
+    }),
+    equation_residuals,
+    stop_reason: reason,
+    initial_max_tolerance_ratio: trace
+    .map(t => t.initial_ratio)
+    .unwrap_or(all_ratio),
+    accepted_steps: trace.map(t => t.accepted).unwrap_or(0),
+    rejected_steps: linear_solves - trace.map(t => t.accepted).unwrap_or(0),
+    final_damping: trace.map(t => t.damping).unwrap_or(0.0),
   }
-  Ok({ owner: self.owner, report, points, radii, })
+  Ok({
+    owner: self.owner,
+    report,
+    points,
+    radii,
+    point_ids: self.point_ids.copy(),
+    circle_ids: self.circle_ids.copy(),
+    line_ids: self.line_ids.copy(),
+    lines: self.lines.copy(),
+    arcs: self.arcs.copy(),
+    arc_ids: self.arc_ids.copy(),
+  })
 }
 
 ///|
@@ -313,6 +454,8 @@ pub fn Sketch::solve(
   }
   let mut lambda = 1.0e-3
   let mut linear_solves = 0
+  let initial_ratio = max_abs(weighted_system(rows, frame, options).0)
+  let mut accepted_steps = 0
   for iteration = 0
       iteration < options.max_iterations
       iteration = iteration + 1 {
@@ -325,10 +468,17 @@ pub fn Sketch::solve(
         Satisfied,
         iteration,
         linear_solves,
+        trace=Some({
+          reason: Converged,
+          initial_ratio,
+          accepted: accepted_steps,
+          damping: lambda,
+        }),
       )
     }
     let old_cost = cost(residual)
     let mut accepted = false
+    let mut reason = NoDescent
     for attempt = 0; attempt < max_damping_attempts; attempt = attempt + 1 {
       if linear_solves >= max_linear_solves {
         return self.solution(
@@ -338,17 +488,29 @@ pub fn Sketch::solve(
           BudgetLimit,
           iteration,
           linear_solves,
+          trace=Some({
+            reason: QrBudgetExhausted,
+            initial_ratio,
+            accepted: accepted_steps,
+            damping: lambda,
+          }),
         )
       }
       linear_solves += 1
       let delta = match damped_step(jacobian, residual, x.length(), lambda) {
         Some(d) => d
         None => {
+          reason = LinearSolveFailure
           lambda = lambda * 10.0
           continue
         }
       }
       if max_abs(delta) <= 1.0e-14 {
+        reason = if jacobian.all(row => max_abs(row) == 0.0) {
+          SingularJacobian
+        } else {
+          StepTooSmall
+        }
         break
       }
       let trial = Array::makei(x.length(), i => x[i] + delta[i])
@@ -360,12 +522,14 @@ pub fn Sketch::solve(
             rows = trial_rows
             lambda = dmax(lambda * 0.25, 1.0e-12)
             accepted = true
+            accepted_steps += 1
             break
           }
         }
         Err(_) => ()
       }
       lambda = lambda * 10.0
+      reason = NoDescent
     }
     if !accepted {
       return self.solution(
@@ -375,6 +539,12 @@ pub fn Sketch::solve(
         Stalled,
         iteration + 1,
         linear_solves,
+        trace=Some({
+          reason,
+          initial_ratio,
+          accepted: accepted_steps,
+          damping: lambda,
+        }),
       )
     }
   }
@@ -387,6 +557,16 @@ pub fn Sketch::solve(
     status,
     options.max_iterations,
     linear_solves,
+    trace=Some({
+      reason: if status is Satisfied {
+        Converged
+      } else {
+        IterationBudgetExhausted
+      },
+      initial_ratio,
+      accepted: accepted_steps,
+      damping: lambda,
+    }),
   )
 }
 
@@ -414,3 +594,15 @@ pub fn Sketch::solve_and_apply(
   }
   Ok(solution)
 }
+
+///|
+pub extend SolveStopReason with @debug.Debug::{to_repr}
+
+///|
+pub extend EquationOrigin with @debug.Debug::{to_repr}
+
+///|
+pub extend EquationResidual with @debug.Debug::{to_repr}
+
+///|
+pub extend GeometryResidual with @debug.Debug::{to_repr}

@@ -6,8 +6,15 @@ priv struct Row {
 }
 
 ///|
-fn point_jets(p : PointId, vars : Array[Jet]) -> (Jet, Jet) {
-  (vars[p.index * 2], vars[p.index * 2 + 1])
+fn Sketch::point_jets(
+  self : Sketch,
+  p : PointId,
+  vars : Array[Jet],
+) -> (Jet, Jet) {
+  (
+    vars[self.point_slot(p).unwrap() * 2],
+    vars[self.point_slot(p).unwrap() * 2 + 1],
+  )
 }
 
 ///|
@@ -16,9 +23,9 @@ fn Sketch::line_jets(
   l : LineId,
   vars : Array[Jet],
 ) -> (Jet, Jet) {
-  let line = self.lines[l.index]
-  let (ax, ay) = point_jets(line.a, vars)
-  let (bx, by) = point_jets(line.b, vars)
+  let line = self.lines[self.line_slot(l).unwrap()]
+  let (ax, ay) = self.point_jets(line.a, vars)
+  let (bx, by) = self.point_jets(line.b, vars)
   (bx.minus(ax), by.minus(ay))
 }
 
@@ -28,8 +35,11 @@ fn Sketch::circle_jets(
   c : CircleId,
   vars : Array[Jet],
 ) -> (Jet, Jet, Jet) {
-  let (x, y) = point_jets(self.circles[c.index].center, vars)
-  (x, y, vars[self.points.length() * 2 + c.index])
+  let (x, y) = self.point_jets(
+    self.circles[self.circle_slot(c).unwrap()].center,
+    vars,
+  )
+  (x, y, vars[self.points.length() * 2 + self.circle_slot(c).unwrap()])
 }
 
 ///|
@@ -52,8 +62,8 @@ fn Sketch::signed_line_distance(
   l : LineId,
   vars : Array[Jet],
 ) -> Jet {
-  let (px, py) = point_jets(p, vars)
-  let (ax, ay) = point_jets(self.lines[l.index].a, vars)
+  let (px, py) = self.point_jets(p, vars)
+  let (ax, ay) = self.point_jets(self.lines[self.line_slot(l).unwrap()].a, vars)
   let (dx, dy) = self.line_jets(l, vars)
   let length = jet_norm(dx, dy)
   jet_cross(dx.divide(length), dy.divide(length), px.minus(ax), py.minus(ay))
@@ -84,7 +94,10 @@ fn Sketch::evaluate(
       return Err(DegenerateLine(self.line_id(i)))
     }
   }
-  let out = []
+  let out = match self.arc_intrinsic_rows(vars, geometry_scale) {
+    Ok(rows) => rows
+    Err(e) => return Err(e)
+  }
   for i, c in self.constraints {
     if !self.enabled[i] {
       continue
@@ -92,27 +105,30 @@ fn Sketch::evaluate(
     let mut angular = false
     let jets = match c {
       Fix(p, x, y) => {
-        let (px, py) = point_jets(p, vars)
+        let (px, py) = self.point_jets(p, vars)
         [
           px.offset(-(x - frame.x) / frame.scale),
           py.offset(-(y - frame.y) / frame.scale),
         ]
       }
       Coincident(a, b) => {
-        let (ax, ay) = point_jets(a, vars)
-        let (bx, by) = point_jets(b, vars)
+        let (ax, ay) = self.point_jets(a, vars)
+        let (bx, by) = self.point_jets(b, vars)
         [bx.minus(ax), by.minus(ay)]
       }
       Symmetric(a, b, center) => {
-        let (ax, ay) = point_jets(a, vars)
-        let (bx, by) = point_jets(b, vars)
-        let (cx, cy) = point_jets(center, vars)
+        let (ax, ay) = self.point_jets(a, vars)
+        let (bx, by) = self.point_jets(b, vars)
+        let (cx, cy) = self.point_jets(center, vars)
         [ax.plus(bx).minus(cx.scale(2.0)), ay.plus(by).minus(cy.scale(2.0))]
       }
       Mirror(a, b, axis) => {
-        let (ax, ay) = point_jets(a, vars)
-        let (bx, by) = point_jets(b, vars)
-        let (ox, oy) = point_jets(self.lines[axis.index].a, vars)
+        let (ax, ay) = self.point_jets(a, vars)
+        let (bx, by) = self.point_jets(b, vars)
+        let (ox, oy) = self.point_jets(
+          self.lines[self.line_slot(axis).unwrap()].a,
+          vars,
+        )
         let (dx, dy) = self.line_jets(axis, vars)
         let length = jet_norm(dx, dy)
         let ux = dx.divide(length)
@@ -138,8 +154,8 @@ fn Sketch::evaluate(
         [dx]
       }
       Distance(a, b, d) => {
-        let (ax, ay) = point_jets(a, vars)
-        let (bx, by) = point_jets(b, vars)
+        let (ax, ay) = self.point_jets(a, vars)
+        let (bx, by) = self.point_jets(b, vars)
         if d == 0.0 {
           [bx.minus(ax), by.minus(ay)]
         } else {
@@ -147,13 +163,13 @@ fn Sketch::evaluate(
         }
       }
       DistanceX(a, b, d) => {
-        let (ax, _) = point_jets(a, vars)
-        let (bx, _) = point_jets(b, vars)
+        let (ax, _) = self.point_jets(a, vars)
+        let (bx, _) = self.point_jets(b, vars)
         [bx.minus(ax).offset(-d / frame.scale)]
       }
       DistanceY(a, b, d) => {
-        let (_, ay) = point_jets(a, vars)
-        let (_, by) = point_jets(b, vars)
+        let (_, ay) = self.point_jets(a, vars)
+        let (_, by) = self.point_jets(b, vars)
         [by.minus(ay).offset(-d / frame.scale)]
       }
       Parallel(a, b) | Perpendicular(a, b) | Angle(a, b, _) => {
@@ -191,10 +207,10 @@ fn Sketch::evaluate(
         [jet_norm(ax, ay).minus(jet_norm(bx, by).scale(ratio))]
       }
       Midpoint(p, l) => {
-        let (px, py) = point_jets(p, vars)
-        let line = self.lines[l.index]
-        let (ax, ay) = point_jets(line.a, vars)
-        let (bx, by) = point_jets(line.b, vars)
+        let (px, py) = self.point_jets(p, vars)
+        let line = self.lines[self.line_slot(l).unwrap()]
+        let (ax, ay) = self.point_jets(line.a, vars)
+        let (bx, by) = self.point_jets(line.b, vars)
         [px.minus(ax.plus(bx).scale(0.5)), py.minus(ay.plus(by).scale(0.5))]
       }
       PointOnLine(p, l) => [self.signed_line_distance(p, l, vars)]
@@ -215,14 +231,14 @@ fn Sketch::evaluate(
         [bx.minus(ax), by.minus(ay)]
       }
       PointOnCircle(p, c) => {
-        let (px, py) = point_jets(p, vars)
+        let (px, py) = self.point_jets(p, vars)
         let (cx, cy, r) = self.circle_jets(c, vars)
         [jet_norm(px.minus(cx), py.minus(cy)).minus(r)]
       }
       Tangent(l, c) => {
         let (_, _, r) = self.circle_jets(c, vars)
         let distance = self.signed_line_distance(
-          self.circles[c.index].center,
+          self.circles[self.circle_slot(c).unwrap()].center,
           l,
           vars,
         )
@@ -245,15 +261,100 @@ fn Sketch::evaluate(
         }
         [jet_norm(bx.minus(ax), by.minus(ay)).minus(difference)]
       }
+      Diameter(c, d) => {
+        let (_, _, radius) = self.circle_jets(c, vars)
+        [radius.scale(2.0).offset(-d / frame.scale)]
+      }
+      ArcRadius(a, r) => [self.arc_radius_jet(a, vars).offset(-r / frame.scale)]
+      ArcDiameter(a, d) =>
+        [self.arc_radius_jet(a, vars).scale(2.0).offset(-d / frame.scale)]
+      ArcSweep(a, t) => {
+        angular = true
+        [self.arc_sweep_jet(a, vars).offset(-t)]
+      }
+      ArcLength(a, l) =>
+        [
+          self
+          .arc_radius_jet(a, vars)
+          .times(self.arc_sweep_jet(a, vars))
+          .offset(-l / frame.scale),
+        ]
+      EqualArcRadius(a, b) =>
+        [self.arc_radius_jet(a, vars).minus(self.arc_radius_jet(b, vars))]
+      EqualCircleArcRadius(c, a) => {
+        let (_, _, r) = self.circle_jets(c, vars)
+        [r.minus(self.arc_radius_jet(a, vars))]
+      }
+      ArcConcentric(a, b) => {
+        let (ax, ay) = self.point_jets(self.arc(a).unwrap().center, vars)
+        let (bx, by) = self.point_jets(self.arc(b).unwrap().center, vars)
+        [ax.minus(bx), ay.minus(by)]
+      }
+      CircleArcConcentric(c, a) => {
+        let (cx, cy, _) = self.circle_jets(c, vars)
+        let (ax, ay) = self.point_jets(self.arc(a).unwrap().center, vars)
+        [ax.minus(cx), ay.minus(cy)]
+      }
+      ArcTangentAt(l, a, e) => {
+        angular = true
+        let (lx, ly) = self.line_jets(l, vars)
+        let (rx, ry) = self.arc_endpoint_vector(a, e, vars)
+        let ln = jet_norm(lx, ly)
+        let rn = jet_norm(rx, ry)
+        [jet_dot(lx.divide(ln), ly.divide(ln), rx.divide(rn), ry.divide(rn))]
+      }
+      ArcArcTangentAt(a, ae, b, be) => {
+        angular = true
+        let (ax, ay) = self.arc_endpoint_vector(a, ae, vars)
+        let (bx, by) = self.arc_endpoint_vector(b, be, vars)
+        [normalized_cross(ax, ay, bx, by)]
+      }
+      ArcCircleTangentAt(a, e, c) => {
+        let (px, py) = self.point_jets(
+          arc_endpoint(self.arc(a).unwrap(), e),
+          vars,
+        )
+        let (cx, cy, r) = self.circle_jets(c, vars)
+        let vx = px.minus(cx)
+        let vy = py.minus(cy)
+        if jet_norm(vx, vy).v <= geometry_scale * 1.0e-12 {
+          return Err(InvalidConstraint(self.constraint_ids[i]))
+        }
+        let (ax, ay) = self.arc_endpoint_vector(a, e, vars)
+        push_rows(out, [normalized_cross(ax, ay, vx, vy)], i, true)
+        [jet_norm(vx, vy).minus(r)]
+      }
+      PointOnArc(p, a) => {
+        let arc = self.arc(a).unwrap()
+        let (cx, cy) = self.point_jets(arc.center, vars)
+        let (px, py) = self.point_jets(p, vars)
+        let vx = px.minus(cx)
+        let vy = py.minus(cy)
+        if jet_norm(vx, vy).v <= geometry_scale * 1.0e-12 {
+          return Err(InvalidConstraint(self.constraint_ids[i]))
+        }
+        let (sx, sy, ex, ey) = self.arc_vectors(a, vars)
+        let angle = positive_jet_angle(sx, sy, vx, vy, arc.direction)
+        let sweep = self.arc_sweep_jet(a, vars)
+        let (qx, qy) = if angle.v <= sweep.v {
+          (vx, vy)
+        } else if angle.v - sweep.v <= 2.0 * @math.PI - angle.v {
+          (ex, ey)
+        } else {
+          (sx, sy)
+        }
+        let qn = jet_norm(qx, qy)
+        let r = self.arc_radius_jet(a, vars)
+        [vx.minus(qx.divide(qn).times(r)), vy.minus(qy.divide(qn).times(r))]
+      }
     }
     push_rows(out, jets, i, angular)
   }
   for row in out {
     if !finite(row.jet.v) || row.jet.d.any(v => !finite(v)) {
-      let id = self.constraint_ids[row.slot].index
       return Err(
         NumericalFailure(
-          "Constraint at index \{id}: nonfinite residual or derivative",
+          "Nonfinite user or intrinsic geometry residual/derivative",
         ),
       )
     }

@@ -1,0 +1,82 @@
+----
+import {
+  "moonbitlang/async@0.22.1",
+  "moonbitlang/async@0.22.1/shell",
+  "moonbitlang/async@0.22.1/fs",
+  "moonbitlang/core/env",
+  "moonbitlang/core/json",
+}
+----
+// Repository-authored validation orchestration, Apache-2.0.
+// Run from the repository root. No solver runtime dependency on async.
+async fn checked(program : String, args : Array[String], name : String) -> String {
+  println("Running " + name)
+  let result = @shell.Cmd(program, args).output(timeout_ms=600000, max_output_bytes=16777216)
+  @fs.write_file("_build/completeness/" + name + ".stdout.log", result.stdout())
+  @fs.write_file("_build/completeness/" + name + ".stderr.log", result.stderr())
+  guard result.exit_code() == 0 else {
+    println(result.stdout())
+    println(result.stderr())
+    fail(name + " failed; raw logs retained")
+  }
+  println(name + " passed")
+  result.stdout()
+}
+
+async fn showcase(write : Bool) -> Unit {
+  let text = checked("moon", ["run", "examples/arc_fillet", "--target", "js", "--deny-warn"], "arc-showcase-js")
+  for stage in ["BEFORE", "AFTER", "CONFLICT"] {
+    guard text.split_once(stage + "_SVG\n") is Some((_, tail)) else { fail("SVG stage missing") }
+    guard tail.split_once("\nEND_SVG") is Some((drawing, _)) else { fail("SVG terminator missing") }
+    guard drawing.contains("<path data-arc=") && drawing.contains("</svg>") else { fail("Real arc SVG missing") }
+    if write { @fs.write_file("examples/arc_fillet/" + stage.to_lower() + ".svg", drawing.to_owned()) }
+  }
+  checked("moon", ["run", "examples/arc_fillet", "--target", "wasm", "--deny-warn"], "arc-showcase-wasm") |> ignore
+}
+
+async fn main {
+  let args = @env.args()
+  let mode = if args.length() > 1 { args[1] } else { "showcase" }
+  if !@fs.exists("_build/completeness") {
+    @fs.mkdir("_build/completeness", recursive=true)
+  }
+  if mode == "showcase" || mode == "--write-svg" {
+    showcase(mode == "--write-svg")
+    return
+  }
+  if mode == "archive" {
+    let python = @env.get_env_var("CAD_PYTHON").unwrap_or("python")
+    checked(python, ["-X", "utf8", "scripts/check_package.py", "--full"], "archive-consumer") |> ignore
+    return
+  }
+  guard mode == "full" else { fail("Use full, showcase, or --write-svg") }
+  checked("moon", ["version", "--all"], "toolchain") |> ignore
+  checked("moon", ["fmt", "--check"], "format") |> ignore
+  checked("moon", ["check", "--target", "all", "--deny-warn"], "all-target-check") |> ignore
+  for target in ["wasm", "wasm-gc", "js", "native"] {
+    checked("moon", ["test", "--target", target, "--deny-warn"], "tests-" + target) |> ignore
+    checked("node", ["scripts/validation_suite.cjs", "--check", "--target", target], "old-400-" + target) |> ignore
+  }
+  checked("node", ["scripts/random_triangle.cjs", "--check", "--target", "js"], "triangle-1000-js") |> ignore
+  checked("node", ["scripts/benchmark.cjs", "--smoke", "--target", "js"], "benchmark-smoke") |> ignore
+  for target in ["wasm", "js"] {
+    checked("node", ["scripts/bracket_showcase.cjs", "--check", "--target", target], "bracket-" + target) |> ignore
+    checked("node", ["scripts/four_bar_showcase.cjs", "--check", "--target", target], "four-bar-" + target) |> ignore
+    checked("moon", ["run", "examples/mirror_holes", "--target", target], "mirror-" + target) |> ignore
+    checked("moon", ["run", "cmd/edit_demo", "--target", target], "edit-" + target) |> ignore
+  }
+  showcase(false)
+  let receipt : Json = {
+    "version": "0.4.0",
+    "scope": "local source regression; registry consumer and CI are separate",
+    "targets": ["wasm", "wasm-gc", "js", "native"],
+    "new_corpus": "cad-completeness-480-v1",
+    "new_configurations_per_backend": 480,
+    "original_configurations_per_backend": 400,
+    "random_triangle_initializations_js": 1000,
+    "passed": true,
+  }
+  @fs.write_file("_build/completeness/source-receipt.json", receipt.stringify(indent=2))
+  println("Full source regression passed; raw logs retained in _build/completeness")
+}
+

@@ -32,3 +32,8 @@ CAD files or report self-authored consumer tests as third-party adoption.
 
 Report exploitable security issues through [SECURITY](SECURITY.md), rather than
 posting details in a public pull request or issue.
+
+
+## Generated geometry and reference material
+
+For new fixtures, follow [MODEL_DATA_POLICY](docs/MODEL_DATA_POLICY.md): record source, redistribution rights, license, revision and hashes before adding external data. Self-authored analytic configurations are versioned separately from historical measurements. Never relabel GPL code/data, invent external adoption, or report planned test counts as measurements. Keep README, public signatures, boundaries and real release evidence synchronized.

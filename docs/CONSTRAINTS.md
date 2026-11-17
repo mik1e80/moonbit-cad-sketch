@@ -15,9 +15,9 @@
 | 圆关系 | `Concentric`、`PointOnCircle` | 同心、点在圆周上 |
 | 相切 | `Tangent`、`ExternalTangent`、`InternalTangent(outer, inner)` | 无限直线与圆相切、两圆外切、指定外圆与内圆的内切 |
 
-共 24 种约束。`Distance(..., 0)` 使用两个坐标差方程，避免零距离范数的奇异导数。`Parallel` 同时接受同向和反向线；`Angle` 区分有向线。圆弧、样条和不等式约束暂未实现。
+上表为原有 24 种约束；0.4.0 新增 13 种后共 37 种用户约束，规格见 [CONSTRAINT_SPEC](CONSTRAINT_SPEC.md)。`Distance(..., 0)` 使用两个坐标差方程，避免零距离范数的奇异导数。`Parallel` 同时接受同向和反向线；`Angle` 区分有向线。圆弧相关关系已加入，样条和不等式约束暂未实现。
 
-本轮聚焦 `Point`、`Line`、`Circle`，持续验证稳定性并维护 Benchmark，优先完善包与版本交付。`Arc` 仅列为可选 P1，时间不足可跳过；椭圆、Bezier、Spline、NURBS 和独立 Polygon 类型暂缓。具体安排见[几何扩展优先级](POSITIONING.md#几何扩展优先级)。
+0.4.0 增加有限有向 Arc；椭圆、Bezier、Spline、NURBS 和独立 Polygon 类型仍在范围之外。圆弧不是自动圆角或修剪功能，见 [ARC_DESIGN](ARC_DESIGN.md)。
 
 `Mirror(a, b, axis)` 使两点的沿轴坐标相等、其中点到轴的带符号距离为零，两个残差都使用长度容差。允许两点在轴上重合；`Mirror(p, p, axis)` 等价于点落在轴上，仍保留沿轴自由度。轴需要非退化，不会自动固定；需固定轴时应约束端点。镜像圆可组合圆心的 `Mirror` 与半径的 `EqualRadius`。
 

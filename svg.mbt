@@ -68,11 +68,18 @@ fn svg_escape(text : String) -> String {
 pub fn Sketch::to_svg(
   self : Sketch,
   options~ : SvgOptions = SvgOptions::default(),
+  show_construction~ : Bool = true,
+  arc_tolerance~ : Double = 1.0e-7,
 ) -> Result[String, SketchError] {
   // Bound before iterating/escaping. String.length counts UTF-16 code units.
   if options.title.length() > 4096 {
     return Err(
       InvalidOptions("SVG title must contain at most 4096 UTF-16 code units"),
+    )
+  }
+  if !finite(arc_tolerance) || arc_tolerance <= 0.0 || arc_tolerance > 1.0e6 {
+    return Err(
+      InvalidOptions("SVG arc tolerance must be finite, positive and <=1e6"),
     )
   }
   if options.width < 64 ||
@@ -106,12 +113,27 @@ pub fn Sketch::to_svg(
     max_y = dmax(max_y, p.y)
   }
   for c in self.circles {
-    let p = self.points[c.center.index]
+    let p = self.points[self.point_slot(c.center).unwrap()]
     min_x = if p.x - c.radius < min_x { p.x - c.radius } else { min_x }
     max_x = dmax(max_x, p.x + c.radius)
     min_y = if p.y - c.radius < min_y { p.y - c.radius } else { min_y }
     max_y = dmax(max_y, p.y + c.radius)
     diameter = dmax(diameter, 2.0 * c.radius)
+  }
+  for i, a in self.arcs {
+    let c = self.point(a.center).unwrap()
+    let s = self.point(a.start).unwrap()
+    let e = self.point(a.end).unwrap()
+    let r = @math.hypot(s.x - c.x, s.y - c.y)
+    let other = @math.hypot(e.x - c.x, e.y - c.y)
+    if (r - other).abs() > arc_tolerance {
+      return Err(InvalidArc(self.arc_ids[i]))
+    }
+    min_x = if c.x - r < min_x { c.x - r } else { min_x }
+    min_y = if c.y - r < min_y { c.y - r } else { min_y }
+    max_x = dmax(max_x, c.x + r)
+    max_y = dmax(max_y, c.y + r)
+    diameter = dmax(diameter, 2.0 * r)
   }
   match options.bounds {
     None => ()
@@ -144,12 +166,26 @@ pub fn Sketch::to_svg(
       max_x = b.max_x
       max_y = b.max_y
       for c in self.circles {
-        let p = self.points[c.center.index]
+        let p = self.points[self.point_slot(c.center).unwrap()]
         if c.radius > p.x - min_x ||
           c.radius > max_x - p.x ||
           c.radius > p.y - min_y ||
           c.radius > max_y - p.y {
           return Err(InvalidOptions("SVG bounds must contain full circles"))
+        }
+      }
+      for i, a in self.arcs {
+        let p = self.point(a.center).unwrap()
+        let r = self.arc_radius(self.arc_ids[i]).unwrap()
+        if r > p.x - min_x ||
+          r > max_x - p.x ||
+          r > p.y - min_y ||
+          r > max_y - p.y {
+          return Err(
+            InvalidOptions(
+              "SVG bounds must contain full arc supporting circles",
+            ),
+          )
         }
       }
     }
@@ -211,27 +247,79 @@ pub fn Sketch::to_svg(
     "<g id=\"lines\" fill=\"none\" stroke=\"#274b7a\" stroke-width=\"2\">\n",
   )
   for i, l in self.lines {
-    let a = self.points[l.a.index]
-    let b = self.points[l.b.index]
+    let id = self.line_ids[i]
+    let construction = self.construction(LineGeometry(id))
+    if construction && !show_construction {
+      continue
+    }
+    let style = if construction {
+      " data-construction=\"true\" stroke-dasharray=\"6 4\""
+    } else {
+      ""
+    }
+    let a = self.points[self.point_slot(l.a).unwrap()]
+    let b = self.points[self.point_slot(l.b).unwrap()]
     out.write_string(
-      "<line data-line=\"\{i}\" x1=\"\{screen_x(a.x)}\" y1=\"\{screen_y(a.y)}\" x2=\"\{screen_x(b.x)}\" y2=\"\{screen_y(b.y)}\"/>\n",
+      "<line data-line=\"\{id.index}\"\{style} x1=\"\{screen_x(a.x)}\" y1=\"\{screen_y(a.y)}\" x2=\"\{screen_x(b.x)}\" y2=\"\{screen_y(b.y)}\"/>\n",
     )
   }
   out.write_string(
     "</g>\n<g id=\"circles\" fill=\"#e2f3f0\" stroke=\"#128574\" stroke-width=\"2\">\n",
   )
   for i, c in self.circles {
-    let p = self.points[c.center.index]
+    let id = self.circle_ids[i]
+    let construction = self.construction(CircleGeometry(id))
+    if construction && !show_construction {
+      continue
+    }
+    let style = if construction {
+      " data-construction=\"true\" stroke-dasharray=\"6 4\" fill=\"none\""
+    } else {
+      ""
+    }
+    let p = self.points[self.point_slot(c.center).unwrap()]
     out.write_string(
-      "<circle data-circle=\"\{i}\" cx=\"\{screen_x(p.x)}\" cy=\"\{screen_y(p.y)}\" r=\"\{(c.radius / span) * pixels}\"/>\n",
+      "<circle data-circle=\"\{id.index}\"\{style} cx=\"\{screen_x(p.x)}\" cy=\"\{screen_y(p.y)}\" r=\"\{(c.radius / span) * pixels}\"/>\n",
     )
   }
   out.write_string("</g>\n")
+  if self.arcs.length() > 0 {
+    out.write_string(
+      "<g id=\"arcs\" fill=\"none\" stroke=\"#128574\" stroke-width=\"2\">\n",
+    )
+    for i, a in self.arcs {
+      let id = self.arc_ids[i]
+      let construction = self.construction(ArcGeometry(id))
+      if construction && !show_construction {
+        continue
+      }
+      let style = if construction {
+        " data-construction=\"true\" stroke-dasharray=\"6 4\""
+      } else {
+        ""
+      }
+      let s = self.point(a.start).unwrap()
+      let e = self.point(a.end).unwrap()
+      let r = self.arc_radius(id).unwrap() / span * pixels
+      let large = if self.arc_sweep(id).unwrap() > @math.PI { 1 } else { 0 }
+      let sweep = if a.direction == Clockwise { 1 } else { 0 }
+      out.write_string(
+        "<path data-arc=\"\{id.index}\"\{style} d=\"M \{screen_x(s.x)} \{screen_y(s.y)} A \{r} \{r} 0 \{large} \{sweep} \{screen_x(e.x)} \{screen_y(e.y)}\"/>\n",
+      )
+    }
+    out.write_string("</g>\n")
+  }
   if options.show_points {
     out.write_string("<g id=\"points\" fill=\"#d96d43\">\n")
     for i, p in self.points {
+      let id = self.point_ids[i]
+      let construction = self.construction(PointGeometry(id))
+      if construction && !show_construction {
+        continue
+      }
+      let style = if construction { " data-construction=\"true\"" } else { "" }
       out.write_string(
-        "<circle data-point=\"\{i}\" cx=\"\{screen_x(p.x)}\" cy=\"\{screen_y(p.y)}\" r=\"3\"/>\n",
+        "<circle data-point=\"\{id.index}\"\{style} cx=\"\{screen_x(p.x)}\" cy=\"\{screen_y(p.y)}\" r=\"3\"/>\n",
       )
     }
     out.write_string("</g>\n")

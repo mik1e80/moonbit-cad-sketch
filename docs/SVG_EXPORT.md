@@ -66,3 +66,10 @@ moon test svg_test.mbt --target js
 生成脚本只运行安装板的六个阶段，检查每张图的 6 条线、4 个圆、12 个点，以及独立换算的坐标与半径。它还检查冲突前后保存几何完全一致、SVG 几何完全一致，并验证篡改圆半径会被检查器拒绝。原始事件保存于 `_build/svg-export/events.json`。
 
 `--write` 更新三份文件，默认或 `--check` 对照已提交文件且不覆盖。单元检查覆盖坐标方向、统一比例、点标记、空图、非法选项、输入错误、XML 转义、极端数值及冲突保留；本次没有运行全量回归或后端矩阵。
+
+
+## 0.4.0 有限圆弧与构造角色
+
+Arc 输出 SVG A 路径；有向扫掠决定大弧与 sweep 标志，Y 轴反转同步反转 sweep。自动及自定义视野保守包含整支撑圆（可能留白），自定义 bounds 必须包含它。未满足端点等半径时返回 InvalidArc，默认绝对 arc_tolerance=1e-7，可显式传入有限正值且不超过 1e6；此显示检查不是重新求解或工程精度认证。
+
+show_construction 默认 true，构造实体带虚线和 data-construction；false 隐藏实体但不改变求解，点角色独立，视野仍包含全部保存几何。共享端点圆弧案例见 [arc_fillet](../examples/arc_fillet/README.md)，并非自动圆角或修剪。

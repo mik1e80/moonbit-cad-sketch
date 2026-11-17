@@ -44,3 +44,10 @@
 GitHub Actions 使用 `actions/checkout`、`actions/setup-python` 和 `actions/upload-artifact`，均为 MIT 许可的 CI 工具，分别见 [checkout LICENSE](https://github.com/actions/checkout/blob/3d3c42e5aac5ba805825da76410c181273ba90b1/LICENSE)、[setup-python LICENSE](https://github.com/actions/setup-python/blob/6d4fd22b20465ccc0f7354476588e8df7c9ca0e0/LICENSE) 和 [upload-artifact LICENSE](https://github.com/actions/upload-artifact/blob/cf430e030ddbb5b0abf93d22962f4752f3646cd9/LICENSE)。工作流固定提交 SHA，只引用工具，不复制实现。
 
 `scripts/` 中的 Python 审查工具仅使用标准库。`dev/scipy/` 是独立的可选开发对照工具，使用 NumPy 2.3.5（[BSD-3-Clause 及随发行包保留的第三方条款](https://github.com/numpy/numpy/blob/v2.3.5/LICENSE.txt)）与 SciPy 1.18.0（[BSD-3-Clause 及第三方条款](https://github.com/scipy/scipy/blob/v1.18.0/LICENSE.txt)）。实际安装的二进制发行包还可能包含各自声明的底层数值依赖，应保留其随包许可。这些依赖不属于 MoonBit 运行时；`dev/scipy/.moonignore` 将该目录排除在源码发布包之外。
+
+
+## 0.4.0 几何测试来源
+
+新增圆弧、诊断配置、解析期望值和案例全部在本仓库自行编写，按 Apache-2.0 分发；没有外部 CAD 模型、截图、模型权重或 SolveSpace 源码。外部材料引入规则见 docs/MODEL_DATA_POLICY.md，新增语料清单见 docs/validation/completeness-v1-models.json。SolveSpace 官方功能文档仅用于独立功能对照，未复制其 GPL 实现或重标其数据许可。
+
+开发验证脚本显式固定 moonbitlang/async@0.22.1（[上游 Apache-2.0 许可证](https://github.com/moonbitlang/async/blob/main/LICENSE)）；它不进入核心运行时依赖。保留上游自身许可证与声明，仓库 Apache-2.0 不重新许可第三方工具。新增模型不产生维护者法律署名，本轮不新增版权归属声明。
