@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "date": "2026-11-17",
+  "version": "0.4.0",
+  "source_commit": "5e7817c8bae78354b2918a47e9410f83927e5f1d",
+  "implementation_commit": "b48988b9480fc08f103bad49aefd05d28902029d",
+  "workflow_run": "https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/44087504847",
+  "workflow_job": 134053721714,
+  "conclusion": "success",
+  "backends": [
+    "wasm",
+    "wasm-gc",
+    "js",
+    "native"
+  ],
+  "tests_per_backend": 160,
+  "new_corpus": {
+    "id": "cad-completeness-480-v1",
+    "configurations_per_backend": 480,
+    "counted_in_test_entries": true,
+    "external_cad_models": false
+  },
+  "original_generated_models_per_backend": 400,
+  "old_checker_mutations_per_backend": 6,
+  "arc_oracle_mutations": 4,
+  "random_triangle": {
+    "target": "js",
+    "cases": 1000,
+    "satisfied": 1000,
+    "correctness_failures": 0
+  },
+  "archive_tests_per_backend": 165,
+  "archive_consumer_tests": 5,
+  "showcases": [
+    "basic",
+    "conflict",
+    "edit_demo",
+    "mirror_holes",
+    "parametric_bracket",
+    "four_bar",
+    "arc_fillet"
+  ],
+  "benchmark": "smallest smoke only; no full timing remeasurement",
+  "scipy_reference_rerun": false,
+  "first_failed_run": "https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/44087155434",
+  "first_failed_run_reason": "Optional developer script could not resolve registry index on fresh CI; fixed by directly running core example",
+  "raw_artifact": "https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/44087504847/artifacts/14329138970",
+  "raw_artifact_sha256": "377ad5696e99b7578d0f8ffab4bb1c8d4af5f5280890c3611f6e21c8ec068eb0",
+  "note": "Source/archive verification only; registry upload and independent registry consumer receipts are created afterward."
+}

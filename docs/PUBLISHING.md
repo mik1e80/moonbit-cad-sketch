@@ -1,5 +1,11 @@
 # Mooncakes 发布与独立安装验证
 
+## 0.4.0 发布门槛 — 2026-11-17
+
+本版新增有限圆弧、几何生命周期、构造显示、只读测量和有界局部诊断。[实际完整回归](https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/44087504847)固定到 `5e7817c`：四后端各 160 项测试，包含新增 480 配置循环；原有 400 配置各后端通过，JS 1000 随机三角形通过，归档消费工作区各 165 项通过。完整证据见 [0.4.0-full-regression](releases/0.4.0-full-regression.json)。
+
+上传前需复核最终文档版本、公开接口与归档；正式发布后才补记服务端回执、GitHub tag/Release 与新目录注册表消费。发布收据不属于已上传的不可变 ZIP，最新状态统一见 [COMPLETENESS_VALIDATION](COMPLETENESS_VALIDATION.md)。不覆盖 0.3.0 或其历史测量。
+
 ## 0.3.0 实际发布与验证 — 2026-11-13
 
 Mooncakes 正式上传返回 `200 OK`；GitHub 已发布 [v0.3.0](https://github.com/mik1e80/moonbit-cad-sketch/releases/tag/v0.3.0)，tag 指向 `928b946`。此前核心提交 `5ea24f2` 的[完整四后端回归](https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/43365012044)通过，发布文档提交的[四后端轻量检查](https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/43365443114)通过，期间运行时代码未变。
@@ -8,7 +14,7 @@ Mooncakes 正式上传返回 `200 OK`；GitHub 已发布 [v0.3.0](https://github
 
 本次全量回归是用户单独授权的例外，日常仍采用轻量检查。未重新测量 SciPy 对照或全规模 Benchmark，旧版回执保持不变。以下按原日期保留历史发布记录。
 
-模块：`mik1e80/cad_sketch`；当前版本：`0.3.0`（首版 `0.1.0` 保留不可变）。[Mooncakes 包页面](https://mooncakes.io/docs/mik1e80/cad_sketch)。
+该历史记录的模块：`mik1e80/cad_sketch`；版本：`0.3.0`（首版 `0.1.0` 保留不可变）。[Mooncakes 包页面](https://mooncakes.io/docs/mik1e80/cad_sketch)。
 
 ## 使用方安装
 

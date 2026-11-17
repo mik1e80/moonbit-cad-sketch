@@ -3,7 +3,7 @@
 ## Scope and support
 
 Security fixes target the current development branch and the next release. The
-current release is 0.3.0, including checked creation/editing and solver
+0.4.0 release line includes finite directed arcs and bounded diagnostics, in addition to checked creation/editing and solver
 work budgets. Older versions do not have a separate maintenance branch.
 There is no guaranteed response or patch deadline.
 

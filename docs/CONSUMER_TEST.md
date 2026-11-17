@@ -1,5 +1,9 @@
 # Consumer Test：全新项目安装、测试与运行
 
+0.4.0 新 API 的独立消费复现工具为 [registry_completeness.mbtx](../scripts/registry_completeness.mbtx)。发布后运行，三个参数依次为源码仓库绝对路径、全新仓库外工作目录、结果 JSON 路径；它执行 moon new、显式安装 0.4.0、复制 6 个公开黑盒测试文件并运行四后端各 22 项测试（包含同一 480 配置，不计为新语料），最后运行圆弧编辑程序。复制的仅为自建 Apache-2.0 测试与示例，不复制求解器实现或改成路径依赖。另用既有 Python 消费工具逐字节比较上传 ZIP。
+
+首次运行开发脚本前先 `moon update`。Windows 深目录可能触发工具链路径长度错误，可在 `moon run` 使用 `--target-dir C:/Temp/cad-script-build` 指定较短构建目录；这不是核心库对该系统的全部兼容性保证。发布后实际回执见 [COMPLETENESS_VALIDATION](COMPLETENESS_VALIDATION.md)。
+
 下文 0.3.0 历史记录使用当时 `moon.mod` 指定的 `mik1e80/cad_sketch@0.3.0`。它在系统临时目录创建全新项目，从 Mooncakes 解析依赖，执行消费项目自身的三项测试，再运行可执行入口。它不运行本仓库的回归套件或后端矩阵。
 
 2026-11-13 实际安装 0.3.0：未命中缓存，3 项测试、运行和 SVG XML 校验通过，124 个归档文件逐字节一致；额外安装包安全接口测试 10/10 通过。[消费回执](releases/consumer-0.3.0.json)与[发布回执](releases/0.3.0.json)保存证据。Windows 默认 GBK 环境使用 `python -X utf8 scripts/check_consumer.py`。

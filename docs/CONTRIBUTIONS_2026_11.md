@@ -30,4 +30,6 @@
 
 ## 对外说明时需要另行核实
 
+2026-11-17 补充：0.4.0 的圆弧、稳定几何生命周期、只读测量、构造显示、方程来源及有界局部诊断为新增工作，[实现提交](https://github.com/mik1e80/moonbit-cad-sketch/commit/b48988b9480fc08f103bad49aefd05d28902029d)与[完整回归](https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/44087504847)可追溯。新增 cad-completeness-480-v1 单独计数、声明自行生成来源与 Apache-2.0 许可，不使用外部 CAD 模型。发布和安装状态见 [本轮验证](COMPLETENESS_VALIDATION.md)，不把本次完整化描述为完整 CAD 或第三方生产采用。
+
 实际提交的一页项目说明应与上述范围、版本、仓库及验证记录一致；其附件、账户报名、入群、审核状态和评选资格不能由本仓库证明。当前未核验实际报名附件，也未代填或提交报名材料。当前赛事安排参考[官方活动入口](https://moonbitlang.github.io/Hackathon2026/)，不沿用历史十月日期判断全年参赛资格。

@@ -1,6 +1,6 @@
 # 0.4.0 完整性验证
 
-本轮源码加入圆弧、几何生命周期、只读测量与有界诊断。**本机完整验证通过，GitHub 回归与发布待完成**；0.3.0 的回归记录保持为历史证据，不替代本轮。
+本轮源码加入圆弧、几何生命周期、只读测量与有界诊断。**本机和 GitHub 完整回归均通过；注册表上传与消费收据在发布后补记**；0.3.0 的回归记录保持为历史证据，不替代本轮。
 
 新增语料标识 cad-completeness-480-v1，全部为自行生成的参数化配置，见 [清单](validation/completeness-v1-models.json) 和 [模型来源政策](MODEL_DATA_POLICY.md)。原有 cad-validation-400-v1 与 1000 随机三角形实验分别计数，不合并成不同拓扑数量。
 
@@ -27,4 +27,10 @@ Windows x64，moon 0.1.20261023 / moonc 0.10.17+d971670cd 与匹配 core：四�
 本地复现入口：`moon run scripts/completeness.mbtx full`；完整归档检查：`moon run scripts/completeness.mbtx archive`（可用 CAD_PYTHON 指定 Python 3.10+ 路径）。原始日志在 `_build/completeness`，保存摘要见 [本机回执](releases/0.4.0-local.json)。脚本在 scripts/_build 的临时产物已排除，归档检查拒绝任何残留开发产物。
 
 首次运行开发脚本前需 `moon update` 取得其显式固定的 async 依赖索引；核心库和圆弧示例无该依赖。首次远端完整运行 [44087155434](https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/44087155434) 在四后端测试与原 400 模型均通过后，因全新环境缺少此索引中断，不能记为完整通过。CI 已改为直接运行核心圆弧示例，避免为展示引入该外部开发依赖；最终成功回执另行记录。
+
+## GitHub 完整回归
+
+修复后的提交 `5e7817c8bae78354b2918a47e9410f83927e5f1d` 在 [44087504847](https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/44087504847) **完整通过**，Ubuntu 四后端各 160/160 测试（含新 480 配置）、各 400/400 原语料与 6/6 原检查器故障注入；JS 1000 个随机三角形全部达标且独立正确性失败为 0；归档消费工作区四后端各 165/165。
+
+[完整回执](releases/0.4.0-full-regression.json)保存源码提交、首次失败原因、成功运行及原始 artifact 链接。最终发布说明后续提交不改动该轮验证的运行时代码。注册表上传与安装是后续步骤，其收据制作在不可变归档上传之后，归档不可能包含自己的事后上传收据；以 GitHub 最新文档中对应版本记录为准。
 
