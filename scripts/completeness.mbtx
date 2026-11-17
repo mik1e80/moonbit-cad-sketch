@@ -37,6 +37,9 @@ async fn showcase(write : Bool) -> Unit {
 async fn main {
   let args = @env.args()
   let mode = if args.length() > 1 { args[1] } else { "showcase" }
+  let manifest = @fs.read_file("moon.mod").text()
+  guard manifest.split_once("version = \"") is Some((_, tail)) else { fail("Source version missing") }
+  guard tail.split_once("\"") is Some((version, _)) else { fail("Source version malformed") }
   if !@fs.exists("_build/completeness") {
     @fs.mkdir("_build/completeness", recursive=true)
   }
@@ -67,7 +70,7 @@ async fn main {
   }
   showcase(false)
   let receipt : Json = {
-    "version": "0.4.0",
+    "version": version.to_owned(),
     "scope": "local source regression; registry consumer and CI are separate",
     "targets": ["wasm", "wasm-gc", "js", "native"],
     "new_corpus": "cad-completeness-480-v1",

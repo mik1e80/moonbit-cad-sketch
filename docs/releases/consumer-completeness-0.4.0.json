@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "date": "2026-11-17",
+  "module": "mik1e80/cad_sketch",
+  "version": "0.4.0",
+  "source": "Mooncakes registry",
+  "outside_repository": true,
+  "fresh_project_created_with_moon_new": true,
+  "workspace_or_path_override": false,
+  "targets": [
+    "wasm",
+    "wasm-gc",
+    "js",
+    "native"
+  ],
+  "public_consumer_tests_per_backend": 22,
+  "generated_configurations_per_backend": 480,
+  "source_tests_copied": [
+    "arc_test.mbt",
+    "arc_boundaries_test.mbt",
+    "arc_relations_test.mbt",
+    "arc_scale_test.mbt",
+    "geometry_edit_test.mbt",
+    "diagnostics_analysis_test.mbt"
+  ],
+  "arc_editing_executable_verified": true,
+  "scope": "Copied public black-box tests only; no solver source copied, no third-party adoption claim",
+  "raw_logs": "C:/Users/MIKE/AppData/Local/Temp/cad04-registry-fixed-20261117"
+}

@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "date": "2026-11-17",
+  "module": "mik1e80/cad_sketch",
+  "version": "0.4.0",
+  "publish_http_status": 200,
+  "release_commit": "6b02c52ad9665994446f93c11e9d12346c8de655",
+  "full_regression_runtime_commit": "5e7817c8bae78354b2918a47e9410f83927e5f1d",
+  "full_regression": "https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/44087504847",
+  "release_documentation_smoke": "https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/44088403070",
+  "uploaded_archive_sha256": "23414c2baea5491430167734b091ea89169c4f86aa2183a569c346643ef22281",
+  "registry_download_matches_archive": true,
+  "matched_archive_files": 163,
+  "consumer_report": "consumer-0.4.0.json",
+  "public_new_api_consumer_report": "consumer-completeness-0.4.0.json",
+  "public_new_api_tests_per_backend": 22,
+  "known_development_tool_issue": "Archived registry_completeness.mbtx uses ordinary imports for test-only packages; fixed harness verified the registry runtime. Patch 0.4.1 will distribute the repaired harness. Runtime sources were not changed.",
+  "github_release": null,
+  "immutable_archive_note": "Publication/consumer receipts are created after upload and are not in the uploaded archive; archive will not be overwritten."
+}

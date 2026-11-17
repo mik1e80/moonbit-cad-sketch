@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.1 — 2026-11-17
+
+- Fix the independent registry-consumer tool to declare black-box-test imports with `for "test"`; read the expected module version from moon.mod rather than hardcoding it.
+- Runtime and solver tests are identical to 0.4.0. The corrected tool verified the real 0.4.0 registry package on all four backends (22 public tests/backend, including the same 480 configurations), and the standard consumer matched all 163 uploaded files byte-for-byte.
+- Retain the immutable 0.4.0 archive and record the initial harness failure honestly. 0.4.1 registry receipts are created only after publication.
+
 ## 0.4.0 — 2026-11-17
 
 - Add finite directed arcs with mandatory equal endpoint radii, checked creation/editing, snapshots and true SVG arc paths. Add circle diameter and 12 arc-related user constraints (37 total).

@@ -2,13 +2,13 @@
 
 **Pure MoonBit 2D parametric sketch constraint solver.** 定义点、线、圆和有限有向圆弧，添加几何与尺寸约束，求解草图；修改尺寸后再次求解。
 
-[![Mooncakes v0.4.0](https://img.shields.io/badge/Mooncakes-v0.4.0-blue)](https://mooncakes.io/docs/mik1e80/cad_sketch)
+[![Mooncakes v0.4.1](https://img.shields.io/badge/Mooncakes-v0.4.1-blue)](https://mooncakes.io/docs/mik1e80/cad_sketch)
 [![CI](https://github.com/mik1e80/moonbit-cad-sketch/actions/workflows/ci.yml/badge.svg)](https://github.com/mik1e80/moonbit-cad-sketch/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue)](LICENSE)
 
 ## Why?
 
-本版 **0.4.0**：新增有限圆弧、几何删除、构造角色、只读测量和有界诊断。[完整四后端回归](https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/44087504847)通过；发布与安装收据见 [本轮验证](docs/COMPLETENESS_VALIDATION.md)。最低要求 `moonc >= 0.10.17`。从 0.2.2 升级时的接口与行为变化见 [API 指南](docs/API_GUIDE.md)，安全反馈见 [SECURITY](SECURITY.md)。
+本版 **0.4.1**（0.4.0 功能与消费验证工具补丁）：新增有限圆弧、几何删除、构造角色、只读测量和有界诊断。[完整四后端回归](https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/44087504847)通过；发布与安装收据见 [本轮验证](docs/COMPLETENESS_VALIDATION.md)。最低要求 `moonc >= 0.10.17`。从 0.2.2 升级时的接口与行为变化见 [API 指南](docs/API_GUIDE.md)，安全反馈见 [SECURITY](SECURITY.md)。
 
 用距离、方向、对称和相切关系表达设计意图，让孔位、板边和连杆在尺寸变化后一起更新。适用于小型参数化零件草图、草图编辑器集成和平面机构教学。应用通过几何对象和关系建模，库负责联合求解，并报告哪些关系尚未达标。
 
@@ -234,7 +234,7 @@ moon test README.mbt.md --target js
 
 ## Installation
 
-[Mooncakes：mik1e80/cad_sketch@0.4.0](https://mooncakes.io/docs/mik1e80/cad_sketch)。需 `moonc >= 0.10.17`；0.4.0 已使用 `moonc 0.10.17+d971670cd` 完成源码与归档四后端完整回归；注册表安装是另一步验收，见本轮验证记录。[Windows 环境准备](docs/ENVIRONMENT.md)说明安装与标准库匹配检查。核心仅依赖 MoonBit core。Python、Node.js 和 SciPy 用于可选开发验证。
+[Mooncakes：mik1e80/cad_sketch@0.4.1](https://mooncakes.io/docs/mik1e80/cad_sketch)。需 `moonc >= 0.10.17`；0.4.0 已使用 `moonc 0.10.17+d971670cd` 完成源码与归档四后端完整回归；注册表安装是另一步验收，见本轮验证记录。[Windows 环境准备](docs/ENVIRONMENT.md)说明安装与标准库匹配检查。核心仅依赖 MoonBit core。Python、Node.js 和 SciPy 用于可选开发验证。
 
 ```sh
 moon add mik1e80/cad_sketch
