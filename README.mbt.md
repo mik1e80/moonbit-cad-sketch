@@ -2,11 +2,11 @@
 
 面向 MoonBit 应用开发者的小型二维参数化草图约束求解库。输入点、线、圆、有限有向圆弧和几何关系，求解坐标与半径；修改尺寸后重新求解，并报告残差、局部自由度和求解状态。
 
-本轮源码为 **0.4.0**，发布与实测状态见 [完整性验证](docs/COMPLETENESS_VALIDATION.md)。下文 0.3.0 的发布和测试数字保留为历史信息，不替代新版本证据。[几何规格](docs/GEOMETRY_SPEC.md)、[37 种关系](docs/CONSTRAINT_SPEC.md)、[兼容性](docs/COMPATIBILITY.md)和[模型许可政策](docs/MODEL_DATA_POLICY.md)说明新增能力的边界。
+本版为 **0.4.0**，发布与实测状态见 [完整性验证](docs/COMPLETENESS_VALIDATION.md)。下文 0.3.0 的发布和测试数字保留为历史信息，不替代新版本证据。[几何规格](docs/GEOMETRY_SPEC.md)、[37 种关系](docs/CONSTRAINT_SPEC.md)、[兼容性](docs/COMPATIBILITY.md)和[模型许可政策](docs/MODEL_DATA_POLICY.md)说明新增能力的边界。
 
 适用于参数化零件草图、草图编辑器集成及小型平面机构教学。核心库仅依赖 MoonBit core，支持 wasm、wasm-gc、JS 和 native；当前上限为 256 个标量变量、512 条线、128 条圆弧、512 条用户约束。非线性求解依赖初值，局部自由度是一阶数值估计。
 
-版本 `0.3.0` 可从 [Mooncakes](https://mooncakes.io/docs/mik1e80/cad_sketch) 安装。在自己的 MoonBit 项目根目录运行：
+本版 `0.4.0` 的注册表安装入口为 [Mooncakes](https://mooncakes.io/docs/mik1e80/cad_sketch) 安装。在自己的 MoonBit 项目根目录运行：
 
 ```sh
 moon add mik1e80/cad_sketch

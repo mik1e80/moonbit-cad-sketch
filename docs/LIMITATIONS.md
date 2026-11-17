@@ -24,7 +24,7 @@ SVG 标题最多 4096 个 UTF-16 代码单元（补充平面字符占两个）�
 
 ## 交付状态
 
-版本 `0.3.0` 通过 [Mooncakes](https://mooncakes.io/docs/mik1e80/cad_sketch) 分发；`moon package` 本身仍只生成本地源码归档，正式上传使用 `moon publish`。安装说明见 [QUICK_START](QUICK_START.md#安装与版本)，待完成验收项见 [ACCEPTANCE](ACCEPTANCE.md)。
+0.3.0 的既有发布通过 [Mooncakes](https://mooncakes.io/docs/mik1e80/cad_sketch) 分发；`moon package` 本身仍只生成本地源码归档，正式上传使用 `moon publish`。安装说明见 [QUICK_START](QUICK_START.md#安装与版本)，待完成验收项见 [ACCEPTANCE](ACCEPTANCE.md)。
 
 0.4.0 源码支持点、线、圆、有限圆弧与 37 种用户等式关系，另有内置圆弧方程。未实现椭圆、样条、实体建模或通用文件交换。圆弧扫掠与半径退化条件、分段投影和共享端点相切边界见 [ARC_DESIGN](ARC_DESIGN.md)。诊断是局部候选，不是不可满足证明。几何删除不自动级联，见 [GEOMETRY_SPEC](GEOMETRY_SPEC.md)。项目定位见 [POSITIONING](POSITIONING.md)，相关库的分工见 [ECOSYSTEM](ECOSYSTEM.md)。
 

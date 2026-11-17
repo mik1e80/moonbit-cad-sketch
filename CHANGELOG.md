@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.4.0 — release candidate
+## 0.4.0 — 2026-11-17
 
 - Add finite directed arcs with mandatory equal endpoint radii, checked creation/editing, snapshots and true SVG arc paths. Add circle diameter and 12 arc-related user constraints (37 total).
 - Add stable non-reused geometry IDs, reference-checked removal, construction display roles, read-only measurements and an atomic four-point/four-edge rectangle helper.
