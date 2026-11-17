@@ -1,5 +1,13 @@
 # 0.4.x 完整性验证
 
+## 当前交付状态：0.4.1 已发布
+
+2026-11-17，Mooncakes 上传返回 **200 OK**，[GitHub v0.4.1 Release/tag](https://github.com/mik1e80/moonbit-cad-sketch/releases/tag/v0.4.1)指向 `54eca322ada297987a6ac216029b6a0ab971e581`。[最终四项检查](https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/44089943502)通过；运行时代码与 [0.4.1 完整回归](https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/44089465166)一致。
+
+在仓库外新项目真实安装 **0.4.1**，四后端各 **22/22** 新公开 API 测试（包含重复的同一 480 配置）、圆弧编辑/冲突恢复程序通过；标准消费项目 **3/3**、程序和 SVG XML 验证通过。**167 个下载文件与上传归档逐字节一致**，SHA256 为 `bb934eb07799b48f4d8d680ccf05147f949097f89994ed9d517ef535253cf672`。
+
+[发布收据](releases/0.4.1.json)、[新 API 消费](releases/consumer-completeness-0.4.1.json)、[标准消费](releases/consumer-0.4.1.json)分开记录。标准消费是第二次安装，复用了注册表缓存；工作目录和项目依赖目录为新建，未用 workspace/path 替换，不能把它写成清空全局缓存的验证。旧检查器的 source_sha256 只描述其明列文件，新扩展源码以完整提交、上传 ZIP 指纹及全部文件比较定位。以下保留开发、首次失败、修复与旧版本实测的历史过程。
+
 ## 0.4.1 消费验证工具补丁
 
 0.4.0 于 2026-11-17 正式上传，服务端返回 200 OK。首次新 API 消费因验证工具把仅用于黑盒测试的依赖声明为普通导入，被 deny-warn 拒绝；这不是库安装或核心 API 失败。修正工具后，从注册表安装的 0.4.0 在仓库外四后端各 **22/22** 公开测试通过（重复验证同一 480 配置），圆弧编辑程序通过。[新 API 回执](releases/consumer-completeness-0.4.0.json)记录实际工作区。既有消费流程 **3/3**、程序和 SVG XML 通过，**163** 个下载文件与实际上传归档逐字节相同，见 [标准消费回执](releases/consumer-0.4.0.json)。

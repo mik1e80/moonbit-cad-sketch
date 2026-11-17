@@ -187,6 +187,8 @@ test "mirror a hole center about a vertical construction line" {
 
 ## 案例与验证
 
+当前正式版 **0.4.1** 已完成[完整四后端回归](https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/44089465166)、真实注册表安装与新 API 消费验证：四后端各 160 项测试，新增 480 配置与原 400 配置分开计数；仓库外四后端各 22 项公开测试通过。标准消费 3 项、SVG XML 和程序运行通过，167 个下载文件与上传 ZIP 相同。详见 [0.4.1 发布收据](docs/releases/0.4.1.json)。下文旧版本数字为历史证据。
+
 完整零件案例见 [四孔安装板 Showcase](docs/SHOWCASE.md)：运行 `moon run examples/parametric_bracket`，依次修改板宽、孔半径和孔心边距，验证实际孔位、冲突保留与恢复，并提供可再生成的前后对比图。
 
 机构案例见 [Four-bar linkage](examples/four_bar/README.md)：运行 `moon run examples/four_bar`，仅修改角度约束，在同一草图中往返求解 25 个姿态，核对杆长、分支和局部自由度，并提供轨迹图与 JSON / CSV。

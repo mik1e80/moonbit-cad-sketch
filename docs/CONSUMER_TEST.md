@@ -1,5 +1,7 @@
 # Consumer Test：全新项目安装、测试与运行
 
+2026-11-17 当前 **0.4.1** 已实际安装验证：四后端各 22/22 新 API 测试与圆弧程序通过；标准消费 3/3、SVG XML、程序运行通过，167 个文件与上传归档相同。实际命令、缓存复用和来源见 [新 API 回执](releases/consumer-completeness-0.4.1.json)、[标准回执](releases/consumer-0.4.1.json)和[发布收据](releases/0.4.1.json)。下文 0.4.0 的失败说明及旧版本结果保留为历史。
+
 0.4.0 新 API 的独立消费复现工具为 [registry_completeness.mbtx](../scripts/registry_completeness.mbtx)。发布后运行，三个参数依次为源码仓库绝对路径、全新仓库外工作目录、结果 JSON 路径；它执行 moon new、显式安装源码 moon.mod 中声明的当前版本、复制 6 个公开黑盒测试文件并运行四后端各 22 项测试（包含同一 480 配置，不计为新语料），最后运行圆弧编辑程序。复制的仅为自建 Apache-2.0 测试与示例，不复制求解器实现或改成路径依赖。另用既有 Python 消费工具逐字节比较上传 ZIP。
 
 首次运行开发脚本前先 `moon update`。Windows 深目录可能触发工具链路径长度错误，可在 `moon run` 使用 `--target-dir C:/Temp/cad-script-build` 指定较短构建目录；这不是核心库对该系统的全部兼容性保证。发布后实际回执见 [COMPLETENESS_VALIDATION](COMPLETENESS_VALIDATION.md)。

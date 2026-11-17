@@ -119,4 +119,6 @@ node scripts/four_bar_showcase.cjs --check
 
 ## 0.4.0 新增语料与证据隔离
 
+旧验证工具的 source_sha256 只覆盖其 JSON 中 source_files 明列的文件，不是整个模块的 Merkle 根；新增圆弧、生命周期等文件由完整 Git 提交与发布 ZIP 的 SHA256 定位。不要仅凭旧工具的严格快照选项宣称整个新模块逐文件一致。0.4.1 的注册表消费另行比较上传归档的全部 167 个文件，见 [发布收据](releases/0.4.1.json)。
+
 本文件上文的 24 种语义与 0.3.0 结果为原始套件/历史版本范围。新增圆弧与诊断另有 cad-completeness-480-v1，和旧 400 模型、1000 初值分开报告。新增结果、来源及精确复现见 [COMPLETENESS_VALIDATION](COMPLETENESS_VALIDATION.md)。本轮不会以历史 SciPy 或 Benchmark 结果为新圆弧背书。
