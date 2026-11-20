@@ -1,7 +1,7 @@
 # Contributing
 
 Open an issue for significant API or mathematical changes before implementation.
-Branch from main, use focused commits and merge through a PR with reproducible checks. Follow the [maintenance checklist](docs/MAINTENANCE_REVIEW.md) to record evidence for changes that affect public behavior, provenance or compatibility.
+Branch from main, use focused commits and merge through a PR with reproducible checks. Prefer a descriptive commit verb or a conventional prefix such as feat, fix, test, docs, or ci. Follow the [maintenance checklist](docs/MAINTENANCE_REVIEW.md) to record evidence for changes that affect public behavior, provenance or compatibility.
 Keep changes focused and preserve failed-solve atomicity, sketch-local handles,
 stable constraint IDs, and the resource/input limits.
 
@@ -19,6 +19,7 @@ measurements with unexecuted or estimated results. Describe exactly what was run
 in the pull request. Changes to resource or solver limits should include boundary
 and budget-exhaustion cases.
 
+Review the upstream project, license, actual use, permission to redistribute, and any required attribution or license text before adding a dependency or external fixture.
 Do not copy third-party solver code, tests or data without compatible permission
 and retained attribution. Update [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES.md) for
 new dependencies, tools or reused material. Contributions intentionally submitted

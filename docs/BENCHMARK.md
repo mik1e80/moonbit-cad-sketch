@@ -89,3 +89,16 @@ node scripts/benchmark.cjs --write --target js
 node scripts/benchmark.cjs --check --target js
 moon run bench/specialized --target js --release --deny-warn
 ```
+
+## 0.3.0 与 0.4.1 同条件对照
+
+2026-11-20 从两个 GitHub 发布标签分别导出源码，在同一台 Windows x64（build 26200、Ryzen 9 8945HX）上使用同一工具链（Node.js 24.22.1、moonc 0.10.17+d971670cd）。两个标签的线段工作负载、基准驱动、随机种子与容差相同，均用 JS release。执行顺序为 0.3.0、0.4.1、0.4.1、0.3.0，每轮每档一次预热、三个计时样本。
+
+| 模型 | 0.3.0 两轮中位数（ms） | 0.4.1 两轮中位数（ms） | 两版迭代次数 |
+| --- | --- | --- | ---: |
+| Small | 1.462 / 1.508 | 1.459 / 1.408 | 4 |
+| Medium | 6.658 / 5.592 | 4.556 / 5.768 | 6 |
+| Large | 29.040 / 27.263 | 27.072 / 28.172 | 8 |
+| Stress | 97.952 / 85.980 | 97.401 / 94.276 | 8 |
+
+每版 24/24 次模型求解达标，四种模型的最大独立长度残差在两版结果中一致。计时受运行顺序和环境波动影响，这些样本不足以断言速度有普遍变化。对照只覆盖双方均支持的四档线段模型。[逐轮实测收据](benchmarks/maintenance-version-comparison-js.json)。
