@@ -1,8 +1,8 @@
 # 验收前核对记录
 
-初次核对日期：2026-10-16；交付状态更新：2026-11-13。本文件记录代码证据与待完成事项，不表示组委会已批准项目。下列赛事来源与时间说明保留原核对时点，不代表重新核实了当前赛事安排。
+初次核对日期：2026-10-16；当前版本证据复核：2026-11-20。本文件记录代码证据与待完成事项，不表示组委会已批准项目。下列赛事来源与时间说明保留原核对时点，不代表重新核实了当前赛事安排。
 
-0.4.0 源码和归档已完成[实际完整回归](https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/44087504847)：四后端各 160 项测试（含新增 480 配置）、各 400 个原生成配置、JS 1000 组随机初值通过；归档消费工作区各 165 项通过。发布后注册表上传和安装收据见 [本轮完整证据](COMPLETENESS_VALIDATION.md)。原 0.3.0 的[发布](releases/0.3.0.json)和[消费](releases/consumer-0.3.0.json)记录保持历史归属，不作为本版替代证据。
+当前 0.4.1 的[维护后发布验收](PUBLISHING.md#041-维护后发布验收--2026-11-20)已完成，包含完整四后端回归及空缓存安装。历史 0.4.0 源码和归档已完成[实际完整回归](https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/44087504847)：四后端各 160 项测试（含新增 480 配置）、各 400 个原生成配置、JS 1000 组随机初值通过；归档消费工作区各 165 项通过。发布后注册表上传和安装收据见 [本轮完整证据](COMPLETENESS_VALIDATION.md)。原 0.3.0 的[发布](releases/0.3.0.json)和[消费](releases/consumer-0.3.0.json)记录保持历史归属，不作为本版替代证据。
 
 ## 对照来源
 
@@ -18,13 +18,13 @@
 | --- | --- |
 | MoonBit 为主要实现语言 | 求解、自动微分、线性代数、验证和示例均为 MoonBit；Python 只做发布包及消费方验证，不参与求解运行时 |
 | 源码公开，保留开发记录 | [GitHub 仓库](https://github.com/mik1e80/moonbit-cad-sketch)；使用 `git log --oneline`、`git rev-list --count HEAD` 复核历史，已保留首版及逐项完善提交；满足用户至少 10 条 commit 的要求，不伪造开发日期 |
-| 完成声明的核心功能 | 0.4.0 源码的 37 种小型二维草图用户关系及圆弧内置方程；输入、数值及规模边界见 README，不声称完整 CAD、全局收敛、精确刚性判定或 DXF 集成 |
-| 安装、使用、示例可复现 | README 与可执行 README.mbt.md，`examples/basic`、`cmd/edit_demo`；`moon add mik1e80/cad_sketch` 安装发布版本，本地 workspace 用于源码开发 |
+| 完成声明的核心功能 | 0.4.1 的 37 种小型二维草图用户关系及圆弧内置方程；输入、数值及规模边界见 README，不声称完整 CAD、全局收敛、精确刚性判定或 DXF 集成 |
+| 安装、使用、示例可复现 | README 与可执行 README.mbt.md，`examples/basic`、`cmd/edit_demo`；`moon add mik1e80/cad_sketch@0.4.1` 安装已验收版本，本地 workspace 用于源码开发 |
 | CI 覆盖检查、构建、测试 | `.github/workflows/ci.yml` 默认对 wasm / wasm-gc / JS / native 执行静态检查、README / API 示例、SVG、安全创建与编辑、预算及少量组合 / 类型化错误测试；JS 另验证案例和 5 项源码包消费测试。完整回归与批量实验必须手动勾选；按对应提交的实际 Actions 结果区分轻量与全量证据 |
 | 核心路径测试 | AD 差分、解析几何、机构运动、矛盾 / 冗余、启停、极端数值、跨草图误用、资源边界；已有失败反例先复现再修复 |
 | 开源和参考来源 | 完整 Apache-2.0 LICENSE；THIRD_PARTY_NOTICES.md 记录参考项目名称、链接、许可证和具体范围；没有第三方 CAD 样例或求解器代码进入源码包 |
 | AI 使用可解释 | docs/ARCHITECTURE.md 说明建模、数值步骤、质量边界及 AI 协作；参赛者仍需掌握并解释这些内容 |
-| Mooncakes 发布 | `mik1e80/cad_sketch@0.3.0` 通过 [Mooncakes](https://mooncakes.io/docs/mik1e80/cad_sketch) 分发；发布记录和独立安装验证见 [PUBLISHING](PUBLISHING.md) |
+| Mooncakes 发布 | `mik1e80/cad_sketch@0.4.1` 通过 [Mooncakes](https://mooncakes.io/docs/mik1e80/cad_sketch) 分发；发布记录和独立安装验证见 [PUBLISHING](PUBLISHING.md) |
 
 ## 代码行数与申报口径
 
@@ -41,9 +41,9 @@
 
 ## GitHub 展示信息
 
-2026-10-23 已设置并通过 API 回读确认 [GitHub 仓库](https://github.com/mik1e80/moonbit-cad-sketch)的简介与 Topics：
+2026-11-20 更新简介并通过 API 回读确认 [GitHub 仓库](https://github.com/mik1e80/moonbit-cad-sketch)的简介与 Topics：
 
-> Pure MoonBit 2D parametric sketch constraint solver with 24 constraints, editable dimensions, diagnostics, and SVG export.
+> Pure MoonBit 2D parametric sketch solver with point, line, circle and arc geometry, 37 constraints, diagnostics, and SVG export.
 
 Topics：`cad`, `constraint-solver`, `geometry`, `moonbit`, `parametric-design`, `sketch`。这些标签用于发现项目，能力与可靠性仍以代码、示例及实际验证记录为依据。
 
@@ -57,7 +57,7 @@ Topics：`cad`, `constraint-solver`, `geometry`, `moonbit`, `parametric-design`,
 
 ## 可复现命令
 
-0.4.0 源码需要 MoonBit 0.10.17 或更新版本；包消费审查脚本另外需要 Python 3.10+，仅使用标准库。
+0.4.1 源码需要 MoonBit 0.10.17 或更新版本；包消费审查脚本另外需要 Python 3.10+，仅使用标准库。
 
 ```sh
 moon fmt --check

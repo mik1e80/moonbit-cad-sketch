@@ -1,0 +1,842 @@
+{
+  "date": "2026-11-20",
+  "os": "Windows x64 10.0.26200",
+  "cpu": "AMD Ryzen 9 8945HX",
+  "node": "24.22.1",
+  "moonc": "0.10.17+d971670cd",
+  "command": "node scripts/benchmark.cjs --check --target js",
+  "tags": {
+    "0.3.0": "928b9466e8f6ceb441e3c5179fe968f88b1a3bbe",
+    "0.4.1": "54eca322ada297987a6ac216029b6a0ab971e581"
+  },
+  "runs": [
+    {
+      "round": 1,
+      "version": "0.3.0",
+      "source_sha256": "86630e1000ae6846624479df188b79e67fefe2f0eecfad2bb47a789452f22c03",
+      "verified_successes": 12,
+      "checker_mutations_passed": 3,
+      "metrics": [
+        {
+          "case": "Small",
+          "points": 10,
+          "variables": 20,
+          "constraints": 20,
+          "equations": 22,
+          "repetitions": 3,
+          "verified_successes": 3,
+          "reported_status_counts": {
+            "Satisfied": 3
+          },
+          "iterations": {
+            "min": 4,
+            "median": 4,
+            "max": 4
+          },
+          "solve_us": {
+            "min": 1435.8000000000004,
+            "median": 1461.9999999999961,
+            "max": 1553.6999999999991
+          },
+          "max_independent_length_error": 7.768270471331107E-10,
+          "max_tolerance_ratio": 0.007768270471331107,
+          "max_coordinate_error": 1.63966837884999E-08
+        },
+        {
+          "case": "Medium",
+          "points": 30,
+          "variables": 60,
+          "constraints": 60,
+          "equations": 62,
+          "repetitions": 3,
+          "verified_successes": 3,
+          "reported_status_counts": {
+            "Satisfied": 3
+          },
+          "iterations": {
+            "min": 6,
+            "median": 6,
+            "max": 6
+          },
+          "solve_us": {
+            "min": 4984.6,
+            "median": 6658.000000000001,
+            "max": 6722.399999999993
+          },
+          "max_independent_length_error": 1.1813473310695599E-08,
+          "max_tolerance_ratio": 0.11813473310695599,
+          "max_coordinate_error": 1.653950738589316E-06
+        },
+        {
+          "case": "Large",
+          "points": 60,
+          "variables": 120,
+          "constraints": 120,
+          "equations": 122,
+          "repetitions": 3,
+          "verified_successes": 3,
+          "reported_status_counts": {
+            "Satisfied": 3
+          },
+          "iterations": {
+            "min": 8,
+            "median": 8,
+            "max": 8
+          },
+          "solve_us": {
+            "min": 28139.100000000013,
+            "median": 29040.300000000003,
+            "max": 32030.200000000008
+          },
+          "max_independent_length_error": 5.4896576173746325E-09,
+          "max_tolerance_ratio": 0.054896576173746325,
+          "max_coordinate_error": 2.823112936756189E-06
+        },
+        {
+          "case": "Stress",
+          "points": 100,
+          "variables": 200,
+          "constraints": 200,
+          "equations": 202,
+          "repetitions": 3,
+          "verified_successes": 3,
+          "reported_status_counts": {
+            "Satisfied": 3
+          },
+          "iterations": {
+            "min": 8,
+            "median": 8,
+            "max": 8
+          },
+          "solve_us": {
+            "min": 95575.6,
+            "median": 97952.49999999999,
+            "max": 103405.30000000002
+          },
+          "max_independent_length_error": 7.1658545763853E-08,
+          "max_tolerance_ratio": 0.71658545763853,
+          "max_coordinate_error": 9.897226339328213E-05
+        }
+      ],
+      "samples": [
+        {
+          "case": "Small",
+          "sample": 0,
+          "elapsed_us": 1435.8000000000004,
+          "iterations": 4,
+          "status": "Satisfied",
+          "independent_max_length_error": 7.768270471331107E-10
+        },
+        {
+          "case": "Small",
+          "sample": 1,
+          "elapsed_us": 1461.9999999999961,
+          "iterations": 4,
+          "status": "Satisfied",
+          "independent_max_length_error": 7.768270471331107E-10
+        },
+        {
+          "case": "Small",
+          "sample": 2,
+          "elapsed_us": 1553.6999999999991,
+          "iterations": 4,
+          "status": "Satisfied",
+          "independent_max_length_error": 7.768270471331107E-10
+        },
+        {
+          "case": "Medium",
+          "sample": 0,
+          "elapsed_us": 6658.000000000001,
+          "iterations": 6,
+          "status": "Satisfied",
+          "independent_max_length_error": 1.1813473310695599E-08
+        },
+        {
+          "case": "Medium",
+          "sample": 1,
+          "elapsed_us": 6722.399999999993,
+          "iterations": 6,
+          "status": "Satisfied",
+          "independent_max_length_error": 1.1813473310695599E-08
+        },
+        {
+          "case": "Medium",
+          "sample": 2,
+          "elapsed_us": 4984.6,
+          "iterations": 6,
+          "status": "Satisfied",
+          "independent_max_length_error": 1.1813473310695599E-08
+        },
+        {
+          "case": "Large",
+          "sample": 0,
+          "elapsed_us": 28139.100000000013,
+          "iterations": 8,
+          "status": "Satisfied",
+          "independent_max_length_error": 5.4896576173746325E-09
+        },
+        {
+          "case": "Large",
+          "sample": 1,
+          "elapsed_us": 29040.300000000003,
+          "iterations": 8,
+          "status": "Satisfied",
+          "independent_max_length_error": 5.4896576173746325E-09
+        },
+        {
+          "case": "Large",
+          "sample": 2,
+          "elapsed_us": 32030.200000000008,
+          "iterations": 8,
+          "status": "Satisfied",
+          "independent_max_length_error": 5.4896576173746325E-09
+        },
+        {
+          "case": "Stress",
+          "sample": 0,
+          "elapsed_us": 103405.30000000002,
+          "iterations": 8,
+          "status": "Satisfied",
+          "independent_max_length_error": 7.1658545763853E-08
+        },
+        {
+          "case": "Stress",
+          "sample": 1,
+          "elapsed_us": 97952.49999999999,
+          "iterations": 8,
+          "status": "Satisfied",
+          "independent_max_length_error": 7.1658545763853E-08
+        },
+        {
+          "case": "Stress",
+          "sample": 2,
+          "elapsed_us": 95575.6,
+          "iterations": 8,
+          "status": "Satisfied",
+          "independent_max_length_error": 7.1658545763853E-08
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "version": "0.4.1",
+      "source_sha256": "47b0b9b047aa50d8dee227d280ed4e9d4a94724f2071a2864fb90a7190c756b8",
+      "verified_successes": 12,
+      "checker_mutations_passed": 3,
+      "metrics": [
+        {
+          "case": "Small",
+          "points": 10,
+          "variables": 20,
+          "constraints": 20,
+          "equations": 22,
+          "repetitions": 3,
+          "verified_successes": 3,
+          "reported_status_counts": {
+            "Satisfied": 3
+          },
+          "iterations": {
+            "min": 4,
+            "median": 4,
+            "max": 4
+          },
+          "solve_us": {
+            "min": 1433.9999999999975,
+            "median": 1459.0000000000032,
+            "max": 1641.300000000001
+          },
+          "max_independent_length_error": 7.768270471331107E-10,
+          "max_tolerance_ratio": 0.007768270471331107,
+          "max_coordinate_error": 1.63966837884999E-08
+        },
+        {
+          "case": "Medium",
+          "points": 30,
+          "variables": 60,
+          "constraints": 60,
+          "equations": 62,
+          "repetitions": 3,
+          "verified_successes": 3,
+          "reported_status_counts": {
+            "Satisfied": 3
+          },
+          "iterations": {
+            "min": 6,
+            "median": 6,
+            "max": 6
+          },
+          "solve_us": {
+            "min": 4219.000000000008,
+            "median": 4555.900000000009,
+            "max": 12872.4
+          },
+          "max_independent_length_error": 1.1813473310695599E-08,
+          "max_tolerance_ratio": 0.11813473310695599,
+          "max_coordinate_error": 1.653950738589316E-06
+        },
+        {
+          "case": "Large",
+          "points": 60,
+          "variables": 120,
+          "constraints": 120,
+          "equations": 122,
+          "repetitions": 3,
+          "verified_successes": 3,
+          "reported_status_counts": {
+            "Satisfied": 3
+          },
+          "iterations": {
+            "min": 8,
+            "median": 8,
+            "max": 8
+          },
+          "solve_us": {
+            "min": 26915.999999999996,
+            "median": 27072.200000000008,
+            "max": 29657.399999999994
+          },
+          "max_independent_length_error": 5.4896576173746325E-09,
+          "max_tolerance_ratio": 0.054896576173746325,
+          "max_coordinate_error": 2.823112936756189E-06
+        },
+        {
+          "case": "Stress",
+          "points": 100,
+          "variables": 200,
+          "constraints": 200,
+          "equations": 202,
+          "repetitions": 3,
+          "verified_successes": 3,
+          "reported_status_counts": {
+            "Satisfied": 3
+          },
+          "iterations": {
+            "min": 8,
+            "median": 8,
+            "max": 8
+          },
+          "solve_us": {
+            "min": 91942.20000000001,
+            "median": 97401.29999999999,
+            "max": 100361.90000000005
+          },
+          "max_independent_length_error": 7.1658545763853E-08,
+          "max_tolerance_ratio": 0.71658545763853,
+          "max_coordinate_error": 9.897226339328213E-05
+        }
+      ],
+      "samples": [
+        {
+          "case": "Small",
+          "sample": 0,
+          "elapsed_us": 1641.300000000001,
+          "iterations": 4,
+          "status": "Satisfied",
+          "independent_max_length_error": 7.768270471331107E-10
+        },
+        {
+          "case": "Small",
+          "sample": 1,
+          "elapsed_us": 1459.0000000000032,
+          "iterations": 4,
+          "status": "Satisfied",
+          "independent_max_length_error": 7.768270471331107E-10
+        },
+        {
+          "case": "Small",
+          "sample": 2,
+          "elapsed_us": 1433.9999999999975,
+          "iterations": 4,
+          "status": "Satisfied",
+          "independent_max_length_error": 7.768270471331107E-10
+        },
+        {
+          "case": "Medium",
+          "sample": 0,
+          "elapsed_us": 12872.4,
+          "iterations": 6,
+          "status": "Satisfied",
+          "independent_max_length_error": 1.1813473310695599E-08
+        },
+        {
+          "case": "Medium",
+          "sample": 1,
+          "elapsed_us": 4555.900000000009,
+          "iterations": 6,
+          "status": "Satisfied",
+          "independent_max_length_error": 1.1813473310695599E-08
+        },
+        {
+          "case": "Medium",
+          "sample": 2,
+          "elapsed_us": 4219.000000000008,
+          "iterations": 6,
+          "status": "Satisfied",
+          "independent_max_length_error": 1.1813473310695599E-08
+        },
+        {
+          "case": "Large",
+          "sample": 0,
+          "elapsed_us": 27072.200000000008,
+          "iterations": 8,
+          "status": "Satisfied",
+          "independent_max_length_error": 5.4896576173746325E-09
+        },
+        {
+          "case": "Large",
+          "sample": 1,
+          "elapsed_us": 26915.999999999996,
+          "iterations": 8,
+          "status": "Satisfied",
+          "independent_max_length_error": 5.4896576173746325E-09
+        },
+        {
+          "case": "Large",
+          "sample": 2,
+          "elapsed_us": 29657.399999999994,
+          "iterations": 8,
+          "status": "Satisfied",
+          "independent_max_length_error": 5.4896576173746325E-09
+        },
+        {
+          "case": "Stress",
+          "sample": 0,
+          "elapsed_us": 97401.29999999999,
+          "iterations": 8,
+          "status": "Satisfied",
+          "independent_max_length_error": 7.1658545763853E-08
+        },
+        {
+          "case": "Stress",
+          "sample": 1,
+          "elapsed_us": 91942.20000000001,
+          "iterations": 8,
+          "status": "Satisfied",
+          "independent_max_length_error": 7.1658545763853E-08
+        },
+        {
+          "case": "Stress",
+          "sample": 2,
+          "elapsed_us": 100361.90000000005,
+          "iterations": 8,
+          "status": "Satisfied",
+          "independent_max_length_error": 7.1658545763853E-08
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "version": "0.4.1",
+      "source_sha256": "47b0b9b047aa50d8dee227d280ed4e9d4a94724f2071a2864fb90a7190c756b8",
+      "verified_successes": 12,
+      "checker_mutations_passed": 3,
+      "metrics": [
+        {
+          "case": "Small",
+          "points": 10,
+          "variables": 20,
+          "constraints": 20,
+          "equations": 22,
+          "repetitions": 3,
+          "verified_successes": 3,
+          "reported_status_counts": {
+            "Satisfied": 3
+          },
+          "iterations": {
+            "min": 4,
+            "median": 4,
+            "max": 4
+          },
+          "solve_us": {
+            "min": 1317.3999999999992,
+            "median": 1408.2000000000007,
+            "max": 1448.0999999999967
+          },
+          "max_independent_length_error": 7.768270471331107E-10,
+          "max_tolerance_ratio": 0.007768270471331107,
+          "max_coordinate_error": 1.63966837884999E-08
+        },
+        {
+          "case": "Medium",
+          "points": 30,
+          "variables": 60,
+          "constraints": 60,
+          "equations": 62,
+          "repetitions": 3,
+          "verified_successes": 3,
+          "reported_status_counts": {
+            "Satisfied": 3
+          },
+          "iterations": {
+            "min": 6,
+            "median": 6,
+            "max": 6
+          },
+          "solve_us": {
+            "min": 4509,
+            "median": 5768.000000000001,
+            "max": 10993.300000000005
+          },
+          "max_independent_length_error": 1.1813473310695599E-08,
+          "max_tolerance_ratio": 0.11813473310695599,
+          "max_coordinate_error": 1.653950738589316E-06
+        },
+        {
+          "case": "Large",
+          "points": 60,
+          "variables": 120,
+          "constraints": 120,
+          "equations": 122,
+          "repetitions": 3,
+          "verified_successes": 3,
+          "reported_status_counts": {
+            "Satisfied": 3
+          },
+          "iterations": {
+            "min": 8,
+            "median": 8,
+            "max": 8
+          },
+          "solve_us": {
+            "min": 26515.199999999993,
+            "median": 28171.600000000013,
+            "max": 28943.899999999987
+          },
+          "max_independent_length_error": 5.4896576173746325E-09,
+          "max_tolerance_ratio": 0.054896576173746325,
+          "max_coordinate_error": 2.823112936756189E-06
+        },
+        {
+          "case": "Stress",
+          "points": 100,
+          "variables": 200,
+          "constraints": 200,
+          "equations": 202,
+          "repetitions": 3,
+          "verified_successes": 3,
+          "reported_status_counts": {
+            "Satisfied": 3
+          },
+          "iterations": {
+            "min": 8,
+            "median": 8,
+            "max": 8
+          },
+          "solve_us": {
+            "min": 88329.00000000001,
+            "median": 94275.8,
+            "max": 94307.20000000003
+          },
+          "max_independent_length_error": 7.1658545763853E-08,
+          "max_tolerance_ratio": 0.71658545763853,
+          "max_coordinate_error": 9.897226339328213E-05
+        }
+      ],
+      "samples": [
+        {
+          "case": "Small",
+          "sample": 0,
+          "elapsed_us": 1408.2000000000007,
+          "iterations": 4,
+          "status": "Satisfied",
+          "independent_max_length_error": 7.768270471331107E-10
+        },
+        {
+          "case": "Small",
+          "sample": 1,
+          "elapsed_us": 1448.0999999999967,
+          "iterations": 4,
+          "status": "Satisfied",
+          "independent_max_length_error": 7.768270471331107E-10
+        },
+        {
+          "case": "Small",
+          "sample": 2,
+          "elapsed_us": 1317.3999999999992,
+          "iterations": 4,
+          "status": "Satisfied",
+          "independent_max_length_error": 7.768270471331107E-10
+        },
+        {
+          "case": "Medium",
+          "sample": 0,
+          "elapsed_us": 10993.300000000005,
+          "iterations": 6,
+          "status": "Satisfied",
+          "independent_max_length_error": 1.1813473310695599E-08
+        },
+        {
+          "case": "Medium",
+          "sample": 1,
+          "elapsed_us": 4509,
+          "iterations": 6,
+          "status": "Satisfied",
+          "independent_max_length_error": 1.1813473310695599E-08
+        },
+        {
+          "case": "Medium",
+          "sample": 2,
+          "elapsed_us": 5768.000000000001,
+          "iterations": 6,
+          "status": "Satisfied",
+          "independent_max_length_error": 1.1813473310695599E-08
+        },
+        {
+          "case": "Large",
+          "sample": 0,
+          "elapsed_us": 26515.199999999993,
+          "iterations": 8,
+          "status": "Satisfied",
+          "independent_max_length_error": 5.4896576173746325E-09
+        },
+        {
+          "case": "Large",
+          "sample": 1,
+          "elapsed_us": 28171.600000000013,
+          "iterations": 8,
+          "status": "Satisfied",
+          "independent_max_length_error": 5.4896576173746325E-09
+        },
+        {
+          "case": "Large",
+          "sample": 2,
+          "elapsed_us": 28943.899999999987,
+          "iterations": 8,
+          "status": "Satisfied",
+          "independent_max_length_error": 5.4896576173746325E-09
+        },
+        {
+          "case": "Stress",
+          "sample": 0,
+          "elapsed_us": 94275.8,
+          "iterations": 8,
+          "status": "Satisfied",
+          "independent_max_length_error": 7.1658545763853E-08
+        },
+        {
+          "case": "Stress",
+          "sample": 1,
+          "elapsed_us": 88329.00000000001,
+          "iterations": 8,
+          "status": "Satisfied",
+          "independent_max_length_error": 7.1658545763853E-08
+        },
+        {
+          "case": "Stress",
+          "sample": 2,
+          "elapsed_us": 94307.20000000003,
+          "iterations": 8,
+          "status": "Satisfied",
+          "independent_max_length_error": 7.1658545763853E-08
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "version": "0.3.0",
+      "source_sha256": "86630e1000ae6846624479df188b79e67fefe2f0eecfad2bb47a789452f22c03",
+      "verified_successes": 12,
+      "checker_mutations_passed": 3,
+      "metrics": [
+        {
+          "case": "Small",
+          "points": 10,
+          "variables": 20,
+          "constraints": 20,
+          "equations": 22,
+          "repetitions": 3,
+          "verified_successes": 3,
+          "reported_status_counts": {
+            "Satisfied": 3
+          },
+          "iterations": {
+            "min": 4,
+            "median": 4,
+            "max": 4
+          },
+          "solve_us": {
+            "min": 1468.2999999999993,
+            "median": 1507.6999999999998,
+            "max": 1985.1000000000026
+          },
+          "max_independent_length_error": 7.768270471331107E-10,
+          "max_tolerance_ratio": 0.007768270471331107,
+          "max_coordinate_error": 1.63966837884999E-08
+        },
+        {
+          "case": "Medium",
+          "points": 30,
+          "variables": 60,
+          "constraints": 60,
+          "equations": 62,
+          "repetitions": 3,
+          "verified_successes": 3,
+          "reported_status_counts": {
+            "Satisfied": 3
+          },
+          "iterations": {
+            "min": 6,
+            "median": 6,
+            "max": 6
+          },
+          "solve_us": {
+            "min": 5467.399999999998,
+            "median": 5591.800000000007,
+            "max": 7496.8
+          },
+          "max_independent_length_error": 1.1813473310695599E-08,
+          "max_tolerance_ratio": 0.11813473310695599,
+          "max_coordinate_error": 1.653950738589316E-06
+        },
+        {
+          "case": "Large",
+          "points": 60,
+          "variables": 120,
+          "constraints": 120,
+          "equations": 122,
+          "repetitions": 3,
+          "verified_successes": 3,
+          "reported_status_counts": {
+            "Satisfied": 3
+          },
+          "iterations": {
+            "min": 8,
+            "median": 8,
+            "max": 8
+          },
+          "solve_us": {
+            "min": 26914.70000000001,
+            "median": 27263.29999999999,
+            "max": 28498.700000000015
+          },
+          "max_independent_length_error": 5.4896576173746325E-09,
+          "max_tolerance_ratio": 0.054896576173746325,
+          "max_coordinate_error": 2.823112936756189E-06
+        },
+        {
+          "case": "Stress",
+          "points": 100,
+          "variables": 200,
+          "constraints": 200,
+          "equations": 202,
+          "repetitions": 3,
+          "verified_successes": 3,
+          "reported_status_counts": {
+            "Satisfied": 3
+          },
+          "iterations": {
+            "min": 8,
+            "median": 8,
+            "max": 8
+          },
+          "solve_us": {
+            "min": 85103.7,
+            "median": 85979.60000000006,
+            "max": 94814.40000000004
+          },
+          "max_independent_length_error": 7.1658545763853E-08,
+          "max_tolerance_ratio": 0.71658545763853,
+          "max_coordinate_error": 9.897226339328213E-05
+        }
+      ],
+      "samples": [
+        {
+          "case": "Small",
+          "sample": 0,
+          "elapsed_us": 1468.2999999999993,
+          "iterations": 4,
+          "status": "Satisfied",
+          "independent_max_length_error": 7.768270471331107E-10
+        },
+        {
+          "case": "Small",
+          "sample": 1,
+          "elapsed_us": 1507.6999999999998,
+          "iterations": 4,
+          "status": "Satisfied",
+          "independent_max_length_error": 7.768270471331107E-10
+        },
+        {
+          "case": "Small",
+          "sample": 2,
+          "elapsed_us": 1985.1000000000026,
+          "iterations": 4,
+          "status": "Satisfied",
+          "independent_max_length_error": 7.768270471331107E-10
+        },
+        {
+          "case": "Medium",
+          "sample": 0,
+          "elapsed_us": 7496.8,
+          "iterations": 6,
+          "status": "Satisfied",
+          "independent_max_length_error": 1.1813473310695599E-08
+        },
+        {
+          "case": "Medium",
+          "sample": 1,
+          "elapsed_us": 5591.800000000007,
+          "iterations": 6,
+          "status": "Satisfied",
+          "independent_max_length_error": 1.1813473310695599E-08
+        },
+        {
+          "case": "Medium",
+          "sample": 2,
+          "elapsed_us": 5467.399999999998,
+          "iterations": 6,
+          "status": "Satisfied",
+          "independent_max_length_error": 1.1813473310695599E-08
+        },
+        {
+          "case": "Large",
+          "sample": 0,
+          "elapsed_us": 26914.70000000001,
+          "iterations": 8,
+          "status": "Satisfied",
+          "independent_max_length_error": 5.4896576173746325E-09
+        },
+        {
+          "case": "Large",
+          "sample": 1,
+          "elapsed_us": 27263.29999999999,
+          "iterations": 8,
+          "status": "Satisfied",
+          "independent_max_length_error": 5.4896576173746325E-09
+        },
+        {
+          "case": "Large",
+          "sample": 2,
+          "elapsed_us": 28498.700000000015,
+          "iterations": 8,
+          "status": "Satisfied",
+          "independent_max_length_error": 5.4896576173746325E-09
+        },
+        {
+          "case": "Stress",
+          "sample": 0,
+          "elapsed_us": 94814.40000000004,
+          "iterations": 8,
+          "status": "Satisfied",
+          "independent_max_length_error": 7.1658545763853E-08
+        },
+        {
+          "case": "Stress",
+          "sample": 1,
+          "elapsed_us": 85103.7,
+          "iterations": 8,
+          "status": "Satisfied",
+          "independent_max_length_error": 7.1658545763853E-08
+        },
+        {
+          "case": "Stress",
+          "sample": 2,
+          "elapsed_us": 85979.60000000006,
+          "iterations": 8,
+          "status": "Satisfied",
+          "independent_max_length_error": 7.1658545763853E-08
+        }
+      ]
+    }
+  ]
+}

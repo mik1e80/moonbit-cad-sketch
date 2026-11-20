@@ -186,3 +186,49 @@ test "changing the rank threshold changes local candidates without editing the s
   assert_eq(s.constraint_enabled(distance), Some(true))
   assert_eq(s.point(b).unwrap().y, dy)
 }
+
+///|
+test "finite sweeps just inside zero and a full turn work in both directions" {
+  let delta = 2.0e-10
+  let turn = 2.0 * @math.PI
+  for direction in [@sketch.CounterClockwise, @sketch.Clockwise] {
+    let sign = if direction == @sketch.CounterClockwise { 1.0 } else { -1.0 }
+    for small in [true, false] {
+      let s = @sketch.Sketch::new()
+      let c = s.try_add_point(0.0, 0.0).unwrap()
+      let a = s.try_add_point(1.0, 0.0).unwrap()
+      let offset = if small { sign * delta } else { -sign * delta }
+      let b = s.try_add_point(@math.cos(offset), @math.sin(offset)).unwrap()
+      let arc = s.try_add_arc(c, a, b, direction).unwrap()
+      let expected = if small { delta } else { turn - delta }
+      s.try_constrain(ArcSweep(arc, expected)).unwrap() |> ignore
+      let result = s.solve().unwrap()
+      assert_true(result.report.is_satisfied())
+      assert_true((result.arc(arc).unwrap().sweep() - expected).abs() < 5.0e-13)
+      let svg = s.to_svg().unwrap()
+      let flag = if direction == @sketch.CounterClockwise { "0 " } else { "1 " }
+      assert_true(svg.contains((if small { " 0 0 " } else { " 0 1 " }) + flag))
+    }
+  }
+}
+
+///|
+test "duplicate distance relations are local redundancy candidates" {
+  let s = @sketch.Sketch::new()
+  let a = s.try_add_point(0.0, 0.0).unwrap()
+  let b = s.try_add_point(3.0, 4.0).unwrap()
+  let forward = s.try_constrain(Distance(a, b, 5.0)).unwrap()
+  let reverse = s.try_constrain(Distance(b, a, 5.0)).unwrap()
+  let report = s.analyze_redundancy(max_rank_evaluations=3).unwrap()
+  assert_true(report.baseline.is_satisfied())
+  assert_eq(report.rank, 1)
+  assert_eq(report.candidates.map(c => c.id.index()), [
+    forward.index(),
+    reverse.index(),
+  ])
+  assert_false(report.budget_exhausted)
+  assert_eq(s.constraint_enabled(forward), Some(true))
+  assert_eq(s.constraint_enabled(reverse), Some(true))
+  assert_eq(s.point(b).unwrap().x, 3.0)
+  assert_eq(s.point(b).unwrap().y, 4.0)
+}
