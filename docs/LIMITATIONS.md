@@ -1,6 +1,6 @@
 # 限制与适用范围
 
-0.4.0 源码要求 `moonc >= 0.10.17` 与匹配的 core。Ubuntu CI 覆盖 wasm、wasm-gc、JS 和 native，另有 Windows 本机验证；目前没有 macOS CI 验证证据。
+稳定版 0.4.1 要求 `moonc >= 0.10.17` 与匹配的 core。Ubuntu CI 覆盖 wasm、wasm-gc、JS 和 native，另有 Windows 本机验证；目前没有 macOS CI 验证证据。
 
 0.3.0 的资源前置保护、checked builder / setter 与总 QR 预算见 [API 使用指南](API_GUIDE.md)和[求解选项](SOLVER.md#容差与选项)。本次加固随 Mooncakes 0.3.0 提供。
 
@@ -24,8 +24,8 @@ SVG 标题最多 4096 个 UTF-16 代码单元（补充平面字符占两个）�
 
 ## 交付状态
 
-0.3.0 的既有发布通过 [Mooncakes](https://mooncakes.io/docs/mik1e80/cad_sketch) 分发；`moon package` 本身仍只生成本地源码归档，正式上传使用 `moon publish`。安装说明见 [QUICK_START](QUICK_START.md#安装与版本)，待完成验收项见 [ACCEPTANCE](ACCEPTANCE.md)。
+稳定版 0.4.1 通过 [Mooncakes](https://mooncakes.io/docs/mik1e80/cad_sketch) 分发；`moon package` 本身仍只生成本地源码归档，正式上传使用 `moon publish`。安装说明见 [QUICK_START](QUICK_START.md#安装与版本)，待完成验收项见 [ACCEPTANCE](ACCEPTANCE.md)。
 
-0.4.0 源码支持点、线、圆、有限圆弧与 37 种用户等式关系，另有内置圆弧方程。未实现椭圆、样条、实体建模或通用文件交换。圆弧扫掠与半径退化条件、分段投影和共享端点相切边界见 [ARC_DESIGN](ARC_DESIGN.md)。诊断是局部候选，不是不可满足证明。几何删除不自动级联，见 [GEOMETRY_SPEC](GEOMETRY_SPEC.md)。项目定位见 [POSITIONING](POSITIONING.md)，相关库的分工见 [ECOSYSTEM](ECOSYSTEM.md)。
+0.4.1 支持点、线、圆、有限圆弧与 37 种用户等式关系，另有内置圆弧方程。未实现椭圆、样条、实体建模或通用文件交换。圆弧扫掠与半径退化条件、分段投影和共享端点相切边界见 [ARC_DESIGN](ARC_DESIGN.md)。诊断是局部候选，不是不可满足证明。几何删除不自动级联，见 [GEOMETRY_SPEC](GEOMETRY_SPEC.md)。项目定位见 [POSITIONING](POSITIONING.md)，相关库的分工见 [ECOSYSTEM](ECOSYSTEM.md)。
 
 验证报告只描述其记录的语料、环境和源码指纹。[历史批量数据](VALIDATION.md)、[随机实验](RANDOM_TRIANGLE.md)、[SciPy 对照](SCIPY_REFERENCE.md)及 [Benchmark](BENCHMARK.md)不构成任意草图成功率或跨机器性能保证。

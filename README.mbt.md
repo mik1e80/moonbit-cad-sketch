@@ -9,7 +9,7 @@
 本版 `0.4.1` 的注册表安装入口为 [Mooncakes](https://mooncakes.io/docs/mik1e80/cad_sketch) 安装。在自己的 MoonBit 项目根目录运行：
 
 ```sh
-moon add mik1e80/cad_sketch
+moon add mik1e80/cad_sketch@0.4.1
 ```
 
 再在 `moon.pkg` 中导入：
@@ -21,7 +21,7 @@ import {
 }
 ```
 
-安装、完整约束表、诊断语义和数值边界见 [README.md](README.md)，目标用户与应用范围见 [项目定位与范围](docs/POSITIONING.md)。
+安装、完整约束表、诊断语义和数值边界见 [README.md](README.md)，目标用户与应用范围见 [项目定位与范围](docs/POSITIONING.md)。[独立圆角安装板](docs/REGISTRY_PLATE.md)记录仓库外的尺寸联动、几何测量和失败恢复。
 
 完整文档入口：[快速开始](docs/QUICK_START.md)、[约束参考](docs/CONSTRAINTS.md)、[求解](docs/SOLVER.md)、[诊断](docs/DIAGNOSTICS.md)和[限制](docs/LIMITATIONS.md)。
 
