@@ -32,11 +32,11 @@ jobs:
             core_sha: '80db8f2a2621b3ec358a495c390a0dfbd8ddafdd87a6f69142f069937e2fe40c'
           - platform: Ubuntu x64, stable snapshot
             runner: ubuntu-24.04
-            # SHA-verified snapshot observed 2026-11-20. When the channel moves,
-            # a maintainer updates both hashes together after verifying the inputs.
-            bundle: 'binaries/latest/moonbit-linux-x86_64.tar.gz'
+            # Verify a fixed version of the stable channel. Refresh both
+            # archive digests together when sampling a later stable compiler.
+            bundle: 'binaries/0.10.22%2B124d61d05/moonbit-linux-x86_64.tar.gz'
             bundle_sha: 'aeb78ded1d5e25185ed788328cacef5e843a9ab923145523b7652e8d082f74fb'
-            core: 'cores/core-latest.tar.gz'
+            core: 'cores/core-0.10.22%2B124d61d05.tar.gz'
             core_sha: 'a22977f3d346e4a189fe521b2d265b2fbb6c00e3ff80342246fb6f8f26c9f156'
     steps:
       - name: Check out workflow commit from public repository
@@ -100,6 +100,15 @@ jobs:
           $bin >> $env:GITHUB_PATH
           "MOON_HOME=$env:MOON_HOME" >> $env:GITHUB_ENV
       - name: Check public examples and maintenance boundaries
+        shell: bash
+        env:
+          STABLE_PROBE: ${{ matrix.runner == 'ubuntu-24.04' }}
         run: |
-          moon check --target js --deny-warn
-          moon test README.mbt.md maintenance_sequence_test.mbt --target js --deny-warn
+          set -euo pipefail
+          warning_flags=(--deny-warn)
+          if [[ "$STABLE_PROBE" == "true" ]]; then
+            # 0.10.17 needs postfix derive. 0.10.22 deprecates it (0027).
+            warning_flags+=(--warn-list=-27)
+          fi
+          moon check --target js "${warning_flags[@]}"
+          moon test README.mbt.md maintenance_sequence_test.mbt --target js "${warning_flags[@]}"
