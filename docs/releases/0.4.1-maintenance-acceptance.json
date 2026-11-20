@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "status": "passed",
+  "module": "mik1e80/cad_sketch",
+  "version": "0.4.1",
+  "license": "Apache-2.0",
+  "distribution": {
+    "github_release_id": 448650426,
+    "github_release": "https://github.com/mik1e80/moonbit-cad-sketch/releases/tag/v0.4.1",
+    "tag": "v0.4.1",
+    "release_commit": "54eca322ada297987a6ac216029b6a0ab971e581",
+    "published_zip_sha256": "bb934eb07799b48f4d8d680ccf05147f949097f89994ed9d517ef535253cf672",
+    "original_receipt": "0.4.1.json",
+    "republished": false
+  },
+  "maintenance_source": {
+    "commit": "2e5fc4aba0c4b8914f1b6efcbae411c0fed73b58",
+    "runtime_public_interface_manifest_and_license_match_release_tag": true,
+    "workflow_run": "https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/44744643950",
+    "job_id": 136316694378,
+    "conclusion": "success",
+    "toolchain": {
+      "os": "Ubuntu 24.04 x64",
+      "moon": "0.1.20261023",
+      "moonc": "0.10.17+d971670cd"
+    },
+    "targets": [
+      "wasm",
+      "wasm-gc",
+      "js",
+      "native"
+    ],
+    "test_entries_per_target": 164,
+    "generated_arc_and_diagnostic_cases_included_per_target": 480,
+    "original_generated_cases_per_target": 400,
+    "original_checker_mutations_per_target": 6,
+    "random_triangle_js": {
+      "independently_verified_satisfied": 1000,
+      "total": 1000
+    },
+    "source_archive_test_entries_per_target": 169,
+    "independent_consumer_entries_in_archive_workspace": 5,
+    "workflow_evidence": {
+      "artifact": "https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/44744643950/artifacts/14632372204",
+      "sha256": "f33e2ecb1d3ba9ad01eec5a165a764915285170747884f382337d105bf8d424d"
+    }
+  },
+  "registry_rechecks": {
+    "cold_standard": {
+      "os": "Windows x64",
+      "moonc": "0.10.17+d971670cd",
+      "outside_repository": true,
+      "workspace_or_path_override": false,
+      "cache_used": false,
+      "newly_downloaded_zip_sha256_matches_publication": true,
+      "matched_installed_files": 167,
+      "js_tests": 3,
+      "program_and_svg_xml_passed": true
+    },
+    "public_api": {
+      "outside_repository": true,
+      "workspace_or_path_override": false,
+      "cache_used": true,
+      "targets": [
+        "wasm",
+        "wasm-gc",
+        "js",
+        "native"
+      ],
+      "tests_per_target": 22,
+      "cases_included_per_target": 480,
+      "arc_editing_program_passed": true
+    }
+  },
+  "scope": "Current source, its freshly produced archive, and the immutable registry release are separate verification objects. No new release version."
+}
