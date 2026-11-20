@@ -1,0 +1,146 @@
+{
+  "date": "2026-11-20",
+  "runtime_baseline": "54eca322ada297987a6ac216029b6a0ab971e581",
+  "command": "node scripts/benchmark.cjs --check --target js",
+  "summary": {
+    "schema": 1,
+    "workload": "triangulated-zigzag-v1",
+    "target": "js",
+    "build": "release",
+    "smoke": false,
+    "warmups_per_case": 1,
+    "repetitions_per_case": 3,
+    "length_tolerance": 1E-07,
+    "cases": [
+      {
+        "case": "Small",
+        "points": 10,
+        "variables": 20,
+        "constraints": 20,
+        "equations": 22,
+        "repetitions": 3,
+        "verified_successes": 3,
+        "reported_status_counts": {
+          "Satisfied": 3
+        },
+        "iterations": {
+          "min": 4,
+          "median": 4,
+          "max": 4
+        },
+        "solve_us": {
+          "min": 1371.3000000000052,
+          "median": 1445.3999999999994,
+          "max": 1514.800000000001
+        },
+        "max_independent_length_error": 7.768270471331107E-10,
+        "max_tolerance_ratio": 0.007768270471331107,
+        "max_coordinate_error": 1.63966837884999E-08
+      },
+      {
+        "case": "Medium",
+        "points": 30,
+        "variables": 60,
+        "constraints": 60,
+        "equations": 62,
+        "repetitions": 3,
+        "verified_successes": 3,
+        "reported_status_counts": {
+          "Satisfied": 3
+        },
+        "iterations": {
+          "min": 6,
+          "median": 6,
+          "max": 6
+        },
+        "solve_us": {
+          "min": 4388.199999999998,
+          "median": 6109.800000000007,
+          "max": 7699.499999999994
+        },
+        "max_independent_length_error": 1.1813473310695599E-08,
+        "max_tolerance_ratio": 0.11813473310695599,
+        "max_coordinate_error": 1.653950738589316E-06
+      },
+      {
+        "case": "Large",
+        "points": 60,
+        "variables": 120,
+        "constraints": 120,
+        "equations": 122,
+        "repetitions": 3,
+        "verified_successes": 3,
+        "reported_status_counts": {
+          "Satisfied": 3
+        },
+        "iterations": {
+          "min": 8,
+          "median": 8,
+          "max": 8
+        },
+        "solve_us": {
+          "min": 28244.399999999983,
+          "median": 29045.900000000016,
+          "max": 30828.299999999985
+        },
+        "max_independent_length_error": 5.4896576173746325E-09,
+        "max_tolerance_ratio": 0.054896576173746325,
+        "max_coordinate_error": 2.823112936756189E-06
+      },
+      {
+        "case": "Stress",
+        "points": 100,
+        "variables": 200,
+        "constraints": 200,
+        "equations": 202,
+        "repetitions": 3,
+        "verified_successes": 3,
+        "reported_status_counts": {
+          "Satisfied": 3
+        },
+        "iterations": {
+          "min": 8,
+          "median": 8,
+          "max": 8
+        },
+        "solve_us": {
+          "min": 97918.09999999998,
+          "median": 100817.59999999998,
+          "max": 103397.60000000006
+        },
+        "max_independent_length_error": 7.1658545763853E-08,
+        "max_tolerance_ratio": 0.71658545763853,
+        "max_coordinate_error": 9.897226339328213E-05
+      }
+    ],
+    "measured_solves": 12,
+    "verified_successes": 12,
+    "checker_mutations_passed": 3,
+    "failures": [],
+    "source_files": [
+      "bench/main.mbt",
+      "bench/moon.pkg",
+      "scripts/benchmark.cjs",
+      "scripts/snapshot_provenance.cjs",
+      "errors.mbt",
+      "model.mbt",
+      "solver.mbt",
+      "validate.mbt",
+      "residual.mbt",
+      "autodiff.mbt",
+      "linalg.mbt"
+    ],
+    "source_sha256": "47b0b9b047aa50d8dee227d280ed4e9d4a94724f2071a2864fb90a7190c756b8",
+    "environment": {
+      "platform": "win32",
+      "release": "10.0.26200",
+      "arch": "x64",
+      "cpu": "AMD Ryzen 9 8945HX with Radeon Graphics        ",
+      "logical_cpus": 32,
+      "memory_bytes": 33342455808,
+      "node": "v24.22.1",
+      "moon": "moon 0.1.20261023 (3778465); moonc 0.10.17+d971670cd"
+    },
+    "cases_csv_sha256": "ef3177eaa3d32473908fbbda5dcf8bca7a076a4510ae558114fd88ab112c640b"
+  }
+}

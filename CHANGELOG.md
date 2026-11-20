@@ -4,6 +4,7 @@
 
 - Add a standalone registry consumer workflow for a rounded plate and publish the measured scope in [the integration record](docs/REGISTRY_PLATE.md).
 - Cover seeded arc continuation, checked edit rollback, reference-safe deletion, snapshot isolation and the finite-arc projection boundary in focused four-backend CI.
+- Add mixed arc, line and circle edit sequences with conflict recovery and a bounded diagnostic check. Record targeted performance workloads and provide an opt-in compatibility workflow.
 - Synchronize stable-version documentation, model provenance and public issue reporting. The published 0.4.1 package and API remain the baseline.
 
 ## 0.4.1 — 2026-11-17

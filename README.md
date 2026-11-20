@@ -206,7 +206,7 @@ moon test README.mbt.md --target js
 | Large | 60 | 120 | 120 | 8 | 3/3 | 5.49e-09 |
 | Stress | 100 | 200 | 200 | 8 | 3/3 | 7.17e-08 |
 
-这些固定模型结果只对应其历史版本和测量环境。[圆角安装板专项测量](docs/REGISTRY_PLATE.md#实测记录)另行记录 0.4.1 的编辑求解、SVG 和冲突诊断，使用不同模型，不能直接比较。[Benchmark 方法、机器环境及原始数据](docs/BENCHMARK.md)保留完整条件；轻量复现可用 `node scripts/benchmark.cjs --smoke --target js`。
+这些固定模型结果只对应其历史版本和测量环境。[0.4.1 维护基准](docs/BENCHMARK.md#041-维护基准)记录同一运行时上的四档线段模型，以及圆弧、局部冗余、删除和大 SVG 实测。圆角板的冲突诊断单独记录。[Benchmark 方法、机器环境及原始数据](docs/BENCHMARK.md)保留完整条件；轻量复现可用 `node scripts/benchmark.cjs --smoke --target js`。
 
 ## Comparison with MoonBit Ecosystem
 

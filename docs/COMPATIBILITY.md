@@ -15,8 +15,14 @@
 | 环境 | 已验证范围 |
 | --- | --- |
 | Ubuntu x64，固定的 0.10.17+d971670cd 与匹配 core | 0.4.1 四后端完整 CI、归档工作区与公开 API 测试 |
-| Windows x64，同版工具链 | 0.4.1 发布回归。本轮新增专项四后端测试及独立 JS 案例 |
-| 更新的工具链、macOS、浏览器宿主 | 当前无独立验证记录。按实际环境和目标后端验证后更新 |
+| Windows x64，0.10.17+d971670cd | 0.4.1 本机发布回归。新增专项四后端测试、独立 JS 案例及 Windows 2025 的 JS 检查通过 |
+| macOS 15 ARM64，0.10.17+d971670cd | JS 编译与公开示例、维护专项检查通过 |
+| Ubuntu x64，0.10.22+124d61d05 | JS 编译与公开示例、维护专项检查通过。此探测豁免旧 derive 语法的 0027 弃用诊断，其余警告仍视为错误 |
+| 浏览器宿主 | 尚无单独验证记录。 |
+
+[兼容性探测](https://github.com/mik1e80/moonbit-cad-sketch/actions/workflows/compatibility.yml)只在修改该工作流的 PR 上自动触发，亦可按需手动运行。工具链与匹配 core 使用精确版本和 SHA-256。三组配置在 [2026-11-20 的运行](https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/44743293500)通过。更换稳定快照时同步复核两个归档的指纹。
+
+[首次稳定版检查](https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/44742906952)因旧的后置 derive 被编译器弃用而未通过严格检查。最低编译器尚不支持新的前置属性，因此保留兼容语法并只在 0.10.22 探测豁免 0027。平台结果仅覆盖各自列出的工具链与 JS 后端。
 
 实测开发工具限制：Windows 深目录下运行独立 .mbtx 脚本可能因依赖的编译输出路径过长报错；使用较短 checkout 或显式 --target-dir 可绕过。全新开发环境先 moon update 取得开发脚本依赖索引；核心库只需匹配 core，CI 直接运行示例，不依赖脚本网络索引。
 

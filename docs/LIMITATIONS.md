@@ -1,6 +1,6 @@
 # 限制与适用范围
 
-稳定版 0.4.1 要求 `moonc >= 0.10.17` 与匹配的 core。Ubuntu CI 覆盖 wasm、wasm-gc、JS 和 native，另有 Windows 本机验证；目前没有 macOS CI 验证证据。
+稳定版 0.4.1 要求 `moonc >= 0.10.17` 与匹配的 core。Ubuntu CI 覆盖 wasm、wasm-gc、JS 和 native，另有 Windows 本机验证；Windows 和 macOS ARM64 还通过了最低编译器的 JS 兼容性探测，具体范围见[兼容性矩阵](COMPATIBILITY.md)。
 
 0.3.0 的资源前置保护、checked builder / setter 与总 QR 预算见 [API 使用指南](API_GUIDE.md)和[求解选项](SOLVER.md#容差与选项)。本次加固随 Mooncakes 0.3.0 提供。
 
