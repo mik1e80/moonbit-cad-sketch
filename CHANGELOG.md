@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased maintenance
+
+- Add a standalone registry consumer workflow for a rounded plate and publish the measured scope in [the integration record](docs/REGISTRY_PLATE.md).
+- Cover seeded arc continuation, checked edit rollback, reference-safe deletion, snapshot isolation and the finite-arc projection boundary in focused four-backend CI.
+- Synchronize stable-version documentation, model provenance and public issue reporting. The published 0.4.1 package and API remain the baseline.
+
 ## 0.4.1 — 2026-11-17
 
 - Fix the independent registry-consumer tool to declare black-box-test imports with `for "test"`; read the expected module version from moon.mod rather than hardcoding it.

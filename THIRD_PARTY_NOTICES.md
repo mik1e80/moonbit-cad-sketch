@@ -50,4 +50,6 @@ GitHub Actions 使用 `actions/checkout`、`actions/setup-python` 和 `actions/u
 
 新增圆弧、诊断配置、解析期望值和案例全部在本仓库自行编写，按 Apache-2.0 分发；没有外部 CAD 模型、截图、模型权重或 SolveSpace 源码。外部材料引入规则见 docs/MODEL_DATA_POLICY.md，新增语料清单见 docs/validation/completeness-v1-models.json。SolveSpace 官方功能文档仅用于独立功能对照，未复制其 GPL 实现或重标其数据许可。
 
-开发验证脚本显式固定 moonbitlang/async@0.22.1（[上游 Apache-2.0 许可证](https://github.com/moonbitlang/async/blob/main/LICENSE)）；它不进入核心运行时依赖。保留上游自身许可证与声明，仓库 Apache-2.0 不重新许可第三方工具。新增模型不产生维护者法律署名，本轮不新增版权归属声明。
+开发验证脚本显式固定 moonbitlang/async@0.22.1（[上游 Apache-2.0 许可证](https://github.com/moonbitlang/async/blob/main/LICENSE)）；它不进入核心运行时依赖。保留上游自身许可证与声明，仓库 Apache-2.0 不重新许可第三方工具。本仓库沿用既有版权署名。
+
+0.4.1 维护中的仓库外圆角板案例和连续圆弧测试由本项目编写，按 Apache-2.0 提供。案例通过注册表引用发布包，计时使用 MoonBit core 的 bench 模块，未复制其实现。无新的第三方依赖、再分发文件或外部模型。来源和复现见 [模型许可政策](docs/MODEL_DATA_POLICY.md)。

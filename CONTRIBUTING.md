@@ -26,7 +26,7 @@ for inclusion are provided under Apache-2.0, according to section 5 of
 only material you are authorized to license. No separate contributor agreement
 is required by this document.
 
-For reproducible integration feedback, see the evidence checklist and planned work in
+For reproducible integration feedback, use the bug or integration form in [GitHub Issues](https://github.com/mik1e80/moonbit-cad-sketch/issues/new/choose) and see the evidence checklist in
 [Maintenance and application validation](docs/MAINTENANCE.md). Do not include private
 CAD files or report self-authored consumer tests as third-party adoption.
 

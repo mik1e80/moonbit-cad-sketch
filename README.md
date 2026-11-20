@@ -12,11 +12,11 @@
 
 用距离、方向、对称和相切关系表达设计意图，让孔位、板边和连杆在尺寸变化后一起更新。适用于小型参数化零件草图、草图编辑器集成和平面机构教学。应用通过几何对象和关系建模，库负责联合求解，并报告哪些关系尚未达标。
 
-**使用流程**：创建 `Sketch` → 添加点、线、圆 → 添加设计关系 → `solve_and_apply()` → 读取坐标、半径与报告 → 修改尺寸约束 → 再次求解。应用负责界面和文件处理，库负责草图几何的联动求解。
+**使用流程**：创建 `Sketch` → 添加点、线、圆和有限有向圆弧 → 添加设计关系 → `solve_and_apply()` → 读取坐标、半径与报告 → 修改尺寸约束 → 再次求解。应用负责界面和文件处理，库负责草图几何的联动求解。
 
 | 输入 | 库的处理 | 输出 |
 | --- | --- | --- |
-| 点、线、圆的初始位置，以及距离、方向、对称、相切等关系 | 把启用关系转为方程，联合求解，并按容差检查结果 | 候选坐标、半径、求解状态和逐约束诊断；全部达标才更新草图 |
+| 点和圆心的初始坐标、线段端点、圆半径、有限圆弧的圆心 / 起终点 / 方向，以及距离、方向、对称和相切等关系 | 把启用关系转为方程，联合求解，并按容差检查结果 | 候选坐标、圆半径与弧形状，以及求解状态和含内置弧方程的逐方程诊断；全部达标才更新草图 |
 
 普通使用者通过几何与约束 API 建模，无需自行编写方程或导数。详细处理机制见[内部实现](docs/ARCHITECTURE.md#处理流程)。
 
@@ -25,7 +25,7 @@
 在自己的 MoonBit 项目根目录安装：
 
 ```sh
-moon add mik1e80/cad_sketch
+moon add mik1e80/cad_sketch@0.4.1
 ```
 
 在使用方的 `moon.pkg` 导入核心包：
@@ -80,7 +80,7 @@ match sketch.solve_and_apply() {
 moon run examples/parametric_bracket --target js
 ```
 
-[安装板案例](examples/parametric_bracket/README.md)展示尺寸联动，以及冲突编辑后的几何保留与恢复。以上三份 SVG 由核心库的 `sketch.to_svg()` 直接返回，同一视野、同一比例。[SVG 导出说明](docs/SVG_EXPORT.md)包含接口与生成命令；此接口已包含在 Mooncakes 0.2.2 正式版本中。
+[安装板案例](examples/parametric_bracket/README.md)展示尺寸联动，以及冲突编辑后的几何保留与恢复。以上三份 SVG 由核心库的 `sketch.to_svg()` 直接返回，同一视野、同一比例。[SVG 导出说明](docs/SVG_EXPORT.md)包含接口与生成命令；此接口在 Mooncakes 0.4.1 中支持有限圆弧与构造几何显示。
 
 ## Features
 
@@ -153,7 +153,7 @@ if sketch.set_constraint(length, Distance(a, b, 7.0)) {
 
 `report.likely_conflicts()` 按误差比排序启用且超标的关系，帮助决定检查顺序。`local_dof` 是一阶局部估计。未收敛不证明无解，排序列表也不是最小冲突集。处理方式见[错误与诊断](docs/DIAGNOSTICS.md)及[求解与结果](docs/SOLVER.md)。
 
-0.4.0 可显式调用 `analyze_redundancy()` 或 `analyze_conflicts()`，获得局部冗余候选、实际子集试验、恢复建议和预算状态；普通求解不执行这些分析。报告中的逐方程来源区分用户关系与内置圆弧方程。
+0.4.1 可显式调用 `analyze_redundancy()` 或 `analyze_conflicts()`，获得局部冗余候选、实际子集试验、恢复建议和预算状态；普通求解不执行这些分析。报告中的逐方程来源区分用户关系与内置圆弧方程。
 
 ## Examples
 
@@ -172,7 +172,7 @@ if sketch.set_constraint(length, Distance(a, b, 7.0)) {
 
 ![四杆机构实际求解轨迹与选定构型](docs/images/four-bar-motion.svg)
 
-[全部示例](examples/README.md)包含参数、预期行为与复现说明。
+[全部示例](examples/README.md)包含参数、预期行为与复现说明。[独立圆角安装板](docs/REGISTRY_PLATE.md)在仓库外固定安装 0.4.1，覆盖尺寸联动、只读测量、冲突恢复和 SVG。
 
 ## Validation
 
@@ -189,7 +189,7 @@ if sketch.set_constraint(length, Distance(a, b, 7.0)) {
 
 **0.3.0 核心实现完整回归通过**：[实际 Actions](https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/43365012044) 对应 `5ea24f2`。四后端各 127 项测试、各 400 个生成配置，以及 JS 的 1000 个随机初值全部通过；解包后的完整检查四后端各 132 项通过。[版本验证记录](docs/releases/0.3.0-full-regression.json)区分源码检查和包消费证据。
 
-以上 0.3.0 是历史测量。新增 480 配置与 0.4.0 的本轮实测单独记录在 [完整性验证](docs/COMPLETENESS_VALIDATION.md)，不沿用旧版本通过结论；SciPy 与四档计时未重测。日常优先运行相关公开接口示例：
+0.3.0 的数字是历史记录。0.4.1 的独立回归和注册表安装分别保留收据。发布后的维护新增固定种子连续编辑与有限圆弧投影检查，范围见[维护记录](docs/MAINTENANCE.md)。日常优先运行受影响的公开接口示例：
 
 ```sh
 moon test README.mbt.md --target js
@@ -206,7 +206,7 @@ moon test README.mbt.md --target js
 | Large | 60 | 120 | 120 | 8 | 3/3 | 5.49e-09 |
 | Stress | 100 | 200 | 200 | 8 | 3/3 | 7.17e-08 |
 
-这些固定模型结果不代表任意同规模草图的成功率或跨电脑性能。[Benchmark 方法、机器环境及原始数据](docs/BENCHMARK.md)保留完整条件；轻量复现可用 `node scripts/benchmark.cjs --smoke --target js`。
+这些固定模型结果只对应其历史版本和测量环境。[圆角安装板专项测量](docs/REGISTRY_PLATE.md#实测记录)另行记录 0.4.1 的编辑求解、SVG 和冲突诊断，使用不同模型，不能直接比较。[Benchmark 方法、机器环境及原始数据](docs/BENCHMARK.md)保留完整条件；轻量复现可用 `node scripts/benchmark.cjs --smoke --target js`。
 
 ## Comparison with MoonBit Ecosystem
 
@@ -236,10 +236,10 @@ moon test README.mbt.md --target js
 
 ## Installation
 
-[Mooncakes：mik1e80/cad_sketch@0.4.1](https://mooncakes.io/docs/mik1e80/cad_sketch)。需 `moonc >= 0.10.17`；0.4.0 已使用 `moonc 0.10.17+d971670cd` 完成源码与归档四后端完整回归；注册表安装是另一步验收，见本轮验证记录。[Windows 环境准备](docs/ENVIRONMENT.md)说明安装与标准库匹配检查。核心仅依赖 MoonBit core。Python、Node.js 和 SciPy 用于可选开发验证。
+[Mooncakes：mik1e80/cad_sketch@0.4.1](https://mooncakes.io/docs/mik1e80/cad_sketch)。需 `moonc >= 0.10.17`；0.4.1 已使用 `moonc 0.10.17+d971670cd` 完成源码、归档和注册表消费验收，见[发布证据](docs/COMPLETENESS_VALIDATION.md)。[Windows 环境准备](docs/ENVIRONMENT.md)说明安装与标准库匹配检查。核心仅依赖 MoonBit core。Python、Node.js 和 SciPy 用于可选开发验证。
 
 ```sh
-moon add mik1e80/cad_sketch
+moon add mik1e80/cad_sketch@0.4.1
 ```
 
 [源码仓库](https://github.com/mik1e80/moonbit-cad-sketch) · [源码开发与本地 workspace](docs/QUICK_START.md#安装与版本) · [发布记录](docs/PUBLISHING.md) · [版本说明](CHANGELOG.md)
@@ -248,4 +248,4 @@ moon add mik1e80/cad_sketch
 
 模型、验证结果与来源政策见 [MODEL_DATA_POLICY](docs/MODEL_DATA_POLICY.md)；自行生成配置不含外部 CAD 模型文件，不以新增测试数量替代独立工程验证。完整需求、范围和兼容性见 [能力矩阵](docs/FEATURE_MATRIX.md)、[SolveSpace 对照](docs/SOLVESPACE_COMPARISON.md)、[迁移说明](docs/COMPATIBILITY.md)。
 
-Apache-2.0，完整条款见 [LICENSE](LICENSE)。参考出处、许可证及使用范围见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+Apache-2.0，完整条款见 [LICENSE](LICENSE)。参考出处、许可证及使用范围见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。提交贡献见 [CONTRIBUTING](CONTRIBUTING.md)，维护计划见[路线图](docs/ROADMAP.md)。

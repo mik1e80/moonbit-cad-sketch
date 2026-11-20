@@ -64,7 +64,7 @@ jobs:
       - name: Test SVG export
         run: moon test svg_test.mbt --target ${{ matrix.target }} --deny-warn
       - name: Test arc and geometry lifecycle boundaries
-        run: moon test arc_boundaries_test.mbt arc_scale_test.mbt geometry_edit_test.mbt --target ${{ matrix.target }} --deny-warn
+        run: moon test arc_boundaries_test.mbt arc_scale_test.mbt geometry_edit_test.mbt maintenance_sequence_test.mbt --target ${{ matrix.target }} --deny-warn
       - name: Test resource and input hardening
         run: |
           moon test hardening_test.mbt --target ${{ matrix.target }} --deny-warn

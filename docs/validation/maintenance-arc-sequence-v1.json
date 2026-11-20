@@ -1,0 +1,17 @@
+{
+  "id": "maintenance-arc-sequence-v1",
+  "license_spdx": "Apache-2.0",
+  "origin": "Self-authored analytic geometry; no external CAD files or source fixtures",
+  "external_inputs": [],
+  "source": "maintenance_sequence_test.mbt",
+  "seed": 20261120,
+  "generator": "Park–Miller 16807 with Schrage reduction, continuous state across direction branches",
+  "analytic_oracle": "For start on +X, endpoint = (r cos(sweep), direction_sign * r sin(sweep)); quarter-arc projection keeps an interior angle or clamps to the start.",
+  "coverage": {
+    "continuation_edits": 32,
+    "sequences": 2,
+    "projection_cases": 4,
+    "test_entries": 2
+  },
+  "counting": "Sequential edits and separate projection cases, listed independently of the 0.4.1 release corpora. Backend repetition does not create new cases."
+}
