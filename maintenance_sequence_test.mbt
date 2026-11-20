@@ -156,3 +156,33 @@ test "seeded mixed edit sessions recover without changing the saved shape" {
     assert_true(snapshot.report.is_satisfied())
   }
 }
+
+///|
+test "changing the rank threshold changes local candidates without editing the sketch" {
+  let s = @sketch.Sketch::new()
+  let a = s.try_add_point(0.0, 0.0).unwrap()
+  let dy = 1.0e-6
+  let b = s.try_add_point(1.0, dy).unwrap()
+  let x = s.try_constrain(DistanceX(a, b, 1.0)).unwrap()
+  let distance = s.try_constrain(Distance(a, b, @math.hypot(1.0, dy))).unwrap()
+  let exact = s
+    .analyze_redundancy(options={
+      ..@sketch.SolveOptions::default(),
+      rank_tolerance: 1.0e-10,
+    })
+    .unwrap()
+  let coarse = s
+    .analyze_redundancy(options={
+      ..@sketch.SolveOptions::default(),
+      rank_tolerance: 1.0e-4,
+    })
+    .unwrap()
+  assert_true(exact.baseline.is_satisfied() && coarse.baseline.is_satisfied())
+  assert_eq(exact.rank, 2)
+  assert_eq(exact.candidates.length(), 0)
+  assert_eq(coarse.rank, 1)
+  assert_eq(coarse.candidates.length(), 2)
+  assert_eq(s.constraint_enabled(x), Some(true))
+  assert_eq(s.constraint_enabled(distance), Some(true))
+  assert_eq(s.point(b).unwrap().y, dy)
+}

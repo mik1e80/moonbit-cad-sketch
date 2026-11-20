@@ -13,7 +13,7 @@ moon test maintenance_sequence_test.mbt --target js --deny-warn
 
 将 `js` 换成 `wasm`、`wasm-gc` 或 `native` 可复现对应后端。两项测试已纳入四后端轻量 CI。此次验证未重跑完整 400 / 480 配置与 1000 随机初值套件，原版测试数字仍对应 [0.4.1 完整回归](COMPLETENESS_VALIDATION.md)。独立案例的计时与历史 Benchmark 和 SciPy 记录分开。
 
-后续专项补验新增同一混合草图上的 12 次固定种子尺寸编辑，覆盖圆弧、线段相切及等半径圆的联动。每次编辑加入冲突并核对不写回、一次子集预算及恢复。更新后的专项测试文件在 Windows 四后端各通过 3 项。新增语料见[清单](validation/maintenance-mixed-edit-v1.json)。[维护基准](BENCHMARK.md#041-维护基准)已实测线段、圆弧、冗余、删除及大 SVG。按需复核范围见[维护检查](MAINTENANCE_REVIEW.md)。
+后续专项补验新增同一混合草图上的 12 次固定种子尺寸编辑，覆盖圆弧、线段相切及等半径圆的联动。每次编辑加入冲突并核对不写回、一次子集预算及恢复。另加入同一可解草图的两档秩阈值对照，核对局部候选随阈值变化且分析不改动草图。更新后的专项测试文件在 Windows 四后端各通过 4 项。新增语料见[清单](validation/maintenance-mixed-edit-v1.json)。[维护基准](BENCHMARK.md#041-维护基准)已实测线段、圆弧、冗余、删除及大 SVG。按需复核范围见[维护检查](MAINTENANCE_REVIEW.md)。
 
 ## 提交可复现反馈
 
