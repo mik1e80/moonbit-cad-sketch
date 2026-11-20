@@ -1,0 +1,15 @@
+many_arcs sample=1 us=9781.499999999995 variables=96 constraints=48 equations=96 iterations=4 qr=4 satisfied=true max_position_error=1.2598833621011936e-7
+arc_tangency sample=1 us=3948.8000000000056 variables=64 constraints=40 equations=64 iterations=5 qr=5 satisfied=true max_position_error=3.4885391189386795e-9
+redundancy sample=1 us=4092.500000000001 variables=24 constraints=24 equations=48 rank_evaluations=25 candidates=24
+point_deletion sample=1 us=90.00000000000341 variables_before=242 constraints=0 removed=120
+large_svg sample=1 us=1237.6000000000004 variables=6 constraints=0 lines=512 arcs=128 utf16_units=38949
+many_arcs sample=2 us=7219.999999999999 variables=96 constraints=48 equations=96 iterations=4 qr=4 satisfied=true max_position_error=1.2598833621011936e-7
+arc_tangency sample=2 us=4025.3000000000015 variables=64 constraints=40 equations=64 iterations=5 qr=5 satisfied=true max_position_error=3.4885391189386795e-9
+redundancy sample=2 us=1901.900000000012 variables=24 constraints=24 equations=48 rank_evaluations=25 candidates=24
+point_deletion sample=2 us=77.699999999993 variables_before=242 constraints=0 removed=120
+large_svg sample=2 us=614.6999999999991 variables=6 constraints=0 lines=512 arcs=128 utf16_units=38949
+many_arcs sample=3 us=8911.300000000012 variables=96 constraints=48 equations=96 iterations=4 qr=4 satisfied=true max_position_error=1.2598833621011936e-7
+arc_tangency sample=3 us=3403.7999999999897 variables=64 constraints=40 equations=64 iterations=5 qr=5 satisfied=true max_position_error=3.4885391189386795e-9
+redundancy sample=3 us=1710.3999999999928 variables=24 constraints=24 equations=48 rank_evaluations=25 candidates=24
+point_deletion sample=3 us=167.39999999998645 variables_before=242 constraints=0 removed=120
+large_svg sample=3 us=798.5000000000184 variables=6 constraints=0 lines=512 arcs=128 utf16_units=38949

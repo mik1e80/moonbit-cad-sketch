@@ -1,0 +1,64 @@
+name: MoonBit compatibility
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/compatibility.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    name: compatibility (${{ matrix.platform }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: macOS ARM64, minimum compiler
+            runner: macos-15
+            bundle: 'binaries/0.10.17%2Bd971670cd/moonbit-darwin-aarch64.tar.gz'
+            bundle_sha: '39e02f7730486cea54d12e8e781d83a665f245f6a621d01e17a3a13f104eb437'
+            core: 'cores/core-0.10.17%2Bd971670cd.tar.gz'
+            core_sha: '2d837ecbef5933c09726d63682a7695123d622e6aee13525fbc98c4b49433714'
+          - platform: Ubuntu x64, stable snapshot
+            runner: ubuntu-24.04
+            # SHA-verified snapshot observed 2026-11-20. When the channel moves,
+            # a maintainer updates both hashes together after verifying the inputs.
+            bundle: 'binaries/latest/moonbit-linux-x86_64.tar.gz'
+            bundle_sha: 'aeb78ded1d5e25185ed788328cacef5e843a9ab923145523b7652e8d082f74fb'
+            core: 'cores/core-latest.tar.gz'
+            core_sha: 'a22977f3d346e4a189fe521b2d265b2fbb6c00e3ff80342246fb6f8f26c9f156'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Verify and install official toolchain and core
+        env:
+          BUNDLE: ${{ matrix.bundle }}
+          BUNDLE_SHA: ${{ matrix.bundle_sha }}
+          CORE: ${{ matrix.core }}
+          CORE_SHA: ${{ matrix.core_sha }}
+          MOON_HOME: ${{ runner.temp }}/moonbit-compat
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 2 --max-time 180 "https://cli.moonbitlang.com/$BUNDLE" -o "$RUNNER_TEMP/compat-toolchain.tar.gz"
+          curl --fail --location --retry 2 --max-time 180 "https://cli.moonbitlang.com/$CORE" -o "$RUNNER_TEMP/compat-core.tar.gz"
+          printf '%s  %s\n%s  %s\n' "$BUNDLE_SHA" "$RUNNER_TEMP/compat-toolchain.tar.gz" "$CORE_SHA" "$RUNNER_TEMP/compat-core.tar.gz" | shasum -a 256 --check
+          mkdir -p "$MOON_HOME/lib"
+          tar -xzf "$RUNNER_TEMP/compat-toolchain.tar.gz" -C "$MOON_HOME"
+          tar -xzf "$RUNNER_TEMP/compat-core.tar.gz" -C "$MOON_HOME/lib"
+          chmod +x "$MOON_HOME"/bin/*
+          export PATH="$MOON_HOME/bin:$PATH"
+          moon -C "$MOON_HOME/lib/core" bundle --warn-list -a --target js
+          moon version --all
+          node --version
+          echo "$MOON_HOME/bin" >> "$GITHUB_PATH"
+          echo "MOON_HOME=$MOON_HOME" >> "$GITHUB_ENV"
+      - name: Check public examples and maintenance boundaries
+        run: |
+          moon check --target js --deny-warn
+          moon test README.mbt.md maintenance_sequence_test.mbt --target js --deny-warn

@@ -1,0 +1,21 @@
+{
+  "id": "maintenance-mixed-edit-v1",
+  "license_spdx": "Apache-2.0",
+  "origin": "Self-authored analytic geometry; no external CAD files",
+  "external_inputs": [],
+  "source": "maintenance_sequence_test.mbt",
+  "test": "seeded mixed edit sessions recover without changing the saved shape",
+  "seed": 20261121,
+  "generator": "32-bit LCG (1664525*x+1013904223 modulo 2^32)",
+  "sequence_edits": 12,
+  "oracle": "For radius r, the shared tangent end must be (3,r) and the equal-radius circle must have radius r. An incompatible radius is added on each edit, then removed after checking failure and a one-subset diagnostic budget.",
+  "reproduction": "moon test maintenance_sequence_test.mbt --target <js|wasm|wasm-gc|native> --deny-warn",
+  "results": {
+    "wasm": "pass",
+    "wasm-gc": "pass",
+    "js": "pass",
+    "native": "pass"
+  },
+  "test_source_git_blob": "1a048e49cbd97adc74c644b64d9de62b14ccedb6",
+  "counting": "Twelve edits on one mixed topology, independent from historical release corpora and earlier maintenance sequences."
+}

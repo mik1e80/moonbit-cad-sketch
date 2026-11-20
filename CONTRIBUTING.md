@@ -1,6 +1,7 @@
 # Contributing
 
 Open an issue for significant API or mathematical changes before implementation.
+Branch from main, use focused commits and merge through a PR with reproducible checks. Follow the [maintenance checklist](docs/MAINTENANCE_REVIEW.md) to record evidence for changes that affect public behavior, provenance or compatibility.
 Keep changes focused and preserve failed-solve atomicity, sketch-local handles,
 stable constraint IDs, and the resource/input limits.
 
