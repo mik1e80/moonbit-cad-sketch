@@ -6,7 +6,7 @@
 
 本版 `0.4.1`：[Mooncakes 包页面](https://mooncakes.io/docs/mik1e80/cad_sketch)。源码仓库：[moonbit-cad-sketch](https://github.com/mik1e80/moonbit-cad-sketch)。模块名：`mik1e80/cad_sketch`。
 
-在已有 MoonBit 项目的根目录运行：
+在已有 MoonBit 项目根目录运行下方安装命令。若从空目录开始，先执行 `moon new cad-review --user review`，再进入 `cad-review`：
 
 ```sh
 moon add mik1e80/cad_sketch@0.4.1
@@ -45,41 +45,25 @@ pkgtype(kind: "executable")
 
 ```moonbit
 fn main {
-  let s = @sketch.Sketch::new()
-  let a = s.add_point(0.0, 0.0)
-  let b = s.add_point(3.0, 0.5)
-  let line = s.add_line(a, b)
-  s.constrain(Fix(a, 0.0, 0.0)) |> ignore
-  s.constrain(Horizontal(line)) |> ignore
-  let dimension = s.constrain(Distance(a, b, 5.0))
+  let sketch = @sketch.Sketch::new()
+  let a = sketch.try_add_point(0.0, 0.0).unwrap()
+  let b = sketch.try_add_point(3.0, 0.5).unwrap()
+  let line = sketch.try_add_line(a, b).unwrap()
+  sketch.try_constrain(Fix(a, 0.0, 0.0)).unwrap() |> ignore
+  sketch.try_constrain(Horizontal(line)).unwrap() |> ignore
+  let dimension = sketch.try_constrain(Distance(a, b, 5.0)).unwrap()
 
-  match s.solve_and_apply() {
-    Ok(solution) => {
-      println("initial satisfied: \{solution.report.is_satisfied()}")
-      if solution.report.is_satisfied() {
-        let p = s.point(b).unwrap()
-        println("B = (\{p.x}, \{p.y})")
-      } else {
-        for finding in solution.report.likely_conflicts() {
-          println("constraint #\{finding.id.index()}: ratio=\{finding.tolerance_ratio}")
-        }
-      }
+  for length in [5.0, 7.0] {
+    sketch.try_set_constraint(dimension, Distance(a, b, length)).unwrap()
+    let solution = sketch.solve_and_apply().unwrap()
+    if !solution.report.is_satisfied() {
+      abort("Did not satisfy length \{length}: ratio \{solution.report.max_tolerance_ratio}")
     }
-    Err(error) => println(error.message())
-  }
-
-  // 只修改尺寸约束，以已有几何为初值重新求解。
-  if s.set_constraint(dimension, Distance(a, b, 7.0)) {
-    match s.solve_and_apply() {
-      Ok(updated) => {
-        println("edited satisfied: \{updated.report.is_satisfied()}")
-        if updated.report.is_satisfied() {
-          let p = s.point(b).unwrap()
-          println("B = (\{p.x}, \{p.y})")
-        }
-      }
-      Err(error) => println(error.message())
+    let p = sketch.point(b).unwrap()
+    if (p.x - length).abs() > 1.0e-6 || p.y.abs() > 1.0e-6 {
+      abort("Unexpected endpoint for length \{length}")
     }
+    println("length=\{length}, B=(\{p.x}, \{p.y}), satisfied=true")
   }
 }
 ```
@@ -90,11 +74,11 @@ fn main {
 moon run cmd/main --target js
 ```
 
-两次 `satisfied` 都应为 `true`，B 先接近 `(5,0)`，再接近 `(7,0)`，A 保持在原点附近。坐标按容差解释，浮点打印可能略有差异。长度沿用应用的统一单位；本例未指定毫米或米。
+两次输出均为 `satisfied=true`，B 先接近 `(5,0)`，再接近 `(7,0)`。若未达标或坐标超出示例容差，程序以失败退出。坐标按容差解释，浮点打印可能略有差异。长度沿用应用的统一单位；本例未指定毫米或米。
 
 `Ok(Solution)` 包含求解尝试的结果，不一定达标；应先检查 `report.is_satisfied()`。未达标时 `s.point()` 仍是原有保存几何，候选几何从 `solution.point()` 读取。`Err(SketchError)` 用于无效输入或数值错误。冲突后的启停和删除恢复见[冲突示例](../examples/conflict/README.md)。
 
-进行源码开发时，可使用 MoonBit 的[本地 workspace](https://docs.moonbitlang.com/en/latest/toolchain/moon/module.html#local-dependencies) 调用源码。在共同父目录创建 `moon.work`，例如 `members = ["moonbit-cad-sketch", "my_app"]`；在 `my_app/moon.mod` 添加 `import { "mik1e80/cad_sketch@0.2.2" }`，再按上面的 `moon.pkg` 导入。workspace 优先解析本地成员。普通使用者直接用上面的 `moon add` 安装即可。
+进行源码开发时，可使用 MoonBit 的[本地 workspace](https://docs.moonbitlang.com/en/latest/toolchain/moon/module.html#local-dependencies) 调用源码。在共同父目录创建 `moon.work`，例如 `members = ["moonbit-cad-sketch", "my_app"]`；在 `my_app/moon.mod` 添加 `import { "mik1e80/cad_sketch@0.4.1" }`，再按上面的 `moon.pkg` 导入。workspace 优先解析本地成员。普通使用者直接用上面的 `moon add` 安装即可。
 
 ## 运行案例
 
@@ -104,6 +88,7 @@ moon run cmd/main --target js
 | [parametric_bracket](../examples/parametric_bracket/README.md) | `moon run examples/parametric_bracket --target js` | 板宽、孔径、边距联动 |
 | [mirror_holes](../examples/mirror_holes/README.md) | `moon run examples/mirror_holes --target js` | 镜像孔与对称轴移动 |
 | [four_bar](../examples/four_bar/README.md) | `moon run examples/four_bar --target js` | 同一机构连续改变角度 |
+| [arc_fillet](../examples/arc_fillet/README.md) | `moon run examples/arc_fillet --target js` | 半径编辑、切线联动、冲突保留和恢复 |
 | [conflict](../examples/conflict/README.md) | `moon run examples/conflict --target js` | 打印误差比、停用及删除冲突关系 |
 
 修改驱动尺寸使用 `set_constraint()`，直接移动初值使用 `set_point()` / `set_radius()`。查询或编辑返回 `None` / `false` 时先检查句柄归属；所有句柄仅属于创建它的草图。

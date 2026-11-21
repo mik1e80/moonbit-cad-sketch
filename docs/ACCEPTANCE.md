@@ -1,5 +1,33 @@
 # 验收前核对记录
 
+## 0.4.1 最终技术验收
+
+正式包固定为 [mik1e80/cad_sketch@0.4.1](https://mooncakes.io/docs/mik1e80/cad_sketch)，GitHub [v0.4.1](https://github.com/mik1e80/moonbit-cad-sketch/releases/tag/v0.4.1) 指向 `54eca322`。下面区分正式包、完整回归的源码与当前维护分支。
+
+| 验收项 | 结果与复核入口 |
+| --- | --- |
+| 有效 MoonBit 项目与可运行示例 | [快速开始](QUICK_START.md)固定安装 0.4.1，验证长度 5 → 7。用 [圆弧案例](../examples/arc_fillet/README.md)复核切线联动、冲突不写回、删除冲突后恢复及 SVG |
+| 核心承诺与可复用性 | [能力矩阵](FEATURE_MATRIX.md)对应二维点、线、圆、有限圆弧、37 种用户约束、几何编辑、参考测量与局部诊断。安装板、镜像孔和四杆机构提供实际工作流；数值收敛与规模范围见[限制](LIMITATIONS.md) |
+| 自动测试与性能 | [维护源码完整回归](https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/44744643950)对应 `2e5fc4a`，四后端各 164 项通过，包含 480 组圆弧与诊断配置；原 400 组也分别通过，JS 随机三角形 1000 组达标。之后新增的专项测试由主分支轻量 CI 验证；实测成本和范围见[性能报告](BENCHMARK.md) |
+| 发布与独立消费 | [验收收据](releases/0.4.1-maintenance-acceptance.json)记录空缓存下载、原始 ZIP 指纹、167 个安装文件比对、3 项 JS 标准消费测试和四后端各 22 项公开 API 测试 |
+| 开源合规与仓库卫生 | [Apache-2.0](../LICENSE)、[第三方来源](../THIRD_PARTY_NOTICES.md)和[模型政策](MODEL_DATA_POLICY.md)分别覆盖源代码、参考资料与自建测试数据。完整回归检查了源码归档和独立消费者 |
+| 提交与可解释性 | [公开默认分支](https://github.com/mik1e80/moonbit-cad-sketch)、[Actions](https://github.com/mik1e80/moonbit-cad-sketch/actions)及 [变更记录](../CHANGELOG.md)提供开发证据。[架构说明](ARCHITECTURE.md)给出建模、容差、局部秩、失败语义及 AI 辅助范围 |
+
+### 评审复现
+
+从仓库根目录执行以下两条命令，检查会就错误返回非零退出码。注册表消费者在仓库外创建独立项目，按 `moon.mod` 的精确版本安装，无需账户或发布权限。以下严格检查用 moonc 0.10.17+d971670cd 和匹配的 core 验证，同时需要 Node.js、Python 3.10+ 及 Mooncakes 网络访问。较新编译器的警告差异见[兼容性](COMPATIBILITY.md)。
+
+```sh
+python -X utf8 scripts/check_consumer.py
+moon run examples/arc_fillet --target js --deny-warn
+```
+
+标准消费者通过 3 项测试，打印接近 7 的终点 X 坐标并校验 SVG XML。圆弧案例打印半径 2 → 3 的联动、冲突保留和恢复结果。要逐文件核对正式包，从 [Mooncakes](https://mooncakes.io/docs/mik1e80/cad_sketch) 下载 0.4.1 ZIP，再把本地路径传给 `python -X utf8 scripts/check_consumer.py --archive "<path-to-zip>"`，对照上述验收收据的 SHA-256。
+
+此范围是仓库技术复核。正式提交材料、参赛账号和赛事方验收结论各自以组委会记录为准。
+
+## 历史赛事资料与版本记录
+
 初次核对日期：2026-10-16；当前版本证据复核：2026-11-20。本文件记录代码证据与待完成事项，不表示组委会已批准项目。下列赛事来源与时间说明保留原核对时点，不代表重新核实了当前赛事安排。
 
 当前 0.4.1 的[维护后发布验收](PUBLISHING.md#041-维护后发布验收--2026-11-20)已完成，包含完整四后端回归及空缓存安装。历史 0.4.0 源码和归档已完成[实际完整回归](https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/44087504847)：四后端各 160 项测试（含新增 480 配置）、各 400 个原生成配置、JS 1000 组随机初值通过；归档消费工作区各 165 项通过。发布后注册表上传和安装收据见 [本轮完整证据](COMPLETENESS_VALIDATION.md)。原 0.3.0 的[发布](releases/0.3.0.json)和[消费](releases/consumer-0.3.0.json)记录保持历史归属，不作为本版替代证据。
