@@ -1,4 +1,4 @@
-"""Exercise moon new -> registry add -> two tests -> runnable consumer.
+"""Exercise moon new -> pinned registry add -> three tests -> runnable consumer.
 
 Python 3.10+ standard library only. Never runs this repository's test suite.
 The generated consumer and raw command logs are retained outside the repository.
@@ -125,7 +125,7 @@ def main() -> None:
     run("new", "consumer", "--user", "consumer_test", cwd=workspace)
     project = workspace / "consumer"
     assert not (project / ".mooncakes").exists(), "Expected fresh consumer"
-    install_output = run("add", MODULE, cwd=project)
+    install_output = run("add", f"{MODULE}@{VERSION}", cwd=project)
     if "failed to update registry index" in install_output:
         raise RuntimeError(f"Registry index refresh failed; retry with network access. Logs: {workspace}")
     manifest = (project / "moon.mod").read_text(encoding="utf-8")

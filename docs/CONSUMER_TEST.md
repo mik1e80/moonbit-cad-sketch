@@ -20,7 +20,7 @@
 python scripts/check_consumer.py
 ```
 
-[脚本](../scripts/check_consumer.py)执行真实的 `moon new`、`moon add`、`moon info`、`moon fmt`、`moon test` 和 `moon run`。消费项目不在仓库目录内，不存在 `moon.work` 或 path 依赖；安装前项目还没有 `.mooncakes` 目录。在线索引刷新失败时检查失败，正常 Moon 注册表缓存可以复用，是否命中缓存会写入结果。无需登录或发布权限。
+[脚本](../scripts/check_consumer.py)执行真实的 `moon new`、按源码 `moon.mod` 固定版本的 `moon add`、`moon info`、`moon fmt`、`moon test` 和 `moon run`。消费项目不在仓库目录内，不存在 `moon.work` 或 path 依赖；安装前项目还没有 `.mooncakes` 目录。在线索引刷新失败时检查失败，正常 Moon 注册表缓存可以复用，是否命中缓存会写入结果。无需登录或发布权限。
 
 成功后生成 `_build/consumer-test/latest.json`；终端显示仓库外的临时项目与逐命令日志位置，保留文件便于检查。消费程序仅导入已安装的公开包。默认只检查 JS 后端，只有三项小测试和一次示例运行。
 
@@ -31,7 +31,7 @@ python scripts/check_consumer.py
 ```sh
 moon new consumer --user consumer_test
 cd consumer
-moon add mik1e80/cad_sketch
+moon add mik1e80/cad_sketch@0.4.1
 ```
 
 `--user` 用于固定消费模块名，与安装依赖所用的注册表账号无关。Windows 上若模板 README 符号链接创建失败，模板可能给出提示；下面的建模、测试与运行不依赖该链接。
