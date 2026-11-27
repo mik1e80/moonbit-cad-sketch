@@ -1,6 +1,7 @@
 ///|
 /// Recoverable input, resource or numerical errors. Nonconvergence is reported
 /// by SolveStatus inside Ok(Solution), rather than by this enum.
+#derive(Debug)
 pub(all) enum SketchError {
   InvalidGeometry(String)
   InvalidConstraint(ConstraintId)
@@ -13,7 +14,7 @@ pub(all) enum SketchError {
   IdentifierExhausted
   InvalidOptions(String)
   NumericalFailure(String)
-} derive(Debug)
+}
 
 ///|
 pub extend SketchError with @debug.Debug::{to_repr}

@@ -1,37 +1,42 @@
 ///|
 /// Individually removable at one satisfied numerical configuration, not a
 /// jointly removable set or global redundancy proof.
+#derive(Debug)
 pub struct RedundantConstraintCandidate {
   id : ConstraintId
   rank_without : Int32
-} derive(Debug)
+}
 
 ///|
+#derive(Debug)
 pub struct RankAnalysis {
   baseline : SolveReport
   rank : Int32
   rank_evaluations : Int32
   budget_exhausted : Bool
   candidates : Array[RedundantConstraintCandidate]
-} derive(Debug)
+}
 
 ///|
+#derive(Debug)
 pub struct SubsetTrial {
   constraints : Array[ConstraintId]
   result : Result[SolveReport, SketchError]
-} derive(Debug)
+}
 
 ///|
 /// Observed unresolved subset from the same initial geometry. Never a proof of
 /// infeasibility or a minimal unsatisfiable core.
+#derive(Debug)
 pub struct ConflictCandidate {
   constraints : Array[ConstraintId]
   observed_status : SolveStatus
   max_tolerance_ratio : Double
   narrowing_completed : Bool
-} derive(Debug)
+}
 
 ///|
+#derive(Debug)
 pub struct ConflictAnalysis {
   baseline : SolveReport
   groups : Array[ConflictCandidate]
@@ -40,7 +45,7 @@ pub struct ConflictAnalysis {
   subset_solves : Int32
   charged_linear_solves : Int32
   budget_exhausted : Bool
-} derive(Debug)
+}
 
 ///|
 priv struct AnalysisBudget {

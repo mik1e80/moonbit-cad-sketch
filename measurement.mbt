@@ -1,5 +1,6 @@
 ///|
 /// Read-only reference dimensions. These never create solver equations.
+#derive(Debug)
 pub(all) enum Measurement {
   PointDistance(PointId, PointId)
   LineLength(LineId)
@@ -9,7 +10,7 @@ pub(all) enum Measurement {
   ArcRadiusValue(ArcId)
   ArcSweepValue(ArcId)
   ArcLengthValue(ArcId)
-} derive(Debug)
+}
 
 ///|
 fn measurement_geometry(m : Measurement) -> Array[GeometryId] {
@@ -221,10 +222,11 @@ pub fn Solution::measure(
 }
 
 ///|
+#derive(Debug)
 pub struct Rectangle {
   corners : Array[PointId]
   edges : Array[LineId]
-} derive(Debug)
+}
 
 ///|
 /// Axis-aligned rectangle geometry only. Add driving constraints explicitly.

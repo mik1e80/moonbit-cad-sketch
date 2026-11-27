@@ -2,6 +2,8 @@
 
 ## Unreleased maintenance
 
+- Migrate postfix derive declarations to the RC syntax and pin CI to moonc 1.0.0-rc1+3c0520448. The published 0.4.1 archive remains installable as a dependency under the RC toolchain.
+
 - Add a standalone registry consumer workflow for a rounded plate and publish the measured scope in [the integration record](docs/REGISTRY_PLATE.md).
 - Cover seeded arc continuation, checked edit rollback, reference-safe deletion, snapshot isolation and the finite-arc projection boundary in focused four-backend CI.
 - Add mixed arc, line and circle edit sequences with conflict recovery and a bounded diagnostic check. Record targeted performance workloads and provide an opt-in compatibility workflow.

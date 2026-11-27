@@ -39,7 +39,7 @@
 
 ## 复现与结果文件
 
-需要 MoonBit 0.10.17+ 和 Node.js 18+；脚本只用 Node 标准库。
+在当前源码上复现时，使用 `moonc 1.0.0-rc1+3c0520448`、匹配的 core 和 Node.js 18+。脚本使用 Node.js 标准库。
 
 ```sh
 node scripts/validation_suite.cjs --check --target wasm

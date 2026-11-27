@@ -1,4 +1,5 @@
 ///|
+#derive(ToJson)
 priv struct Sample {
   index : Int32
   seed : Int32
@@ -13,7 +14,7 @@ priv struct Sample {
   local_dof : Int32
   max_tolerance_ratio : Double
   residual_ratios : Array[Double]
-} derive(ToJson)
+}
 
 ///|
 // Independent per-case Park-Miller/Schrage seed, with no retry or rejection.

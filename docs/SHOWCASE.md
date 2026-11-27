@@ -8,7 +8,7 @@
 
 ## 运行与查看结果
 
-需要项目要求的 MoonBit 工具链（`moonc >= 0.10.17`）。仅运行示例不需要 Python 或 Node.js：
+运行当前源码需要 `moonc 1.0.0-rc1+3c0520448` 及匹配的 core。仅运行默认后端示例时无需 Python 或 Node.js。
 
 ```sh
 moon run examples/parametric_bracket

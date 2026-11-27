@@ -1,16 +1,18 @@
 ///|
+#derive(Debug, Eq)
 pub(all) enum GeometryRole {
   ModelGeometry
   ConstructionGeometry
-} derive(Debug, Eq)
+}
 
 ///|
+#derive(Debug)
 pub(all) enum GeometryId {
   PointGeometry(PointId)
   LineGeometry(LineId)
   CircleGeometry(CircleId)
   ArcGeometry(ArcId)
-} derive(Debug)
+}
 
 ///|
 fn Sketch::point_slot(self : Sketch, id : PointId) -> Int32? {

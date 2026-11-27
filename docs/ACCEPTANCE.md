@@ -1,5 +1,11 @@
 # 验收前核对记录
 
+## 11 月验收工具链
+
+维护源码与 CI 固定使用 `moonc 1.0.0-rc1+3c0520448` 和匹配的 core。后置 `derive(...)` 已迁移到前置 `#derive(...)`，公开接口和求解逻辑保持一致。四后端日常 CI 执行检查、构建与测试，完整回归使用手动工作流。
+
+Mooncakes 正式包仍为 **0.4.1**。Windows 上用这套 RC 在独立项目中从空缓存安装，3 项 JS 消费测试、尺寸编辑程序和 SVG XML 校验均通过，167 个安装文件与原正式 ZIP 一致。[RC 安装回执](releases/0.4.1-rc1-consumer.json) · [兼容性](COMPATIBILITY.md)
+
 ## 0.4.1 最终技术验收
 
 正式包固定为 [mik1e80/cad_sketch@0.4.1](https://mooncakes.io/docs/mik1e80/cad_sketch)，GitHub [v0.4.1](https://github.com/mik1e80/moonbit-cad-sketch/releases/tag/v0.4.1) 指向 `54eca322`。下面区分正式包、完整回归的源码与当前维护分支。
@@ -15,7 +21,7 @@
 
 ### 评审复现
 
-从仓库根目录执行以下两条命令，检查会就错误返回非零退出码。注册表消费者在仓库外创建独立项目，按 `moon.mod` 的精确版本安装，无需账户或发布权限。以下严格检查用 moonc 0.10.17+d971670cd 和匹配的 core 验证，同时需要 Node.js、Python 3.10+ 及 Mooncakes 网络访问。较新编译器的警告差异见[兼容性](COMPATIBILITY.md)。
+从仓库根目录执行以下两条命令，检查会就错误返回非零退出码。注册表消费者在仓库外创建独立项目，按 `moon.mod` 的精确版本安装，无需账户或发布权限。以下严格检查用 `moonc 1.0.0-rc1+3c0520448` 和匹配的 core 验证，同时需要 Node.js、Python 3.10+ 及 Mooncakes 网络访问。较新编译器的警告差异见[兼容性](COMPATIBILITY.md)。
 
 ```sh
 python -X utf8 scripts/check_consumer.py
@@ -85,7 +91,7 @@ Topics：`cad`, `constraint-solver`, `geometry`, `moonbit`, `parametric-design`,
 
 ## 可复现命令
 
-0.4.1 源码需要 MoonBit 0.10.17 或更新版本；包消费审查脚本另外需要 Python 3.10+，仅使用标准库。
+维护源码采用上文的 RC 工具链。历史发布标签按各自的工具链证据复现；包消费审查脚本另外需要 Python 3.10+。
 
 ```sh
 moon fmt --check

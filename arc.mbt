@@ -1,36 +1,41 @@
 ///|
+#derive(Debug)
 pub struct ArcId {
   index : Int32
   priv owner : Array[Unit]
-} derive(Debug)
+}
 
 ///|
+#derive(Debug, Eq)
 pub(all) enum ArcDirection {
   CounterClockwise
   Clockwise
-} derive(Debug, Eq)
+}
 
 ///|
+#derive(Debug, Eq)
 pub(all) enum ArcEndpoint {
   Start
   End
-} derive(Debug, Eq)
+}
 
 ///|
+#derive(Debug)
 pub struct Arc {
   center : PointId
   start : PointId
   end : PointId
   direction : ArcDirection
-} derive(Debug)
+}
 
 ///|
+#derive(Debug)
 pub struct ArcShape {
   center : Point
   start : Point
   end : Point
   direction : ArcDirection
-} derive(Debug)
+}
 
 ///|
 fn Sketch::arc_slot(self : Sketch, id : ArcId) -> Int32? {

@@ -1,15 +1,17 @@
 ///|
+#derive(Debug)
 pub(all) enum SolveStatus {
   Satisfied
   Stalled
   IterationLimit
   BudgetLimit
-} derive(Debug)
+}
 
 ///|
 pub extend SolveStatus with @debug.Debug::{to_repr}
 
 ///|
+#derive(Debug)
 pub(all) enum SolveStopReason {
   Converged
   NoDescent
@@ -19,29 +21,32 @@ pub(all) enum SolveStopReason {
   IterationBudgetExhausted
   QrBudgetExhausted
   WorldToleranceFailure
-} derive(Debug)
+}
 
 ///|
+#derive(Debug)
 pub(all) enum EquationOrigin {
   ConstraintEquation(ConstraintId)
   ArcEquation(ArcId)
-} derive(Debug)
+}
 
 ///|
+#derive(Debug)
 pub struct EquationResidual {
   origin : EquationOrigin
   component : Int32
   angular : Bool
   error : Double
   tolerance_ratio : Double
-} derive(Debug)
+}
 
 ///|
+#derive(Debug)
 pub struct GeometryResidual {
   arc : ArcId
   length_error : Double
   tolerance_ratio : Double
-} derive(Debug)
+}
 
 ///|
 priv struct SolveTrace {
@@ -71,13 +76,14 @@ pub fn SolveOptions::default() -> SolveOptions {
 
 ///|
 /// Maximum component errors per constraint, before tolerance weighting.
+#derive(Debug)
 pub struct ConstraintResidual {
   id : ConstraintId
   active : Bool
   length_error : Double
   angular_error : Double
   tolerance_ratio : Double
-} derive(Debug)
+}
 
 ///|
 pub extend ConstraintResidual with @debug.Debug::{to_repr}
@@ -85,6 +91,7 @@ pub extend ConstraintResidual with @debug.Debug::{to_repr}
 ///|
 /// DOF and equation dependence refer to the local Jacobian at this result.
 /// Unsatisfied constraints are symptoms, not a proven minimal conflict set.
+#derive(Debug)
 pub struct SolveReport {
   priv owner : Array[Unit]
   status : SolveStatus
@@ -104,7 +111,7 @@ pub struct SolveReport {
   accepted_steps : Int32
   rejected_steps : Int32
   final_damping : Double
-} derive(Debug)
+}
 
 ///|
 pub extend SolveReport with @debug.Debug::{to_repr}

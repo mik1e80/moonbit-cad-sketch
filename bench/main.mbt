@@ -1,4 +1,5 @@
 ///|
+#derive(ToJson)
 priv struct Measurement {
   case_name : String
   point_count : Int32
@@ -20,7 +21,7 @@ priv struct Measurement {
   initial_points : Array[Array[Double]]
   points : Array[Array[Double]]
   retained_points : Array[Array[Double]]
-} derive(ToJson)
+}
 
 ///|
 fn random(state : Array[Int32]) -> Double {
