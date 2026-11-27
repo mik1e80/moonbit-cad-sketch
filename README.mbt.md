@@ -25,7 +25,7 @@ import {
 
 完整文档入口：[快速开始](docs/QUICK_START.md)、[约束参考](docs/CONSTRAINTS.md)、[求解](docs/SOLVER.md)、[诊断](docs/DIAGNOSTICS.md)和[限制](docs/LIMITATIONS.md)。
 
-默认选项即可开始；[API 使用指南](docs/API_GUIDE.md)按几何、约束、求解、编辑和诊断介绍接口。需要 `moonc >= 0.10.17`。
+默认选项即可开始；[API 使用指南](docs/API_GUIDE.md)按几何、约束、求解、编辑和诊断介绍接口。维护源码使用 `moonc 1.0.0-rc1+3c0520448`。
 
 ## 输入、求解与尺寸编辑
 
@@ -203,7 +203,7 @@ test "mirror a hole center about a vertical construction line" {
 
 [Benchmark](docs/BENCHMARK.md)提供 10/30/60/100 点、20/60/120/200 条约束的 JS release 实测，保存迭代、收敛状态、独立残差及限定环境下的耗时。日常可用 `node scripts/benchmark.cjs --smoke --target js` 只检查最小模型。
 
-需要 `moonc >= 0.10.17`；本次轻量验证使用 `moonc 0.10.17+d971670cd`。[环境准备](docs/ENVIRONMENT.md)说明编译器和标准库匹配要求。
+维护源码与 CI 使用 `moonc 1.0.0-rc1+3c0520448`；正式包 0.4.1 用 RC 验证了独立安装。[环境准备](docs/ENVIRONMENT.md)说明编译器和标准库匹配要求。
 
 核心库仅依赖 MoonBit core，无 C/C++ 或 JS 求解器依赖。使用者通过几何关系调用，无需提供方程或导数。算法实现与高级设置见[内部实现](docs/ARCHITECTURE.md)，参考来源和许可说明见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
 

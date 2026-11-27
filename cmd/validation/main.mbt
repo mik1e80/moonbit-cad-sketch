@@ -1,12 +1,14 @@
 ///|
+#derive(ToJson)
 priv struct Transform {
   x : Double
   y : Double
   angle : Double
   scale : Double
-} derive(ToJson)
+}
 
 ///|
+#derive(ToJson)
 priv struct Record {
   group : String
   index : Int32
@@ -30,7 +32,7 @@ priv struct Record {
   local_dof : Int32
   max_tolerance_ratio : Double
   residual_ratios : Array[Double]
-} derive(ToJson)
+}
 
 ///|
 // Park-Miller with Schrage's method: all intermediate values fit Int32.

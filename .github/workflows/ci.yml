@@ -40,10 +40,10 @@ jobs:
         env:
           MOON_HOME: ${{ runner.temp }}/moonbit
         run: |
-          curl --fail --location --retry 2 --max-time 180 https://cli.moonbitlang.com/binaries/0.10.17%2Bd971670cd/moonbit-linux-x86_64.tar.gz -o "$RUNNER_TEMP/moonbit.tar.gz"
-          echo "d0a96eaf91c77cfcdd7b7df75390c5a1a95d0b8a328b1a5ed6fee050cfbf8d50  $RUNNER_TEMP/moonbit.tar.gz" | sha256sum --check --strict
-          curl --fail --location --retry 2 --max-time 180 https://cli.moonbitlang.com/cores/core-0.10.17%2Bd971670cd.tar.gz -o "$RUNNER_TEMP/core.tar.gz"
-          echo "2d837ecbef5933c09726d63682a7695123d622e6aee13525fbc98c4b49433714  $RUNNER_TEMP/core.tar.gz" | sha256sum --check --strict
+          curl --fail --location --retry 2 --max-time 180 https://cli.moonbitlang.com/binaries/1.0.0-rc1%2B3c0520448/moonbit-linux-x86_64.tar.gz -o "$RUNNER_TEMP/moonbit.tar.gz"
+          echo "113527a9037fe12e463e6ac1e7698116bf703730243096328e4ac7e2774307c0  $RUNNER_TEMP/moonbit.tar.gz" | sha256sum --check --strict
+          curl --fail --location --retry 2 --max-time 180 https://cli.moonbitlang.com/cores/core-1.0.0-rc1%2B3c0520448.tar.gz -o "$RUNNER_TEMP/core.tar.gz"
+          echo "a3f7d82f1195e28ad9aad7b9b8b4cbca490cbf8146b306a376ea3beba4173751  $RUNNER_TEMP/core.tar.gz" | sha256sum --check --strict
           mkdir -p "$MOON_HOME/lib"
           tar -xzf "$RUNNER_TEMP/moonbit.tar.gz" -C "$MOON_HOME"
           tar -xzf "$RUNNER_TEMP/core.tar.gz" -C "$MOON_HOME/lib"
@@ -53,12 +53,16 @@ jobs:
           echo "$MOON_HOME/bin" >> "$GITHUB_PATH"
           echo "MOON_HOME=$MOON_HOME" >> "$GITHUB_ENV"
       - name: Toolchain version
-        run: moon version --all
+        run: |
+          moon version --all
+          moon version --all | grep -F 'moonc v1.0.0-rc1+3c0520448'
       - name: Check formatting
         if: matrix.target == 'js'
         run: moon fmt --check
       - name: Check selected target
         run: moon check --target ${{ matrix.target }} --deny-warn
+      - name: Build selected target
+        run: moon build --target ${{ matrix.target }} --deny-warn
       - name: Test public API examples
         run: moon test README.mbt.md model.mbt --target ${{ matrix.target }} --deny-warn
       - name: Test SVG export
@@ -97,10 +101,10 @@ jobs:
         env:
           MOON_HOME: ${{ runner.temp }}/moonbit
         run: |
-          curl --fail --location --retry 2 --max-time 180 https://cli.moonbitlang.com/binaries/0.10.17%2Bd971670cd/moonbit-linux-x86_64.tar.gz -o "$RUNNER_TEMP/moonbit.tar.gz"
-          echo "d0a96eaf91c77cfcdd7b7df75390c5a1a95d0b8a328b1a5ed6fee050cfbf8d50  $RUNNER_TEMP/moonbit.tar.gz" | sha256sum --check --strict
-          curl --fail --location --retry 2 --max-time 180 https://cli.moonbitlang.com/cores/core-0.10.17%2Bd971670cd.tar.gz -o "$RUNNER_TEMP/core.tar.gz"
-          echo "2d837ecbef5933c09726d63682a7695123d622e6aee13525fbc98c4b49433714  $RUNNER_TEMP/core.tar.gz" | sha256sum --check --strict
+          curl --fail --location --retry 2 --max-time 180 https://cli.moonbitlang.com/binaries/1.0.0-rc1%2B3c0520448/moonbit-linux-x86_64.tar.gz -o "$RUNNER_TEMP/moonbit.tar.gz"
+          echo "113527a9037fe12e463e6ac1e7698116bf703730243096328e4ac7e2774307c0  $RUNNER_TEMP/moonbit.tar.gz" | sha256sum --check --strict
+          curl --fail --location --retry 2 --max-time 180 https://cli.moonbitlang.com/cores/core-1.0.0-rc1%2B3c0520448.tar.gz -o "$RUNNER_TEMP/core.tar.gz"
+          echo "a3f7d82f1195e28ad9aad7b9b8b4cbca490cbf8146b306a376ea3beba4173751  $RUNNER_TEMP/core.tar.gz" | sha256sum --check --strict
           mkdir -p "$MOON_HOME/lib"
           tar -xzf "$RUNNER_TEMP/moonbit.tar.gz" -C "$MOON_HOME"
           tar -xzf "$RUNNER_TEMP/core.tar.gz" -C "$MOON_HOME/lib"
@@ -110,7 +114,9 @@ jobs:
           echo "$MOON_HOME/bin" >> "$GITHUB_PATH"
           echo "MOON_HOME=$MOON_HOME" >> "$GITHUB_ENV"
       - name: Toolchain version
-        run: moon version --all
+        run: |
+          moon version --all
+          moon version --all | grep -F 'moonc v1.0.0-rc1+3c0520448'
       - name: Check formatting
         run: moon fmt --check
       - name: Check all targets without warnings

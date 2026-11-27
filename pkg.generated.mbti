@@ -10,52 +10,59 @@ import {
 // Errors
 
 // Types and methods
+#derive(@debug.Debug)
 pub struct Arc {
   center : PointId
   start : PointId
   end : PointId
   direction : ArcDirection
-} derive(@debug.Debug)
+}
 pub fn Arc::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug)
 pub(all) enum ArcDirection {
   CounterClockwise
   Clockwise
-} derive(Eq, @debug.Debug)
+}
 pub fn ArcDirection::equal(Self, Self) -> Bool
 pub fn ArcDirection::not_equal(Self, Self) -> Bool
 pub fn ArcDirection::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug)
 pub(all) enum ArcEndpoint {
   Start
   End
-} derive(Eq, @debug.Debug)
+}
 pub fn ArcEndpoint::equal(Self, Self) -> Bool
 pub fn ArcEndpoint::not_equal(Self, Self) -> Bool
 pub fn ArcEndpoint::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub struct ArcId {
   index : Int32
   // private fields
-} derive(@debug.Debug)
+}
 pub fn ArcId::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub struct ArcShape {
   center : Point
   start : Point
   end : Point
   direction : ArcDirection
-} derive(@debug.Debug)
+}
 pub fn ArcShape::radius(Self) -> Double
 pub fn ArcShape::sweep(Self) -> Double
 pub fn ArcShape::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub struct CircleId {
   index : Int32
   // private fields
-} derive(@debug.Debug)
+}
 pub fn CircleId::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub struct ConflictAnalysis {
   baseline : SolveReport
   groups : Array[ConflictCandidate]
@@ -64,17 +71,19 @@ pub struct ConflictAnalysis {
   subset_solves : Int32
   charged_linear_solves : Int32
   budget_exhausted : Bool
-} derive(@debug.Debug)
+}
 pub fn ConflictAnalysis::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub struct ConflictCandidate {
   constraints : Array[ConstraintId]
   observed_status : SolveStatus
   max_tolerance_ratio : Double
   narrowing_completed : Bool
-} derive(@debug.Debug)
+}
 pub fn ConflictCandidate::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub(all) enum Constraint {
   Fix(PointId, Double, Double)
   Coincident(PointId, PointId)
@@ -113,69 +122,78 @@ pub(all) enum Constraint {
   ArcArcTangentAt(ArcId, ArcEndpoint, ArcId, ArcEndpoint)
   ArcCircleTangentAt(ArcId, ArcEndpoint, CircleId)
   PointOnArc(PointId, ArcId)
-} derive(@debug.Debug)
+}
 pub fn Constraint::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub struct ConstraintId {
   index : Int32
   // private fields
-} derive(@debug.Debug)
+}
 pub fn ConstraintId::index(Self) -> Int32
 pub fn ConstraintId::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub struct ConstraintResidual {
   id : ConstraintId
   active : Bool
   length_error : Double
   angular_error : Double
   tolerance_ratio : Double
-} derive(@debug.Debug)
+}
 pub fn ConstraintResidual::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub(all) enum EquationOrigin {
   ConstraintEquation(ConstraintId)
   ArcEquation(ArcId)
-} derive(@debug.Debug)
+}
 pub fn EquationOrigin::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub struct EquationResidual {
   origin : EquationOrigin
   component : Int32
   angular : Bool
   error : Double
   tolerance_ratio : Double
-} derive(@debug.Debug)
+}
 pub fn EquationResidual::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub(all) enum GeometryId {
   PointGeometry(PointId)
   LineGeometry(LineId)
   CircleGeometry(CircleId)
   ArcGeometry(ArcId)
-} derive(@debug.Debug)
+}
 pub fn GeometryId::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub struct GeometryResidual {
   arc : ArcId
   length_error : Double
   tolerance_ratio : Double
-} derive(@debug.Debug)
+}
 pub fn GeometryResidual::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug)
 pub(all) enum GeometryRole {
   ModelGeometry
   ConstructionGeometry
-} derive(Eq, @debug.Debug)
+}
 pub fn GeometryRole::equal(Self, Self) -> Bool
 pub fn GeometryRole::not_equal(Self, Self) -> Bool
 pub fn GeometryRole::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub struct LineId {
   index : Int32
   // private fields
-} derive(@debug.Debug)
+}
 pub fn LineId::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub(all) enum Measurement {
   PointDistance(PointId, PointId)
   LineLength(LineId)
@@ -185,40 +203,45 @@ pub(all) enum Measurement {
   ArcRadiusValue(ArcId)
   ArcSweepValue(ArcId)
   ArcLengthValue(ArcId)
-} derive(@debug.Debug)
+}
 pub fn Measurement::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub(all) struct Point {
   x : Double
   y : Double
-} derive(@debug.Debug)
+}
 pub fn Point::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub struct PointId {
   index : Int32
   // private fields
-} derive(@debug.Debug)
+}
 pub fn PointId::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub struct RankAnalysis {
   baseline : SolveReport
   rank : Int32
   rank_evaluations : Int32
   budget_exhausted : Bool
   candidates : Array[RedundantConstraintCandidate]
-} derive(@debug.Debug)
+}
 pub fn RankAnalysis::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub struct Rectangle {
   corners : Array[PointId]
   edges : Array[LineId]
-} derive(@debug.Debug)
+}
 pub fn Rectangle::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub struct RedundantConstraintCandidate {
   id : ConstraintId
   rank_without : Int32
-} derive(@debug.Debug)
+}
 pub fn RedundantConstraintCandidate::to_repr(Self) -> @debug.Repr
 
 pub struct Sketch {
@@ -265,6 +288,7 @@ pub fn Sketch::try_set_constraint(Self, ConstraintId, Constraint) -> Result[Unit
 pub fn Sketch::try_set_point(Self, PointId, Point) -> Result[Unit, SketchError]
 pub fn Sketch::try_set_radius(Self, CircleId, Double) -> Result[Unit, SketchError]
 
+#derive(@debug.Debug)
 pub(all) enum SketchError {
   InvalidGeometry(String)
   InvalidConstraint(ConstraintId)
@@ -277,7 +301,7 @@ pub(all) enum SketchError {
   IdentifierExhausted
   InvalidOptions(String)
   NumericalFailure(String)
-} derive(@debug.Debug)
+}
 pub fn SketchError::message(Self) -> String
 pub fn SketchError::to_repr(Self) -> @debug.Repr
 
@@ -298,6 +322,7 @@ pub(all) struct SolveOptions {
 }
 pub fn SolveOptions::default() -> Self
 
+#derive(@debug.Debug)
 pub struct SolveReport {
   status : SolveStatus
   iterations : Int32
@@ -317,21 +342,23 @@ pub struct SolveReport {
   rejected_steps : Int32
   final_damping : Double
   // private fields
-} derive(@debug.Debug)
+}
 pub fn SolveReport::is_satisfied(Self) -> Bool
 pub fn SolveReport::likely_conflicts(Self) -> Array[ConstraintResidual]
 pub fn SolveReport::residual(Self, ConstraintId) -> ConstraintResidual?
 pub fn SolveReport::to_repr(Self) -> @debug.Repr
 pub fn SolveReport::unsatisfied(Self) -> Array[ConstraintResidual]
 
+#derive(@debug.Debug)
 pub(all) enum SolveStatus {
   Satisfied
   Stalled
   IterationLimit
   BudgetLimit
-} derive(@debug.Debug)
+}
 pub fn SolveStatus::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub(all) enum SolveStopReason {
   Converged
   NoDescent
@@ -341,23 +368,26 @@ pub(all) enum SolveStopReason {
   IterationBudgetExhausted
   QrBudgetExhausted
   WorldToleranceFailure
-} derive(@debug.Debug)
+}
 pub fn SolveStopReason::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub struct SubsetTrial {
   constraints : Array[ConstraintId]
   result : Result[SolveReport, SketchError]
-} derive(@debug.Debug)
+}
 pub fn SubsetTrial::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub(all) struct SvgBounds {
   min_x : Double
   min_y : Double
   max_x : Double
   max_y : Double
-} derive(@debug.Debug)
+}
 pub fn SvgBounds::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub(all) struct SvgOptions {
   width : Int32
   height : Int32
@@ -365,7 +395,7 @@ pub(all) struct SvgOptions {
   title : String
   show_points : Bool
   bounds : SvgBounds?
-} derive(@debug.Debug)
+}
 pub fn SvgOptions::default() -> Self
 pub fn SvgOptions::to_repr(Self) -> @debug.Repr
 

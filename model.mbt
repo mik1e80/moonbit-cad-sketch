@@ -1,36 +1,40 @@
 ///|
 /// Identifiers are local to the sketch that created them.
+#derive(Debug)
 pub struct PointId {
   index : Int32
   priv owner : Array[Unit]
-} derive(Debug)
+}
 
 ///|
 pub extend PointId with @debug.Debug::{to_repr}
 
 ///|
+#derive(Debug)
 pub struct LineId {
   index : Int32
   priv owner : Array[Unit]
-} derive(Debug)
+}
 
 ///|
 pub extend LineId with @debug.Debug::{to_repr}
 
 ///|
+#derive(Debug)
 pub struct CircleId {
   index : Int32
   priv owner : Array[Unit]
-} derive(Debug)
+}
 
 ///|
 pub extend CircleId with @debug.Debug::{to_repr}
 
 ///|
+#derive(Debug)
 pub struct ConstraintId {
   index : Int32
   priv owner : Array[Unit]
-} derive(Debug)
+}
 
 ///|
 pub extend ConstraintId with @debug.Debug::{to_repr}
@@ -42,10 +46,11 @@ pub fn ConstraintId::index(self : ConstraintId) -> Int32 {
 }
 
 ///|
+#derive(Debug)
 pub(all) struct Point {
   x : Double
   y : Double
-} derive(Debug)
+}
 
 ///|
 pub extend Point with @debug.Debug::{to_repr}
@@ -65,6 +70,7 @@ priv struct Circle {
 ///|
 /// Angles are directed counterclockwise, in radians. Lines extend infinitely
 /// for PointOnLine and Tangent. Distances use the caller's common length unit.
+#derive(Debug)
 pub(all) enum Constraint {
   Fix(PointId, Double, Double)
   Coincident(PointId, PointId)
@@ -104,7 +110,7 @@ pub(all) enum Constraint {
   ArcArcTangentAt(ArcId, ArcEndpoint, ArcId, ArcEndpoint)
   ArcCircleTangentAt(ArcId, ArcEndpoint, CircleId)
   PointOnArc(PointId, ArcId)
-} derive(Debug)
+}
 
 ///|
 pub extend Constraint with @debug.Debug::{to_repr}

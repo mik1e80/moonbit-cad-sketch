@@ -1,16 +1,18 @@
 ///|
 /// World-space bounds for a shared drawing scale. Must contain all geometry.
+#derive(Debug)
 pub(all) struct SvgBounds {
   min_x : Double
   min_y : Double
   max_x : Double
   max_y : Double
-} derive(Debug)
+}
 
 ///|
 pub extend SvgBounds with @debug.Debug::{to_repr}
 
 ///|
+#derive(Debug)
 pub(all) struct SvgOptions {
   width : Int32
   height : Int32
@@ -18,7 +20,7 @@ pub(all) struct SvgOptions {
   title : String
   show_points : Bool
   bounds : SvgBounds?
-} derive(Debug)
+}
 
 ///|
 pub extend SvgOptions with @debug.Debug::{to_repr}

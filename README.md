@@ -10,7 +10,7 @@
 
 ## Why?
 
-本版 **0.4.1**（0.4.0 功能与消费验证工具补丁）：新增有限圆弧、几何删除、构造角色、只读测量和有界诊断。[0.4.1 完整四后端回归](https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/44089465166)通过；发布与安装收据见 [本轮验证](docs/COMPLETENESS_VALIDATION.md)。最低要求 `moonc >= 0.10.17`。从 0.2.2 升级时的接口与行为变化见 [API 指南](docs/API_GUIDE.md)，安全反馈见 [SECURITY](SECURITY.md)。
+本版 **0.4.1**（0.4.0 功能与消费验证工具补丁）：新增有限圆弧、几何删除、构造角色、只读测量和有界诊断。[0.4.1 完整四后端回归](https://github.com/mik1e80/moonbit-cad-sketch/actions/runs/44089465166)通过；发布与安装收据见 [本轮验证](docs/COMPLETENESS_VALIDATION.md)。维护源码和 CI 使用 `moonc 1.0.0-rc1+3c0520448`；正式包 0.4.1 已用 RC 独立安装验证。从 0.2.2 升级时的接口与行为变化见 [API 指南](docs/API_GUIDE.md)，安全反馈见 [SECURITY](SECURITY.md)。
 
 用距离、方向、对称和相切关系表达设计意图，让孔位、板边和连杆在尺寸变化后一起更新。适用于小型参数化零件草图、草图编辑器集成和平面机构教学。应用通过几何对象和关系建模，库负责联合求解，并报告哪些关系尚未达标。
 
@@ -240,7 +240,7 @@ moon test README.mbt.md --target js
 
 ## Installation
 
-[Mooncakes：mik1e80/cad_sketch@0.4.1](https://mooncakes.io/docs/mik1e80/cad_sketch)。需 `moonc >= 0.10.17`；0.4.1 已使用 `moonc 0.10.17+d971670cd` 完成源码、归档和注册表消费验收，见[发布证据](docs/COMPLETENESS_VALIDATION.md)。[Windows 环境准备](docs/ENVIRONMENT.md)说明安装与标准库匹配检查。核心仅依赖 MoonBit core。Python、Node.js 和 SciPy 用于可选开发验证。
+[Mooncakes：mik1e80/cad_sketch@0.4.1](https://mooncakes.io/docs/mik1e80/cad_sketch)。推荐使用 `moonc 1.0.0-rc1+3c0520448` 和匹配的 core。原始发布回归与后续 RC 验证分别记录，见[兼容性与版本证据](docs/COMPATIBILITY.md)。[Windows 环境准备](docs/ENVIRONMENT.md)说明安装与标准库匹配检查。核心仅依赖 MoonBit core。Python、Node.js 和 SciPy 用于可选开发验证。
 
 ```sh
 moon add mik1e80/cad_sketch@0.4.1
