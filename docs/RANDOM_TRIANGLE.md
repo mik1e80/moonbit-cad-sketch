@@ -38,7 +38,7 @@ JS 后端；Windows x64；MoonBit 0.10.15。
 
 ## 轻量复现
 
-需要 MoonBit 0.10.17+、Node.js 18+，仅使用标准库。
+在当前源码上复现时，使用 `moonc 1.0.0-rc1+3c0520448`、匹配的 core 和 Node.js 18+。脚本使用 Node.js 标准库。
 
 ```sh
 moon check cmd/random_triangle --target js --deny-warn

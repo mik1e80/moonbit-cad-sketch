@@ -1,6 +1,6 @@
 # Windows 环境准备与排查
 
-项目最低要求 `moonc >= 0.10.17`。2026-10-26 本机修复与轻量验证使用 `moonc 0.10.17+d971670cd`、匹配版本的 MoonBit core；工具链来自官方 Windows 发布包。
+当前维护源码与 CI 使用 `moonc 1.0.0-rc1+3c0520448` 及匹配的 MoonBit core。已发布的 0.4.1 也已使用同一 RC 从 Mooncakes 独立安装验证。旧版工具链记录见[兼容性](COMPATIBILITY.md)。
 
 ## 官方安装与版本检查
 
@@ -36,7 +36,7 @@ moon run examples/basic --target js
 python scripts/check_package.py
 ```
 
-README 与 SVG 分别执行 7 项和 9 项定向测试；源码包检查默认仅执行 5 项消费测试。本次不重跑库全量回归、四后端测试矩阵、400 / 1000 模型实验或四档计时；`v0.2.1` 的[完整回归记录](releases/0.2.1-full-regression.json)仍对应原 tag。0.2.2 没有修改核心实现或测试。
+这些命令适用于日常环境检查。四后端完整回归、模型验证及发布包验证见[验收记录](ACCEPTANCE.md)。
 
 ## 可选的 Agent 开发技能
 
